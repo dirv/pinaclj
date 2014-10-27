@@ -12,3 +12,7 @@
 (describe "not-found route"
           (it "responds with 404"
               (should= 404 (:status (app (mock/request :get "/invalid"))))))
+
+(describe "simple page route"
+          (it "responds with 200"
+              (should= 200 (:status ((page-app ["test"]) (mock/request :get "/test"))))))

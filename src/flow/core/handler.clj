@@ -3,9 +3,18 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
 
-(defroutes app-routes
-  (GET "/" [] "Hello World")
-  (route/not-found "Not Found"))
+(defn- page-route [page]
+  (GET (str "/" page) [] "Hello World"))
+
+(defn- app-routes [pages]
+  (apply routes
+    (conj (conj
+      (vec (map page-route pages))
+      (GET "/" [] "Hello World"))
+      (route/not-found "Not Found"))))
+
+(defn page-app [pages]
+  (wrap-defaults (app-routes pages) site-defaults))
 
 (def app
-  (wrap-defaults app-routes site-defaults))
+  (page-app []))
