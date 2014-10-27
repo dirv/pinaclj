@@ -4,7 +4,8 @@
             [flow.core.handler :refer :all]))
 
 (def ^:const sample-pages
-  [{:path "test" :content "content body"}])
+  [{:path "test" :content "content body" :published-at 1}
+   {:path "second" :content "second page" :published-at 2}])
 
 (defn- create-sample-app []
   (page-app sample-pages))
@@ -16,7 +17,7 @@
           (it "responds"
               (should= 200 (:status (get-request "/"))))
           (it "has a body"
-              (should= "Hello World" (:body (get-request "/")))))
+              (should-contain "href=\"/test\"" (:body (get-request "/")))))
 
 (describe "not-found route"
           (it "responds with 404"
@@ -27,3 +28,7 @@
               (should= 200 (:status (get-request "/test"))))
           (it "displays content"
               (should= "content body" (:body (get-request "/test")))))
+
+(describe "page list"
+          (it "orders by descending date"
+              (should-contain #"second(?s).*test" (:body (get-request "/")))))
