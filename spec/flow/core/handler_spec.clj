@@ -3,10 +3,6 @@
             [ring.mock.request :as mock]
             [flow.core.handler :refer :all]))
 
-(def ^:const sample-pages
-  [{:path "test" :content "content body" :published-at 1}
-   {:path "second" :content "second page" :published-at 2}])
-
 (defn- create-sample-app []
   (page-app sample-pages))
 
@@ -27,7 +23,7 @@
           (it "responds with 200"
               (should= 200 (:status (get-request "/test"))))
           (it "displays content"
-              (should= "content body" (:body (get-request "/test")))))
+              (should-contain "content body" (:body (get-request "/test")))))
 
 (describe "page list"
           (it "orders by descending date"

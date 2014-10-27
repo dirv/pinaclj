@@ -1,19 +1,17 @@
 (ns flow.core.handler
-  (:require [compojure.core :refer :all]
+  (:require [flow.core.templates :as templates]
+            [compojure.core :refer :all]
             [compojure.route :as route]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
 
 (defn- page-route [page]
-  (GET (str "/" (:path page)) [] (:content page)))
-
-(defn- build-page-link [page]
-  (str "<a href=\"/" (:path page) "\">" (:path page) "</a><br></br>"))
+  (GET (str "/" (:path page)) [] (apply str (templates/page page))))
 
 (defn- sort-by-descending-date [pages]
   (sort #(> (:published-at %1) (:published-at %2)) pages))
 
 (defn- build-page-list [pages]
-  (clojure.string/join "\n" (map build-page-link (sort-by-descending-date pages))))
+  (apply str (templates/page-list (sort-by-descending-date pages))))
 
 (defn- app-routes [pages]
   (apply routes
@@ -25,5 +23,9 @@
 (defn page-app [pages]
   (wrap-defaults (app-routes pages) site-defaults))
 
+(def ^:const sample-pages
+  [{:path "test" :content "content body" :published-at 1 :author "Daniel" :title "Test"}
+   {:path "second" :content "second page" :published-at 2 :author "Daniel" :title "Second"}])
+
 (def app
-  (page-app []))
+  (page-app sample-pages))
