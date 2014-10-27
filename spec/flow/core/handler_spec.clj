@@ -3,16 +3,27 @@
             [ring.mock.request :as mock]
             [flow.core.handler :refer :all]))
 
+(def ^:const sample-pages
+  [{:path "test" :content "content body"}])
+
+(defn- create-sample-app []
+  (page-app sample-pages))
+
+(defn- get-request [path]
+  ((create-sample-app) (mock/request :get path)))
+
 (describe "main route"
           (it "responds"
-              (should= 200 (:status (app (mock/request :get "/")))))
+              (should= 200 (:status (get-request "/"))))
           (it "has a body"
-              (should= "Hello World" (:body (app (mock/request :get "/"))))))
+              (should= "Hello World" (:body (get-request "/")))))
 
 (describe "not-found route"
           (it "responds with 404"
-              (should= 404 (:status (app (mock/request :get "/invalid"))))))
+              (should= 404 (:status (get-request "/invalid")))))
 
 (describe "simple page route"
           (it "responds with 200"
-              (should= 200 (:status ((page-app ["test"]) (mock/request :get "/test"))))))
+              (should= 200 (:status (get-request "/test"))))
+          (it "displays content"
+              (should= "content body" (:body (get-request "/test")))))

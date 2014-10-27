@@ -4,7 +4,7 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]))
 
 (defn- page-route [page]
-  (GET (str "/" page) [] "Hello World"))
+  (GET (str "/" (:path page)) [] (:content page)))
 
 (defn- app-routes [pages]
   (apply routes
