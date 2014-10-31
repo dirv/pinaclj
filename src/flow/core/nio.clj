@@ -35,7 +35,7 @@
   (apply str (Files/readAllLines path StandardCharsets/UTF_8)))
 
 (defn create-file [path content directory]
-  (Files/write path 
+  (Files/write path
                (as-bytes content)
                (into-array OpenOption [StandardOpenOption/CREATE])))
 
