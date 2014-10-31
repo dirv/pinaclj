@@ -5,8 +5,10 @@
   (:import (com.google.common.jimfs Jimfs Configuration)))
 
 (def ^:const sample-pages
-  [{:path "test" :content "content body" :published-at 2 :author "Daniel" :title "Test"}
-   {:path "second" :content "second page" :published-at 1 :author "Daniel" :title "Second"}])
+  [{:path "test"
+    :content "Title: Test\n\ncontent body"
+    :published-at 2
+    }])
 
 (def test-fs
   (Jimfs/newFileSystem (Configuration/unix)))
@@ -18,4 +20,13 @@
         (nio/create-file file (:content page) fs-root)
         (nio/set-last-modified file (:published-at page))))
     fs-root))
+
+
+(defn- get-page [page-path]
+  (let [fs-root (create-file-system)]
+    (to-page (nio/child-path fs-root page-path) fs-root)))
+
+(describe "to-page"
+          (it "sets the title"
+              (should= "Test" (:title (get-page "test")))))
 

@@ -2,11 +2,15 @@
   (:require [flow.core.nio :as nio]
             [flow.core.templates :as templates]))
 
+(defn- extract-title [line]
+  (nth (clojure.string/split line #": ") 1))
+
 (defn to-page [path fs-root]
-  { :path (nio/get-path-string path fs-root)
-   :content (nio/content path)
-   :title "TEST" ; todo
-   :published-at (nio/get-last-modified-time path)})
+  (let [content-lines  (nio/read-all-lines path)]
+  { :path (nio/get-path-string fs-root path)
+   :content (nth content-lines 2)
+   :title (extract-title ( nth content-lines 0))
+   :published-at (nio/get-last-modified-time path)}))
 
 (defn- get-all-pages [fs-root]
   (with-open [children (nio/get-all-files fs-root)]

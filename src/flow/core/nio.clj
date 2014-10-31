@@ -19,7 +19,7 @@
 (defn get-path [fs path]
   (.getPath fs path (into-array String [])))
 
-(defn get-path-string [path fs-root]
+(defn get-path-string [fs-root path]
   (.toString (.relativize fs-root path)))
 
 (defn get-all-files [fs-root]
@@ -31,8 +31,11 @@
 (defn set-last-modified [path millis]
   (Files/setLastModifiedTime path (FileTime/fromMillis millis)))
 
+(defn read-all-lines [path]
+  (Files/readAllLines path StandardCharsets/UTF_8))
+
 (defn content [path]
-  (apply str (Files/readAllLines path StandardCharsets/UTF_8)))
+  (apply str (read-all-lines path)))
 
 (defn create-file [path content directory]
   (Files/write path

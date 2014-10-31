@@ -6,8 +6,8 @@
   (:import (com.google.common.jimfs Jimfs Configuration)))
 
 (def ^:const sample-pages
-  [{:path "test" :content "content body" :published-at 2 :author "Daniel" :title "Test"}
-   {:path "second" :content "second page" :published-at 1 :author "Daniel" :title "Second"}])
+  [{:path "test" :content "Title: title\n\ncontent body" :published-at 2 :author "Daniel" :title "Test"}
+   {:path "second" :content "Title: foo\n\nsecond page" :published-at 1 :author "Daniel" :title "Second"}])
 
 (def test-fs
   (Jimfs/newFileSystem (Configuration/unix)))
