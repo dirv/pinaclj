@@ -1,22 +1,34 @@
 (ns flow.core.pages
   (:require [flow.core.nio :as nio]
             [flow.core.templates :as templates])
-  (:import (java.time Instant Month ZoneId) 
+  (:import (java.time Instant Month ZoneId)
            (java.time.format DateTimeFormatter)))
 
-(defn- extract-title [line]
-  (nth (clojure.string/split line #": ") 1))
+(def header-separator
+  "")
 
-(defn- extract-published-at [line]
-  (.atZone (Instant/parse (nth (clojure.string/split line #": ") 1))
-           (ZoneId/of "UTC")))
+(defn- string-to-date [value]
+  (when-not (nil? value)
+    (.atZone (Instant/parse value) (ZoneId/of "UTC"))))
+
+(defn- to-header [line]
+  (let [headed-line (clojure.string/split line #": ")]
+    { (keyword (first headed-line)) (second headed-line)}))
+
+(defn- split-header-content [all-lines]
+  (let [split (split-with #(not (= header-separator %)) all-lines)]
+    [(first split) (rest (second split))]))
+
+(defn- to-headers [header-section]
+  (apply merge (map to-header header-section)))
 
 (defn to-page [path fs-root]
-  (let [content-lines  (nio/read-all-lines path)]
-  { :path (nio/get-path-string fs-root path)
-   :content (nth content-lines 2)
-   :title (extract-title (nth content-lines 0))
-   :published-at (extract-published-at (nth content-lines 1))}))
+  (let [header-and-content (split-header-content (nio/read-all-lines path))
+        headers (to-headers (first header-and-content))]
+    {:path (nio/get-path-string fs-root path)
+     :content (second header-and-content)
+     :title (:Title headers)
+     :published-at (string-to-date (:Published-at headers))}))
 
 (defn- get-all-pages [fs-root]
   (with-open [children (nio/get-all-files fs-root)]
