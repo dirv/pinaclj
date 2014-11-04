@@ -37,7 +37,7 @@
 (defn content [path]
   (apply str (read-all-lines path)))
 
-(defn create-file [path content directory]
+(defn create-file [path content]
   (Files/write path
                (as-bytes content)
                (into-array OpenOption [StandardOpenOption/CREATE])))

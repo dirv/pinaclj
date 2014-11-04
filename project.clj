@@ -5,7 +5,6 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [com.google.jimfs/jimfs "1.0"]
                  [enlive "1.1.5"]
-                 [compojure "1.2.0"]
                  [ring/ring-defaults "0.1.2"]]
   :plugins [[lein-ring "0.8.13"]
             [speclj "3.1.0"]]
@@ -13,5 +12,6 @@
   :test-paths ["spec"]
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
-                        [ring-mock "0.1.5"]
+                        [clj-time "0.8.0"]
+                        [peridot "0.3.0"]
                         [speclj "3.1.0"]]}})
