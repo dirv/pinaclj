@@ -6,9 +6,8 @@
     [ring.util.anti-forgery :as af]
     [ring.middleware.defaults :refer [wrap-defaults api-defaults]]))
 
-(defn- not-found []
-  (fn [req]
-    (response/not-found "Not found")))
+(defn- not-found [req]
+  (response/not-found "Not found"))
 
 (defn- string-from-stream [stream]
   (.reset stream)
@@ -49,7 +48,7 @@
       (app req))))
 
 (defn page-app [fs-root]
-  (-> (not-found)
+  (-> not-found
     (page-handler fs-root)
     (index-handler fs-root)
     (post-handler fs-root)
