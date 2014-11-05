@@ -39,12 +39,15 @@
                    "Content-Type" 0 }}
         (app req)))))
 
+(defn- index-request? [req]
+  (and (= :get (:request-method req))
+       (= "/"  (:uri req))))
+
 (defn- index-handler [app fs-root]
   (fn [req]
-    (if (and (= :get (:request-method req))
-             (= "/" (:uri req)))
+    (if (index-request? req)
       {:status 200
-       :body (pages/build-page-list fs-root) }
+       :body (pages/build-page-list fs-root)}
       (app req))))
 
 (defn page-app [fs-root]
