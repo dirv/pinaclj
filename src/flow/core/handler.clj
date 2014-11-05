@@ -14,27 +14,31 @@
   (.reset stream)
   (slurp stream))
 
+(defn- file-path [req]
+  (subs (:uri req) 1))
+
 (defn- post-handler [app fs-root]
   (fn [req]
     (if-not (= :post (:request-method req))
       (app req)
-      (let [path (subs (:uri req) 1)
+      (let [path (file-path req)
             file (nio/child-path fs-root path)]
         (nio/create-file file (string-from-stream (:body req)))
         {:status 200}))))
+
+(defn find-file [fs-root req]
+  (nio/existing-child-path fs-root (file-path req)))
 
 (defn- page-handler [app fs-root]
   (fn [req]
     (if-not (= :get (:request-method req))
       (app req)
-      (let [path (subs (:uri req) 1)
-            file (nio/existing-child-path fs-root path)]
-        (if file
-          {:status 200
-           :body (nio/content file)
-           :headers {"Content-Length" 0 ; todo
-                     "Content-Type" 0 }}
-          (app req))))))
+      (if-let [file (find-file fs-root req)]
+        {:status 200
+         :body (nio/content file)
+         :headers {"Content-Length" 0 ; todo
+                   "Content-Type" 0 }}
+        (app req)))))
 
 (defn- index-handler [app fs-root]
   (fn [req]
