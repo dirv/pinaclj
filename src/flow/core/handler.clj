@@ -25,7 +25,7 @@
         (nio/create-file file (string-from-stream (:body req)))
         {:status 200}))))
 
-(defn find-file [fs-root req]
+(defn- find-file [fs-root req]
   (nio/existing-child-path fs-root (file-path req)))
 
 (defn- page-handler [app fs-root]
