@@ -31,12 +31,12 @@
 (defn- page-handler [app fs-root]
   (fn [req]
     (if (page-request? fs-root req)
-    (let [file (nio/child-path fs-root (file-path req))]
-        {:status 200
-         :body (nio/content file)
-         :headers {"Content-Length" 0 ; todo
-                   "Content-Type" 0 }})
-        (app req))))
+      (let [file (nio/child-path fs-root (file-path req))]
+          {:status 200
+           :body (nio/content file)
+           :headers {"Content-Length" 0 ; todo
+                     "Content-Type" 0 }})
+      (app req))))
 
 (defn- index-request? [req]
   (and (= :get (:request-method req))
