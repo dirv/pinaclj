@@ -10,12 +10,6 @@
 (defn- as-bytes [st]
   (bytes (byte-array (map byte st))))
 
-(defn existing-child-path [fs-root path]
-  (let [child (.resolve fs-root path)]
-    (if (Files/exists child (into-array LinkOption []))
-      child
-      nil)))
-
 (defn get-path [fs path]
   (.getPath fs path (into-array String [])))
 
@@ -36,6 +30,10 @@
 
 (defn content [path]
   (apply str (read-all-lines path)))
+
+(defn file-exists? [fs-root path]
+   (let [child (.resolve fs-root path)]
+     (Files/exists child (into-array LinkOption []))))
 
 (defn create-file [path content]
   (Files/write path

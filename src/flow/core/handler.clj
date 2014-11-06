@@ -28,16 +28,19 @@
 (defn- find-file [fs-root req]
   (nio/existing-child-path fs-root (file-path req)))
 
+(defn page-request? [fs-root req]
+  (and (= :get (:request-method req))
+       (nio/file-exists? fs-root (file-path req))))
+
 (defn- page-handler [app fs-root]
   (fn [req]
-    (if-not (= :get (:request-method req))
-      (app req)
-      (if-let [file (find-file fs-root req)]
+    (if (page-request? fs-root req)
+      (let [file (find-file fs-root req)]
         {:status 200
          :body (nio/content file)
          :headers {"Content-Length" 0 ; todo
-                   "Content-Type" 0 }}
-        (app req)))))
+                   "Content-Type" 0 }})
+        (app req))))
 
 (defn- index-request? [req]
   (and (= :get (:request-method req))
