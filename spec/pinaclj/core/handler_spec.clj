@@ -20,6 +20,7 @@
     (peridot/session)
     (peridot/request path
                      :request-method :post
+                     :content-type "application/json"
                      :body content)
     (peridot/request path)
     (:response)))
@@ -46,4 +47,4 @@
 
 (describe "writing a page"
   (it "writes and read back a page"
-    (should-contain "hello world" (:body (post-then-get-request "/newpage" "hello world")))))
+    (should= "hello world" (:body (post-then-get-request "/newpage" "{\"post\": {\"content\": \"hello world\"}}")))))

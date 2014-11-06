@@ -3,15 +3,12 @@
     [pinaclj.core.pages :as pages]
     [pinaclj.core.nio :as nio]
     [ring.util.response :as response :refer [response header]]
+    [ring.middleware.json :refer [wrap-json-body]]
     [ring.util.anti-forgery :as af]
     [ring.middleware.defaults :refer [wrap-defaults api-defaults]]))
 
 (defn- not-found [req]
   (response/not-found "Not found"))
-
-(defn- string-from-stream [stream]
-  (.reset stream)
-  (slurp stream))
 
 (defn- file-path [req]
   (subs (:uri req) 1))
@@ -21,7 +18,7 @@
     (if-not (= :post (:request-method req))
       (app req)
       (let [file (nio/child-path fs-root (file-path req))]
-        (nio/create-file file (string-from-stream (:body req)))
+        (nio/create-file file (get-in req [:body :post :content]))
         (response "")))))
 
 (defn page-request? [fs-root req]
@@ -52,6 +49,7 @@
     (page-handler fs-root)
     (index-handler fs-root)
     (post-handler fs-root)
+    (wrap-json-body {:keywords? true})
     (wrap-defaults api-defaults)))
 
 (def app
