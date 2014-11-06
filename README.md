@@ -1,3 +1,5 @@
+![travis build status](https://api.travis-ci.org/dirv/pinaclj.svg)
+
 # pinaclj
 
 A simple content system for the web. Work in progress.
