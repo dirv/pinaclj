@@ -5,13 +5,13 @@
 
 (def ^:const sample-pages
   [{:path "test"
-    :content "Title: Test\nPublished-at: 2014-10-31T10:05:00Z\n\ncontent body"
+    :content "title: Test\nhello: World\npublished-at: 2014-10-31T10:05:00Z\n\ncontent body"
     }
    {:path "second"
-    :content "Title: foo\nPublished-at: 2014-10-30T09:00:00Z\n\none\ntwo"
+    :content "title: foo\npublished-at: 2014-10-30T09:00:00Z\n\none\ntwo"
     }
    {:path "unpublished"
-    :content "Title: Unpublished\n\ncontent"}])
+    :content "title: Unpublished\n\ncontent"}])
 
 (def test-fs
   (Jimfs/newFileSystem (Configuration/unix)))

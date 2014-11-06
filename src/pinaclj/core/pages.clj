@@ -22,29 +22,37 @@
 (defn- to-headers [header-section]
   (apply merge (map to-header header-section)))
 
+(defn convert-published-at [headers]
+  (if-let [published-at-str (:published-at headers)]
+    (assoc headers :published-at (string-to-date published-at-str))
+    headers))
+
 (defn read-page [path fs-root]
   (let [header-and-content (split-header-content (nio/read-all-lines path))
         headers (to-headers (first header-and-content))]
-    {:path (nio/get-path-string fs-root path)
-     :content (second header-and-content)
-     :title (:Title headers)
-     :published-at (string-to-date (:Published-at headers))}))
+    (merge {:path (nio/get-path-string fs-root path)
+            :content (second header-and-content)}
+           (convert-published-at headers))))
 
 (defn format-published-at [published-at]
   (.format published-at DateTimeFormatter/ISO_INSTANT))
 
-(defn line [& strings]
-  (str (apply str strings) "\n"))
+(defmulti serialize-header-pair (fn [pair] (first pair)))
 
-(defn published-at-if-present [page]
-  (if-let [published-at (:published-at page)]
-    (line "Published-at: " (format-published-at published-at))
-    ""))
+(defmethod serialize-header-pair :published-at [pair]
+  (str "published-at: " (format-published-at (second pair))))
+
+(defmethod serialize-header-pair :default [pair]
+  (str (name (first pair)) ": " (second pair)))
+
+(defn serialize-headers [headers]
+  (clojure.string/join "\n"
+   (map serialize-header-pair (vec headers))))
 
 (defn serialize [page]
-  (str (line "Title: " (:title page))
-       (published-at-if-present page)
-       (line)
+  (str (serialize-headers (dissoc page :content))
+       "\n"
+       "\n"
        (:content page)))
 
 (defn write-page [path page]
