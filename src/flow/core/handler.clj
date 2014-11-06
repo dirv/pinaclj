@@ -20,13 +20,9 @@
   (fn [req]
     (if-not (= :post (:request-method req))
       (app req)
-      (let [path (file-path req)
-            file (nio/child-path fs-root path)]
+      (let [file (nio/child-path fs-root (file-path req))]
         (nio/create-file file (string-from-stream (:body req)))
         {:status 200}))))
-
-(defn- find-file [fs-root req]
-  (nio/existing-child-path fs-root (file-path req)))
 
 (defn page-request? [fs-root req]
   (and (= :get (:request-method req))
@@ -35,7 +31,7 @@
 (defn- page-handler [app fs-root]
   (fn [req]
     (if (page-request? fs-root req)
-      (let [file (find-file fs-root req)]
+    (let [file (nio/child-path fs-root (file-path req))]
         {:status 200
          :body (nio/content file)
          :headers {"Content-Length" 0 ; todo
