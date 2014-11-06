@@ -1,6 +1,6 @@
 # pinaclj
 
-A simple content system for the web.
+A simple content system for the web. Work in progress.
 
 ## Prerequisites
 
