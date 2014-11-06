@@ -36,12 +36,14 @@
 (defn line [& strings]
   (str (apply str strings) "\n"))
 
-(defn get-or-generate-published-at [page]
-  (or (:published-at page) (ZonedDateTime/now)))
+(defn published-at-if-present [page]
+  (if-let [published-at (:published-at page)]
+    (line "Published-at: " (format-published-at published-at))
+    ""))
 
 (defn serialize [page]
   (str (line "Title: " (:title page))
-       (line "Published-at: " (format-published-at (get-or-generate-published-at page)))
+       (published-at-if-present page)
        (line)
        (:content page)))
 

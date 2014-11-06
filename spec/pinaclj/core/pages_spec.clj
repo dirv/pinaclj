@@ -49,8 +49,8 @@
   (it "writes the content"
     (should-contain "content yo" (make-page "content_page" {:content "content yo"})))
 
-  (it "generates published at if not present"
-    (should-contain "Published-at: " (make-page "pub_page2" {:content "content yo"})))
+  (it "excludes published at if not present"
+    (should-not-contain "Published-at: " (make-page "pub_page2" {:content "content yo"})))
 
   (it "writes page in correct format"
     (should= "Title: title\nPublished-at: 2014-10-30T10:05:00Z\n\ncontent" 
