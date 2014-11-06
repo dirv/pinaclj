@@ -1,6 +1,6 @@
-(ns flow.core.test-fs
+(ns pinaclj.core.test-fs
   (:require [speclj.core :refer :all]
-            [flow.core.nio :as nio])
+            [pinaclj.core.nio :as nio])
   (:import (com.google.common.jimfs Jimfs Configuration)))
 
 (def ^:const sample-pages

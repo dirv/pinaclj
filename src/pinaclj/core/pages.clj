@@ -1,6 +1,6 @@
-(ns flow.core.pages
-  (:require [flow.core.nio :as nio]
-            [flow.core.templates :as templates])
+(ns pinaclj.core.pages
+  (:require [pinaclj.core.nio :as nio]
+            [pinaclj.core.templates :as templates])
   (:import (java.time Instant Month ZoneId)
            (java.time.format DateTimeFormatter)))
 

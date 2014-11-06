@@ -1,10 +1,10 @@
-(ns flow.core.handler-spec
+(ns pinaclj.core.handler-spec
   (:require [speclj.core :refer :all]
             [clojure.pprint]
             [peridot.core :as peridot]
             [ring.middleware.anti-forgery :as af]
-            [flow.core.test-fs :as test-fs]
-            [flow.core.handler :refer :all]))
+            [pinaclj.core.test-fs :as test-fs]
+            [pinaclj.core.handler :refer :all]))
 
 (defn- create-sample-app []
   (page-app (test-fs/create-file-system)))

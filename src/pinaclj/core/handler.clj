@@ -1,7 +1,7 @@
-(ns flow.core.handler
+(ns pinaclj.core.handler
   (:require
-    [flow.core.pages :as pages]
-    [flow.core.nio :as nio]
+    [pinaclj.core.pages :as pages]
+    [pinaclj.core.nio :as nio]
     [ring.util.response :as response]
     [ring.util.anti-forgery :as af]
     [ring.middleware.defaults :refer [wrap-defaults api-defaults]]))

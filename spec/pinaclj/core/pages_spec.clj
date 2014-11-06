@@ -1,8 +1,8 @@
-(ns flow.core.pages-spec
+(ns pinaclj.core.pages-spec
   (:require [speclj.core :refer :all]
-            [flow.core.nio :as nio]
-            [flow.core.pages :refer :all]
-            [flow.core.test-fs :as test-fs])
+            [pinaclj.core.nio :as nio]
+            [pinaclj.core.pages :refer :all]
+            [pinaclj.core.test-fs :as test-fs])
   (:import (java.time ZonedDateTime LocalDateTime Month ZoneId)))
 
 

@@ -1,4 +1,4 @@
-# flow
+# pinaclj
 
 A simple content system for the web.
 

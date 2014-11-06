@@ -1,4 +1,4 @@
-(ns flow.core.templates
+(ns pinaclj.core.templates
   (:require [net.cgrand.enlive-html :as html]))
 
 
