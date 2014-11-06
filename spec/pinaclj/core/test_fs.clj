@@ -5,10 +5,10 @@
 
 (def ^:const sample-pages
   [{:path "test"
-    :content "Title: Test\nPublished-at: 2014-10-31T10:05:00.00Z\n\ncontent body"
+    :content "Title: Test\nPublished-at: 2014-10-31T10:05:00Z\n\ncontent body"
     }
    {:path "second"
-    :content "Title: foo\nPublished-at: 2014-10-30T09:00:00.00Z\n\none\ntwo"
+    :content "Title: foo\nPublished-at: 2014-10-30T09:00:00Z\n\none\ntwo"
     }
    {:path "unpublished"
     :content "Title: Unpublished\n\ncontent"}])

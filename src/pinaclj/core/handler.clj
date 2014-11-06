@@ -17,8 +17,9 @@
   (fn [req]
     (if-not (= :post (:request-method req))
       (app req)
-      (let [file (nio/child-path fs-root (file-path req))]
-        (nio/create-file file (get-in req [:body :post :content]))
+      (let [file (nio/child-path fs-root (file-path req))
+            entry (get-in req [:body :entry])]
+        (pages/write-page file entry)
         (response "")))))
 
 (defn page-request? [fs-root req]

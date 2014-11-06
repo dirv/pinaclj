@@ -1,7 +1,7 @@
 (ns pinaclj.core.pages
   (:require [pinaclj.core.nio :as nio]
             [pinaclj.core.templates :as templates])
-  (:import (java.time Instant Month ZoneId)
+  (:import (java.time Instant Month ZoneId ZonedDateTime)
            (java.time.format DateTimeFormatter)))
 
 (def header-separator
@@ -22,7 +22,7 @@
 (defn- to-headers [header-section]
   (apply merge (map to-header header-section)))
 
-(defn to-page [path fs-root]
+(defn read-page [path fs-root]
   (let [header-and-content (split-header-content (nio/read-all-lines path))
         headers (to-headers (first header-and-content))]
     {:path (nio/get-path-string fs-root path)
@@ -30,9 +30,27 @@
      :title (:Title headers)
      :published-at (string-to-date (:Published-at headers))}))
 
+(defn format-published-at [published-at]
+  (.format published-at DateTimeFormatter/ISO_INSTANT))
+
+(defn line [& strings]
+  (str (apply str strings) "\n"))
+
+(defn get-or-generate-published-at [page]
+  (or (:published-at page) (ZonedDateTime/now)))
+
+(defn serialize [page]
+  (str (line "Title: " (:title page))
+       (line "Published-at: " (format-published-at (get-or-generate-published-at page)))
+       (line)
+       (:content page)))
+
+(defn write-page [path page]
+  (nio/create-file path (serialize page)))
+
 (defn- get-all-pages [fs-root]
   (with-open [children (nio/get-all-files fs-root)]
-    (vec (map #(to-page % fs-root) children))))
+    (vec (map #(read-page % fs-root) children))))
 
 (defn- sort-by-descending-date [pages]
   (reverse (sort-by :published-at pages)))

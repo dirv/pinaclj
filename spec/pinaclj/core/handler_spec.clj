@@ -47,4 +47,7 @@
 
 (describe "writing a page"
   (it "writes and read back a page"
-    (should= "hello world" (:body (post-then-get-request "/newpage" "{\"post\": {\"content\": \"hello world\"}}")))))
+    (should-contain "hello world" (:body (post-then-get-request "/newpage" "{\"entry\": {\"content\": \"hello world\"}}"))))
+
+  (it "writes and read back a page with headers"
+    (should-contain "Title: hello" (:body (post-then-get-request "/newpage" "{\"entry\": {\"title\": \"hello\"}}")))))

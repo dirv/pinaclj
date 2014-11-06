@@ -29,7 +29,7 @@
   (Files/readAllLines path StandardCharsets/UTF_8))
 
 (defn content [path]
-  (apply str (read-all-lines path)))
+  (clojure.string/join "\n" (read-all-lines path)))
 
 (defn file-exists? [fs-root path]
    (let [child (.resolve fs-root path)]
