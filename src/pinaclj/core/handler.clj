@@ -2,7 +2,7 @@
   (:require
     [pinaclj.core.pages :as pages]
     [pinaclj.core.nio :as nio]
-    [ring.util.response :as response]
+    [ring.util.response :as response :refer [response header]]
     [ring.util.anti-forgery :as af]
     [ring.middleware.defaults :refer [wrap-defaults api-defaults]]))
 
@@ -22,7 +22,7 @@
       (app req)
       (let [file (nio/child-path fs-root (file-path req))]
         (nio/create-file file (string-from-stream (:body req)))
-        {:status 200}))))
+        (response "")))))
 
 (defn page-request? [fs-root req]
   (and (= :get (:request-method req))
@@ -32,10 +32,9 @@
   (fn [req]
     (if (page-request? fs-root req)
       (let [file (nio/child-path fs-root (file-path req))]
-          {:status 200
-           :body (nio/content file)
-           :headers {"Content-Length" 0 ; todo
-                     "Content-Type" 0 }})
+        (-> (response (nio/content file))
+            (header "Content-Length" 0)
+            (header "Content-Type" 0)))
       (app req))))
 
 (defn- index-request? [req]
@@ -45,8 +44,7 @@
 (defn- index-handler [app fs-root]
   (fn [req]
     (if (index-request? req)
-      {:status 200
-       :body (pages/build-page-list fs-root)}
+      (response (pages/build-page-list fs-root))
       (app req))))
 
 (defn page-app [fs-root]
