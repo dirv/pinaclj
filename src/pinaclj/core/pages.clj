@@ -40,18 +40,16 @@
 (defmulti serialize-header-pair (fn [pair] (first pair)))
 
 (defmethod serialize-header-pair :published-at [pair]
-  (str "published-at: " (format-published-at (second pair))))
+  (str "published-at: " (format-published-at (second pair)) "\n"))
 
 (defmethod serialize-header-pair :default [pair]
-  (str (name (first pair)) ": " (second pair)))
+  (str (name (first pair)) ": " (second pair) "\n"))
 
 (defn serialize-headers [headers]
-  (clojure.string/join "\n"
-   (map serialize-header-pair (vec headers))))
+  (apply str (map serialize-header-pair (vec headers))))
 
 (defn serialize [page]
   (str (serialize-headers (dissoc page :content))
-       "\n"
        "\n"
        (:content page)))
 
