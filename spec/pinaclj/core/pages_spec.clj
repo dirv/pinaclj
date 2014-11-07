@@ -44,10 +44,10 @@
 
 (describe "write-page"
   (it "writes the title"
-    (should-contain "title: Title" (make-page "title_page" {:title "Title"})))
+    (should-contain "title: Title" (make-page "title_page" {:headers {:title "Title"}})))
 
   (it "writes the published_at"
-    (should-contain "published-at: 2014-10-31T10:05:00Z" (make-page "pub_page" {:published-at published-at})))
+    (should-contain "published-at: 2014-10-31T10:05:00Z" (make-page "pub_page" {:headers {:published-at published-at}})))
 
   (it "writes the content"
     (should-contain "content yo" (make-page "content_page" {:content "content yo"})))
@@ -56,11 +56,11 @@
     (should-not-contain "published-at: " (make-page "pub_page2" {:content "content yo"})))
 
   (it "writes arbitrary headers"
-    (should-contain "hello: world" (make-page "helloworld" {:content "content" :hello "world"})))
+    (should-contain "hello: world" (make-page "helloworld" {:content "content" :headers {:hello "world"}})))
 
   (it "writes page in correct format"
-    (should= "title: title\npublished-at: 2014-10-31T10:05:00Z\n\ncontent"
-             (make-page "format_page" {:title "title" :published-at published-at :content "content"}))))
+    (should= "title: title\npublished-at: 2014-10-31T10:05:00Z\n\ncontent" 
+             (make-page "format_page" {:headers {:title "title" :published-at published-at} :content "content"}))))
 
 (describe "build-page"
   (it "creates a string containing the content"

@@ -48,10 +48,10 @@
 (defn serialize-headers [headers]
   (apply str (map serialize-header-pair (vec headers))))
 
-(defn serialize [page]
-  (str (serialize-headers (dissoc page :content))
+(defn serialize [{:keys [headers content]}]
+  (str (serialize-headers headers)
        "\n"
-       (:content page)))
+       content))
 
 (defn write-page [path page]
   (nio/create-file path (serialize page)))

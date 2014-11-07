@@ -1,22 +1,23 @@
 (ns pinaclj.core.handler-spec
   (:require [speclj.core :refer :all]
             [clojure.pprint]
+            [cheshire.core :as json]
             [peridot.core :as peridot]
             [ring.middleware.anti-forgery :as af]
             [pinaclj.core.test-fs :as test-fs]
             [pinaclj.core.handler :refer :all]))
 
-(defn- create-sample-app []
+(def create-sample-app
   (page-app (test-fs/create-file-system)))
 
 (defn- get-request [path]
-  (-> (create-sample-app)
+  (-> create-sample-app
     (peridot/session)
     (peridot/request path)
     (:response)))
 
 (defn- post-then-get-request [path content]
-  (-> (create-sample-app)
+  (-> create-sample-app
     (peridot/session)
     (peridot/request path
                      :request-method :post
@@ -47,7 +48,7 @@
 
 (describe "writing a page"
   (it "writes and read back a page"
-    (should-contain "hello world" (:body (post-then-get-request "/newpage" "{\"entry\": {\"content\": \"hello world\"}}"))))
+    (should-contain "hello world" (:body (post-then-get-request "/newpage" (json/generate-string {:entry {:content "hello world"}})))))
 
   (it "writes and read back a page with headers"
-    (should= "title: hello\n\nhello world" (:body (post-then-get-request "/newpage" "{\"entry\": {\"title\": \"hello\", \"content\": \"hello world\"}}")))))
+    (should= "title: hello\n\nhello world" (:body (post-then-get-request "/newpage" (json/generate-string {:entry {:headers {:title "hello"} :content "hello world"}}))))))
