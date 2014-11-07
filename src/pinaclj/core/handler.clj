@@ -31,8 +31,7 @@
     (if (page-request? fs-root req)
       (let [file (nio/child-path fs-root (file-path req))]
         (-> (response (nio/content file))
-            (header "Content-Length" 0)
-            (header "Content-Type" 0)))
+            (header "Content-Type" "text/html")))
       (app req))))
 
 (defn- index-request? [req]
@@ -42,7 +41,8 @@
 (defn- index-handler [app fs-root]
   (fn [req]
     (if (index-request? req)
-      (response (pages/build-page-list fs-root))
+      (-> (response (pages/build-page-list fs-root))
+        (header "Content-Type" "text/html"))
       (app req))))
 
 (defn page-app [fs-root]
@@ -55,5 +55,5 @@
 
 (def app
   (-> (nio/default-file-system)
-    (nio/get-path "")
+    (nio/get-path "./public")
     page-app))
