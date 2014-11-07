@@ -17,7 +17,7 @@
 
 (defn- split-header-content [all-lines]
   (let [split (split-with #(not (= header-separator %)) all-lines)]
-    [(first split) (rest (second split))]))
+    [(first split) (clojure.string/join "\n" (rest (second split)))]))
 
 (defn- to-headers [header-section]
   (apply merge (map to-header header-section)))
@@ -62,6 +62,9 @@
 
 (defn- sort-by-descending-date [pages]
   (reverse (sort-by :published-at pages)))
+
+(defn build-page [path fs-root]
+  (apply str (templates/page (read-page path fs-root))))
 
 (defn build-page-list [fs-root]
   (->> fs-root

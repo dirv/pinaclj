@@ -11,7 +11,9 @@
     :content "title: foo\npublished-at: 2014-10-30T09:00:00Z\n\none\ntwo"
     }
    {:path "unpublished"
-    :content "title: Unpublished\n\ncontent"}])
+    :content "title: Unpublished\n\ncontent"}
+   {:path "coffee ritual"
+    :content "title: The Coffee Ritual\n\nyellow cup green cup"}])
 
 (def test-fs
   (Jimfs/newFileSystem (Configuration/unix)))
