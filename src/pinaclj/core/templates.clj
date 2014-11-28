@@ -2,15 +2,34 @@
   (:require [net.cgrand.enlive-html :as html]))
 
 
-(html/defsnippet page-link "templates/page_link.html"
-    [:#content]
-    [replacements]
-    [:#content html/any-node]  (html/replace-vars replacements))
+(html/defsnippet page-link "templates/page_list.html"
+  [(html/attr= :data-id "page-list-item")]
+  [page]
+  [(html/attr= :data-id "page-link")] (html/do-> (html/set-attr :href (:url page))
+                                   (html/content (:title page))))
 
 (html/deftemplate page-list "templates/page_list.html"
   [pages]
-  [:ol#list [:li html/first-of-type]] (html/clone-for [item pages]
-                                                 [:li] (html/content (page-link item))))
+  [[(html/attr= :data-id "page-list")]
+   [(html/attr= :data-id "page-list-item")]] (html/clone-for [item pages]
+                                                 [(html/attr= :data-id "page-list")] (html/content (page-link item))))
+
+(defn- build-replacement-selector [kv]
+  [(html/attr= :data-id (name (first kv)))])
+
+(defn- build-replacement-transform [kv]
+  (html/content (second kv)))
+
+(defn- build-replacement-kv [kv]
+  (vec (list (build-replacement-selector kv) (build-replacement-transform kv))))
+
+(defn- build-replacement-list [page]
+  (map build-replacement-kv page)
+  )
+
+(defn- page-replace [page]
+  #(html/at* % (build-replacement-list page)))
+
 (html/deftemplate page "templates/page.html"
-  [replacements]
-  [:#content html/any-node] (html/replace-vars replacements))
+  [page]
+  [:body] (page-replace page))

@@ -59,7 +59,7 @@
     (should-contain "hello: world" (make-page "helloworld" {:content "content" :headers {:hello "world"}})))
 
   (it "writes page in correct format"
-    (should= "title: title\npublished-at: 2014-10-31T10:05:00Z\n\ncontent" 
+    (should= "title: title\npublished-at: 2014-10-31T10:05:00Z\n\ncontent"
              (make-page "format_page" {:headers {:title "title" :published-at published-at} :content "content"}))))
 
 (describe "build-page"
