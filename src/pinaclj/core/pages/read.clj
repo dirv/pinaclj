@@ -1,4 +1,4 @@
-(ns pinaclj.core.pages
+(ns pinaclj.core.pages.read
   (:require [pinaclj.core.nio :as nio]
             [pinaclj.core.templates :as templates])
   (:import (java.time Instant Month ZoneId ZonedDateTime)
@@ -34,41 +34,6 @@
             :content (second header-and-content)}
            (convert-published-at headers))))
 
-(defn- format-published-at [published-at]
-  (.format published-at DateTimeFormatter/ISO_INSTANT))
-
-(defmulti serialize-header-pair (fn [pair] (first pair)))
-
-(defmethod serialize-header-pair :published-at [pair]
-  (str "published-at: " (format-published-at (second pair)) "\n"))
-
-(defmethod serialize-header-pair :default [pair]
-  (str (name (first pair)) ": " (second pair) "\n"))
-
-(defn- serialize-headers [headers]
-  (apply str (map serialize-header-pair (vec headers))))
-
-(defn- serialize [{:keys [headers content]}]
-  (str (serialize-headers headers)
-       "\n"
-       content))
-
-(defn write-page [path page]
-  (nio/create-file path (serialize page)))
-
-(defn- get-all-pages [fs-root]
+(defn- read-all-pages [fs-root]
   (with-open [children (nio/get-all-files fs-root)]
     (vec (map #(read-page % fs-root) children))))
-
-(defn- sort-by-descending-date [pages]
-  (reverse (sort-by :published-at pages)))
-
-(defn build-page [path fs-root]
-  (apply str (templates/page (read-page path fs-root))))
-
-(defn build-page-list [fs-root]
-  (->> fs-root
-       get-all-pages
-       sort-by-descending-date
-       templates/page-list
-       (apply str)))
