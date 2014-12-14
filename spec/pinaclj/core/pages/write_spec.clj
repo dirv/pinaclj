@@ -3,8 +3,7 @@
             [pinaclj.core.files :as files]
             [pinaclj.core.pages.write :refer :all]
             [pinaclj.core.pages.date-time :as date-time]
-            [pinaclj.core.test-fs :as test-fs])
-  (:import (java.time ZonedDateTime LocalDateTime Month ZoneId)))
+            [pinaclj.core.test-fs :as test-fs]))
 
 (def published-at
   (date-time/make 2014 10 31 10 5 0))

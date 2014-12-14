@@ -1,14 +1,11 @@
 (ns pinaclj.core.pages.read-spec
   (:require [speclj.core :refer :all]
-            [pinaclj.core.files :as files]
             [pinaclj.core.pages.read :refer :all]
             [pinaclj.core.pages.date-time :as date-time]
-            [pinaclj.core.test-fs :as test-fs])
-  (:import (java.time ZonedDateTime LocalDateTime Month ZoneId)))
+            [pinaclj.core.test-fs :as test-fs]))
 
 (def published-at
   (date-time/make 2014 10 31 10 5 0))
-
 
 (describe "read-page"
   (before (test-fs/create-file-system))
