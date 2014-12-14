@@ -22,4 +22,5 @@
   (nio/create-file @fs-root path (as-bytes content)))
 
 (defn all []
-  (nio/get-all-files @fs-root))
+  (with-open [dir (nio/directory-stream @fs-root)]
+    (into [] dir)))

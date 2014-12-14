@@ -10,7 +10,7 @@
 (defn relativize [fs-root path]
   (.toString (.relativize fs-root (.resolve fs-root path))))
 
-(defn get-all-files [fs-root]
+(defn directory-stream [fs-root]
   (Files/newDirectoryStream fs-root))
 
 (defn- get-last-modified-time [path]

@@ -30,5 +30,4 @@
            (convert-published-at headers))))
 
 (defn- read-all-pages []
-  (with-open [children (files/all)]
-    (vec (map read-page children))))
+  (map read-page (files/all)))
