@@ -2,6 +2,7 @@
   (:require [speclj.core :refer :all]
             [pinaclj.core.nio :as nio]
             [pinaclj.core.pages.read :refer :all]
+            [pinaclj.core.pages.date-time :as date-time]
             [pinaclj.core.test-fs :as test-fs])
   (:import (java.time ZonedDateTime LocalDateTime Month ZoneId)))
 
@@ -11,9 +12,7 @@
       page)))
 
 (def published-at
-  (ZonedDateTime/of
-    (LocalDateTime/of 2014 Month/OCTOBER 31 10 5 0)
-    (ZoneId/of "UTC")))
+  (date-time/make 2014 10 31 10 5 0))
 
 (describe "read-page"
   (it "sets the title"

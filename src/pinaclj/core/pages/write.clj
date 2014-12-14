@@ -1,16 +1,12 @@
 (ns pinaclj.core.pages.write
   (:require [pinaclj.core.nio :as nio]
-            [pinaclj.core.templates :as templates])
-  (:import (java.time Instant Month ZoneId ZonedDateTime)
-           (java.time.format DateTimeFormatter)))
-
-(defn- date-to-string [published-at]
-  (.format published-at DateTimeFormatter/ISO_INSTANT))
+            [pinaclj.core.templates :as templates]
+            [pinaclj.core.pages.date-time :as date-time]))
 
 (defmulti serialize-header (fn [pair] (first pair)))
 
 (defmethod serialize-header :published-at [pair]
-  (str "published-at: " (date-to-string (second pair)) "\n"))
+  (str "published-at: " (date-time/to-str (second pair)) "\n"))
 
 (defmethod serialize-header :default [pair]
   (str (name (first pair)) ": " (second pair) "\n"))

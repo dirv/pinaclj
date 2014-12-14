@@ -1,15 +1,10 @@
 (ns pinaclj.core.pages.read
   (:require [pinaclj.core.nio :as nio]
-            [pinaclj.core.templates :as templates])
-  (:import (java.time Instant Month ZoneId ZonedDateTime)
-           (java.time.format DateTimeFormatter)))
+            [pinaclj.core.templates :as templates]
+            [pinaclj.core.pages.date-time :as date-time]))
 
 (def header-separator
   "")
-
-(defn- string-to-date [value]
-  (when-not (nil? value)
-    (.atZone (Instant/parse value) (ZoneId/of "UTC"))))
 
 (defn- to-header [line]
   (let [headed-line (clojure.string/split line #": ")]
@@ -23,8 +18,8 @@
   (apply merge (map to-header header-section)))
 
 (defn- convert-published-at [headers]
-  (if-let [published-at-str (:published-at headers)]
-    (assoc headers :published-at (string-to-date published-at-str))
+  (if-let [published-at (:published-at headers)]
+    (assoc headers :published-at (date-time/from-str published-at))
     headers))
 
 (defn read-page [fs-root path]
