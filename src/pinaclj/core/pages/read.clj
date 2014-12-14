@@ -29,5 +29,5 @@
             :content (second header-and-content)}
            (convert-published-at headers))))
 
-(defn- read-all-pages []
-  (map read-page (files/all)))
+(defn- read-all-pages [path]
+  (map read-page (files/all-in path)))

@@ -13,7 +13,7 @@
   (files/content path))
 
 (describe "write-page"
-  (before (test-fs/create-file-system))
+  (before (test-fs/create-empty))
 
   (it "writes the title"
     (should-contain "title: Title" (make-page "title_page" {:headers {:title "Title"}})))

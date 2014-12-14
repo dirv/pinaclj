@@ -21,6 +21,6 @@
 (defn create [path content]
   (nio/create-file @fs-root path (as-bytes content)))
 
-(defn all []
-  (with-open [dir (nio/directory-stream @fs-root)]
+(defn all-in [path]
+  (with-open [dir (nio/directory-stream @fs-root path)]
     (into [] dir)))
