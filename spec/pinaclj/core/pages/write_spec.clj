@@ -12,10 +12,9 @@
 
 
 (defn make-page [path page]
-  (let [fs-root (test-fs/create-file-system)
-        path    (nio/child-path fs-root path)]
-    (write-page path page)
-    (nio/content path)))
+  (let [fs-root (test-fs/create-file-system)]
+    (write-page fs-root path page)
+    (nio/content fs-root path)))
 
 (describe "write-page"
   (it "writes the title"

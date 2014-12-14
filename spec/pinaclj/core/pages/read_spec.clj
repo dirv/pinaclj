@@ -7,7 +7,7 @@
 
 (defn- get-page [page-path]
   (let [fs-root (test-fs/create-file-system)]
-    (let [page (read-page (nio/child-path fs-root page-path) fs-root)]
+    (let [page (read-page fs-root page-path)]
       page)))
 
 (def published-at

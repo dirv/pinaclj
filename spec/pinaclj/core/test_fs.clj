@@ -21,6 +21,5 @@
 (defn create-file-system []
   (let [fs-root (nio/get-path test-fs "/work")]
     (doseq [page sample-pages]
-      (let [file (nio/child-path fs-root (:path page))]
-        (nio/create-file file (:content page))))
+      (nio/create-file fs-root (:path page) (:content page)))
     fs-root))

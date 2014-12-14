@@ -23,5 +23,5 @@
        "\n"
        content))
 
-(defn write-page [path page]
-  (nio/create-file path (serialize page)))
+(defn write-page [fs-root path page]
+  (nio/create-file fs-root path (serialize page)))

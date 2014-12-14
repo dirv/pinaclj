@@ -27,8 +27,8 @@
     (assoc headers :published-at (string-to-date published-at-str))
     headers))
 
-(defn read-page [path fs-root]
-  (let [header-and-content (split-header-content (nio/read-all-lines path))
+(defn read-page [fs-root path]
+  (let [header-and-content (split-header-content (nio/read-all-lines fs-root path))
         headers (to-headers (first header-and-content))]
     (merge {:path (nio/get-path-string fs-root path)
             :content (second header-and-content)}
