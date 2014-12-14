@@ -7,7 +7,7 @@
 (defn get-path [fs path]
   (.getPath fs path (into-array String [])))
 
-(defn get-path-string [fs-root path]
+(defn relativize [fs-root path]
   (.toString (.relativize fs-root (.resolve fs-root path))))
 
 (defn get-all-files [fs-root]

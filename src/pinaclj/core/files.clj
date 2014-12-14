@@ -15,8 +15,8 @@
 (defn content [path]
   (clojure.string/join "\n" (read-lines path)))
 
-(defn get-path-string [path]
-  (nio/get-path-string @fs-root path))
+(defn relativize [path]
+  (nio/relativize @fs-root path))
 
 (defn create [path content]
   (nio/create-file @fs-root path (as-bytes content)))
