@@ -1,6 +1,6 @@
 (ns pinaclj.core.test-fs
   (:require [speclj.core :refer :all]
-            [pinaclj.core.nio :as nio])
+            [pinaclj.core.files :as files]) 
   (:import (com.google.common.jimfs Jimfs Configuration)))
 
 (def ^:const sample-pages
@@ -19,7 +19,6 @@
   (Jimfs/newFileSystem (Configuration/unix)))
 
 (defn create-file-system []
-  (let [fs-root (nio/get-path (test-fs) "/work")]
-    (doseq [page sample-pages]
-      (nio/create-file fs-root (:path page) (:content page)))
-    fs-root))
+  (files/init (test-fs) "/work")
+  (doseq [page sample-pages]
+    (files/create (:path page) (:content page))))

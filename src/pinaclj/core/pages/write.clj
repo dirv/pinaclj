@@ -1,5 +1,5 @@
 (ns pinaclj.core.pages.write
-  (:require [pinaclj.core.nio :as nio]
+  (:require [pinaclj.core.files :as files]
             [pinaclj.core.templates :as templates]
             [pinaclj.core.pages.date-time :as date-time]))
 
@@ -19,5 +19,5 @@
        "\n"
        content))
 
-(defn write-page [fs-root path page]
-  (nio/create-file fs-root path (serialize page)))
+(defn write-page [path page]
+  (files/create path (serialize page)))

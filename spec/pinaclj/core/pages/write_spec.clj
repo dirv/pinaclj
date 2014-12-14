@@ -1,6 +1,6 @@
 (ns pinaclj.core.pages.write-spec
   (:require [speclj.core :refer :all]
-            [pinaclj.core.nio :as nio]
+            [pinaclj.core.files :as files]
             [pinaclj.core.pages.write :refer :all]
             [pinaclj.core.pages.date-time :as date-time]
             [pinaclj.core.test-fs :as test-fs])
@@ -10,11 +10,12 @@
   (date-time/make 2014 10 31 10 5 0))
 
 (defn make-page [path page]
-  (let [fs-root (test-fs/create-file-system)]
-    (write-page fs-root path page)
-    (nio/content fs-root path)))
+  (write-page path page)
+  (files/content path))
 
 (describe "write-page"
+  (before (test-fs/create-file-system))
+
   (it "writes the title"
     (should-contain "title: Title" (make-page "title_page" {:headers {:title "Title"}})))
 

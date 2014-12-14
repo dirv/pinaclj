@@ -1,5 +1,5 @@
 (ns pinaclj.core.pages.read
-  (:require [pinaclj.core.nio :as nio]
+  (:require [pinaclj.core.files :as files]
             [pinaclj.core.templates :as templates]
             [pinaclj.core.pages.date-time :as date-time]))
 
@@ -22,13 +22,13 @@
     (assoc headers :published-at (date-time/from-str published-at))
     headers))
 
-(defn read-page [fs-root path]
-  (let [header-and-content (split-header-content (nio/read-all-lines fs-root path))
+(defn read-page [path]
+  (let [header-and-content (split-header-content (files/read-lines path))
         headers (to-headers (first header-and-content))]
-    (merge {:path (nio/get-path-string fs-root path)
+    (merge {:path (files/get-path-string path)
             :content (second header-and-content)}
            (convert-published-at headers))))
 
-(defn- read-all-pages [fs-root]
-  (with-open [children (nio/get-all-files fs-root)]
-    (vec (map #(read-page % fs-root) children))))
+(defn- read-all-pages []
+  (with-open [children (files/all)]
+    (vec (map read-page children))))

@@ -4,9 +4,6 @@
            (java.nio.file Files StandardOpenOption OpenOption)
            (java.nio.charset StandardCharsets)))
 
-(defn- as-bytes [st]
-  (bytes (byte-array (map byte st))))
-
 (defn get-path [fs path]
   (.getPath fs path (into-array String [])))
 
@@ -25,16 +22,13 @@
 (defn read-all-lines [fs-root path]
   (Files/readAllLines (.resolve fs-root path) StandardCharsets/UTF_8))
 
-(defn content [fs-root path]
-  (clojure.string/join "\n" (read-all-lines fs-root path)))
-
 (defn- file-exists? [fs-root path]
    (let [child (.resolve fs-root path)]
      (Files/exists child (into-array LinkOption []))))
 
 (defn create-file [fs-root path content]
   (Files/write (.resolve fs-root path)
-               (as-bytes content)
+               content
                (into-array OpenOption [StandardOpenOption/CREATE])))
 
 (defn default-file-system []
