@@ -15,11 +15,11 @@
    {:path "coffee ritual"
     :content "title: The Coffee Ritual\n\nyellow cup green cup"}])
 
-(def test-fs
+(defn test-fs []
   (Jimfs/newFileSystem (Configuration/unix)))
 
 (defn create-file-system []
-  (let [fs-root (nio/get-path test-fs "/work")]
+  (let [fs-root (nio/get-path (test-fs) "/work")]
     (doseq [page sample-pages]
       (nio/create-file fs-root (:path page) (:content page)))
     fs-root))
