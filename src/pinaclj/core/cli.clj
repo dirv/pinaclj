@@ -7,9 +7,9 @@
   (:gen-class))
 
 (def cli-options
-  [["-s" "--source" "Source directory." :default "drafts"]
-   ["-d" "--destination" "Destination directory." :default "published"]
-   ["-h" "--help"]])
+  [["-s" "--source SOURCE          " "Source directory.     " :default "drafts"]
+   ["-d" "--destination DESTINATION" "Destination directory." :default "published"]
+   ["-h" "--help" "Print help."]])
 
 (defn- usage [options-summary]
   (->> [""
@@ -17,21 +17,22 @@
         ""
         "Usage: lein run [options]"
         ""
-        "Options[switch, description]:"
+        "Options:"
+        "  switch                         default    description"
         options-summary
         ""]
        (string/join \newline)))
-
-(defn- exit [status msg]
-  (println msg)
-  (System/exit status))
 
 (defn- run-compile [opts]
   (files/init-default)
   (cmp/run (:source opts) (:destination opts) templates/page))
 
-(defn -main [& args]
+(defn main [args]
   (let [{:keys [options summary]} (parse-opts args cli-options)]
     (cond
-     (:help options)  (exit 0 (usage summary))
-      :else           (run-compile options))))
+     (:help options)  (println (usage summary))
+      :else           (run-compile options))) )
+
+(defn -main [& args]
+  (println args)
+  (main args))
