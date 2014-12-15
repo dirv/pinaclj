@@ -1,6 +1,6 @@
 (ns pinaclj.core.nio
   (:import (java.nio.file FileSystems Files LinkOption)
-           (java.nio.file.attribute FileTime)
+           (java.nio.file.attribute FileTime FileAttribute)
            (java.nio.file Files StandardOpenOption OpenOption)
            (java.nio.charset StandardCharsets)))
 
@@ -22,9 +22,13 @@
 (defn read-all-lines [fs-root path]
   (Files/readAllLines (.resolve fs-root path) StandardCharsets/UTF_8))
 
-(defn- file-exists? [fs-root path]
+(defn exists? [fs-root path]
    (let [child (.resolve fs-root path)]
      (Files/exists child (into-array LinkOption []))))
+
+(defn create-parent-directories [fs-root path]
+  (let [parent (.getParent (.resolve fs-root path))]
+    (Files/createDirectories parent (into-array FileAttribute []))))
 
 (defn create-file [fs-root path content]
   (Files/write (.resolve fs-root path)

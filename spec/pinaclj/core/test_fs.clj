@@ -7,7 +7,7 @@
   (Jimfs/newFileSystem (Configuration/unix)))
 
 (defn create-from [pages]
-  (files/init (test-fs) "/work")
+  (files/init (test-fs) "/test")
   (doseq [page pages]
     (files/create (:path page) (:content page))))
 
