@@ -9,6 +9,9 @@
 (defn init [filesystem root]
   (reset! fs-root (nio/get-path filesystem root)))
 
+(defn init-default []
+  (init (nio/default-file-system) (System/getProperty "user.dir")))
+
 (defn read-lines [path]
   (nio/read-all-lines @fs-root path))
 
