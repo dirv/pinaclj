@@ -20,4 +20,4 @@
     (should-contain "<h1 data-id=\"title\">Test</h1>" (compiled)))
 
   (it "renders the content without escaping"
-    (should-contain "<h3 data-id=\"content\">Markdown header</h3>" (compiled))))
+    (should-contain "<h3>Markdown header</h3>" (compiled))))
