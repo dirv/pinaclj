@@ -7,7 +7,7 @@
 
 (def pages [{:url "/1" :title "First post" :content "first post content."}
              {:url "/2" :title "Second post" :content "second post content." }
-             {:url "/3" :title "Third post" :content "third post content." :third-key "Hello, world!"}])
+             {:url "/3" :title "Third post" :content "<h1>third</h1> post content." :third-key "Hello, world!"}])
 
 (defn render-page-link []
    (apply str (html/emit* (page-link (first pages)))))
@@ -40,4 +40,7 @@
     (should-contain "first post content" (render-page)))
 
   (it "renders all keys"
-    (should-contain "Hello, world!" (render-third-page))))
+    (should-contain "Hello, world!" (render-third-page)))
+
+  (it "does not escape html in contet"
+    (should-contain "<h1>third</h1>" (render-third-page))))

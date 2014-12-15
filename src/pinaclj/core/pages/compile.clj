@@ -8,8 +8,8 @@
         no-ext   (subs filename 0 (.lastIndexOf filename "."))]
     (str no-ext ".html")))
 
-(defn- destination [to-dir page-path]
-  (str to-dir "/" (compiled-filename page-path)))
+(defn- destination [destination-dir page-path]
+  (str destination-dir "/" (compiled-filename page-path)))
 
 (defn- render-markdown [page]
   (assoc page :content (markdown/md-to-html-string (:content page))))
@@ -21,9 +21,10 @@
        template
        (apply str)))
 
-(defn- write-rendered [to-dir page-path template]
-  (files/create (destination to-dir page-path) (render page-path template)))
+(defn- write-rendered [destination-dir page-path template]
+  (files/create (destination destination-dir page-path)
+                (render page-path template)))
 
-(defn run [from-dir to-dir template]
-  (doseq [page (files/all-in from-dir)]
-    (write-rendered to-dir page template)))
+(defn run [source-dir destination-dir template]
+  (doseq [page (files/all-in source-dir)]
+    (write-rendered destination-dir page template)))

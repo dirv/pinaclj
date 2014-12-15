@@ -16,5 +16,8 @@
 (describe "compile"
   (before (test-fs/create-from test-page))
 
-  (it "runs"
-    (should-contain "<h1 data-id=\"title\">Test</h1>"(compiled))))
+  (it "renders the title"
+    (should-contain "<h1 data-id=\"title\">Test</h1>" (compiled)))
+
+  (it "renders the content without escaping"
+    (should-contain "<h3 data-id=\"content\">Markdown header</h3>" (compiled))))
