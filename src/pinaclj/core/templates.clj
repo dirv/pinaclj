@@ -18,14 +18,14 @@
   [(html/attr= :data-id (name (first kv)))])
 
 (defn- build-replacement-transform [kv]
-  (html/content (second kv)))
+  (fn [node] 
+    (assoc node :content (html/html-snippet (second kv)))))
 
 (defn- build-replacement-kv [kv]
   (vec (list (build-replacement-selector kv) (build-replacement-transform kv))))
 
 (defn- build-replacement-list [page]
-  (map build-replacement-kv page)
-  )
+  (map build-replacement-kv page))
 
 (defn- page-replace [page]
   #(html/at* % (build-replacement-list page)))
