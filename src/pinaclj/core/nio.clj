@@ -7,8 +7,14 @@
 (defn get-path [fs path]
   (.getPath fs path (into-array String [])))
 
-(defn relativize [fs-root path]
-  (.toString (.relativize fs-root (.resolve fs-root path))))
+(defn resolve-path [fs-root path]
+  (.resolve fs-root path))
+
+(defn relativize [root-path path]
+  (.relativize root-path path))
+
+(defn resolve [root-path path]
+  (.resolve root-path path))
 
 (defn directory-stream [fs-root path]
   (Files/newDirectoryStream (.resolve fs-root path)))
@@ -23,7 +29,7 @@
   (Files/readAllLines (.resolve fs-root path) StandardCharsets/UTF_8))
 
 (defn exists? [fs-root path]
-  (Files/exists (.resolve fs-root path) 
+  (Files/exists (.resolve fs-root path)
                 (into-array LinkOption [])))
 
 (defn directory? [fs-root path]

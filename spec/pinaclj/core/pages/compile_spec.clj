@@ -24,12 +24,12 @@
 
   (it "renders the title"
     (run-compile simple-page)
-    (should-contain "<h1 data-id=\"title\">Test</h1>" 
+    (should-contain "<h1 data-id=\"title\">Test</h1>"
                     (files/content "published/post.html")))
 
   (it "renders the content without escaping"
     (run-compile simple-page)
-    (should-contain "<h3>Markdown header</h3>" 
+    (should-contain "<h3>Markdown header</h3>"
                     (files/content "published/post.html")))
 
   (it "compiles files in subdirectories"
