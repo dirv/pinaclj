@@ -16,8 +16,8 @@
 (defn resolve [root-path path]
   (.resolve root-path path))
 
-(defn directory-stream [fs-root path]
-  (Files/newDirectoryStream (.resolve fs-root path)))
+(defn directory-stream [path]
+  (Files/newDirectoryStream path))
 
 (defn- get-last-modified-time [path]
   (Files/getLastModifiedTime path (into-array LinkOption [])))

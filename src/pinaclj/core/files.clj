@@ -35,6 +35,6 @@
   (nio/create-file @fs-root path (as-bytes content)))
 
 (defn all-in [path]
-  (with-open [file (nio/directory-stream @fs-root path)]
+  (with-open [file (nio/directory-stream path)]
     (mapcat #(if (directory? %) (all-in %) [%]) file)))
 
