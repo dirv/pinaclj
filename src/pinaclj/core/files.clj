@@ -31,14 +31,7 @@
   (nio/create-parent-directories @fs-root path)
   (nio/create-file @fs-root path (as-bytes content)))
 
-(defn wa-all-in [path]
-  (with-open [dir (nio/directory-stream @fs-root path)]
-    (into [] dir)))
-
 (defn all-in [path]
-  (let [files (wa-all-in path)]
-    (if (not (some directory? files))
-      files
-      (concat (filter (complement directory?) files)
-              (flatten (map all-in (vec (filter directory? files))))))))
+  (with-open [dir (nio/directory-stream @fs-root path)]
+    (mapcat #(if (directory? %) (all-in %) [%]) dir)))
 
