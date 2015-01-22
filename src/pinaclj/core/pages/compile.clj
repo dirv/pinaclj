@@ -14,13 +14,11 @@
        template
        (apply str)))
 
-(defn- compile-all [source-dir destination-dir template]
-  (doseq [page (files/all-in source-dir)]
-    (files/create (files/change-extension-to-html
-                    (files/change-root source-dir destination-dir page))
-                  (render page template))))
+(defn- compile-page [src dest page template]
+  (files/create (files/change-extension-to-html
+                  (files/change-root src dest page))
+                (render page template)))
 
-(defn run [source-dir destination-dir template]
-  (compile-all (files/resolve-path source-dir)
-               (files/resolve-path destination-dir)
-               template))
+(defn compile-all [src dest template]
+  (doseq [page (files/all-in src)]
+    (compile-page src dest page template)))

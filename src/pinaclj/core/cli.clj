@@ -25,7 +25,9 @@
 
 (defn- run-compile [opts]
   (files/init-default)
-  (cmp/run (:source opts) (:destination opts) templates/page))
+  (cmp/compile-all (files/resolve-path (:source opts))
+                   (files/resolve-path (:destination opts))
+                   templates/page))
 
 (defn main [args]
   (let [{:keys [options summary]} (parse-opts args cli-options)]
