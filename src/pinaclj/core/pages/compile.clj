@@ -14,9 +14,11 @@
        template
        (apply str)))
 
+(def build-destination
+  (comp files/change-extension-to-html files/change-root))
+
 (defn- compile-page [src dest page template]
-  (files/create (files/change-extension-to-html
-                  (files/change-root src dest page))
+  (files/create (build-destination src dest page)
                 (render page template)))
 
 (defn compile-all [src dest template]
