@@ -38,3 +38,11 @@
   (with-open [file (nio/directory-stream path)]
     (mapcat #(if (directory? %) (all-in %) [%]) file)))
 
+(defn remove-extension [path-str]
+  (subs path-str 0 (.lastIndexOf path-str ".")))
+
+(defn change-extension-to-html [path-str]
+  (str (remove-extension (.toString path-str)) ".html"))
+
+(defn change-root [src dest path]
+  (nio/resolve dest (nio/relativize src path)))
