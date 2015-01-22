@@ -23,8 +23,12 @@
   (Files/readAllLines (.resolve fs-root path) StandardCharsets/UTF_8))
 
 (defn exists? [fs-root path]
-   (let [child (.resolve fs-root path)]
-     (Files/exists child (into-array LinkOption []))))
+  (Files/exists (.resolve fs-root path) 
+                (into-array LinkOption [])))
+
+(defn directory? [fs-root path]
+  (Files/isDirectory (.resolve fs-root path)
+                     (into-array LinkOption [])))
 
 (defn create-parent-directories [fs-root path]
   (let [parent (.getParent (.resolve fs-root path))]

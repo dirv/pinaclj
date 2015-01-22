@@ -5,19 +5,33 @@
             [pinaclj.core.templates :as templates]
             [speclj.core :refer :all]))
 
-(def test-page
-  [{:path "drafts/post.md"
-    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n\n###Markdown header\nMarkdown paragraph."}])
+(def nested-page
+   {:path "drafts/nested/another_post.md"
+    :content "title: Test\n\ncontent"})
 
-(defn compiled []
-  (run "drafts" "published" templates/page)
-  (files/content "published/post.html"))
+(def simple-page
+  {:path "drafts/post.md"
+    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n\n###Markdown header\nMarkdown paragraph."})
+
+(defn run-compile [page]
+  (test-fs/create-from [page])
+  (run "drafts" "published" templates/page))
 
 (describe "compile"
-  (before (test-fs/create-from test-page))
+  (it "creates the file"
+    (run-compile simple-page)
+    (should (files/exists? "published/post.html")))
 
   (it "renders the title"
-    (should-contain "<h1 data-id=\"title\">Test</h1>" (compiled)))
+    (run-compile simple-page)
+    (should-contain "<h1 data-id=\"title\">Test</h1>" 
+                    (files/content "published/post.html")))
 
   (it "renders the content without escaping"
-    (should-contain "<h3>Markdown header</h3>" (compiled))))
+    (run-compile simple-page)
+    (should-contain "<h3>Markdown header</h3>" 
+                    (files/content "published/post.html")))
+
+  (it "compiles files in subdirectories"
+    (run-compile nested-page)
+    (should (files/exists? "published/nested/another_post.html"))))

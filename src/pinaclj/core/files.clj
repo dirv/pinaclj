@@ -21,10 +21,23 @@
 (defn relativize [path]
   (nio/relativize @fs-root path))
 
+(defn exists? [path]
+  (nio/exists? @fs-root path))
+
+(defn directory? [path]
+  (nio/directory? @fs-root path))
+
 (defn create [path content]
   (nio/create-parent-directories @fs-root path)
   (nio/create-file @fs-root path (as-bytes content)))
 
-(defn all-in [path]
+(defn wa-all-in [path]
   (with-open [dir (nio/directory-stream @fs-root path)]
     (into [] dir)))
+
+(defn all-in [path]
+  (let [files (wa-all-in path)]
+    (if (not (some directory? files))
+      files
+      (concat (filter (complement directory?) files) (all-in (first (filter directory? files)))))))
+
