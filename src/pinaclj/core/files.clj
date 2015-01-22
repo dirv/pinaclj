@@ -39,5 +39,6 @@
   (let [files (wa-all-in path)]
     (if (not (some directory? files))
       files
-      (concat (filter (complement directory?) files) (all-in (first (filter directory? files)))))))
+      (concat (filter (complement directory?) files)
+              (flatten (map all-in (vec (filter directory? files))))))))
 
