@@ -1,6 +1,5 @@
 (ns pinaclj.core.pages.compile
   (:require [pinaclj.core.files :as files]
-            [pinaclj.core.nio :as nio]
             [pinaclj.core.pages.read :as rd]
             [markdown.core :as markdown]))
 
