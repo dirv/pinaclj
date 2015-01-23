@@ -9,7 +9,7 @@
   (date-time/make 2014 10 31 10 5 0))
 
 (defn make-page [path-str page]
-  (write-page  path-str page)
+  (write-page  (files/resolve-path path-str) page)
   (files/content (files/resolve-path path-str)))
 
 (describe "write-page"

@@ -9,7 +9,7 @@
 (defn create-from [pages]
   (files/init (test-fs) "/test")
   (doseq [page pages]
-    (files/create (:path page) (:content page))))
+    (files/create (files/resolve-path (:path page)) (:content page))))
 
 (defn create-empty []
   (create-from []))

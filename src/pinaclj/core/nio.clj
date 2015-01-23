@@ -31,14 +31,12 @@
 (defn directory? [path]
   (Files/isDirectory path (into-array LinkOption [])))
 
-(defn create-parent-directories [fs-root path]
-  (let [parent (.getParent (.resolve fs-root path))]
+(defn create-parent-directories [path]
+  (let [parent (.getParent path)]
     (Files/createDirectories parent (into-array FileAttribute []))))
 
-(defn create-file [fs-root path content]
-  (Files/write (.resolve fs-root path)
-               content
-               (into-array OpenOption [StandardOpenOption/CREATE])))
+(defn create-file [path content]
+  (Files/write path content (into-array OpenOption [StandardOpenOption/CREATE])))
 
 (defn default-file-system []
   (FileSystems/getDefault))

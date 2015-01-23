@@ -5,21 +5,21 @@
 
 (defn create-simple-nested-fs []
   (files/init (test-fs/test-fs) "/test")
-  (files/create "nested/b.txt" "world"))
+  (files/create (files/resolve-path "nested/b.txt") "world"))
 
 (defn create-complex-nested-fs []
   (files/init (test-fs/test-fs) "/test")
-  (files/create "a.txt" "hello")
-  (files/create "nested/b.txt" "world") 
-  (files/create "another/c.txt" "world")
-  (files/create "yet/another/d.txt" "world"))
+  (files/create (files/resolve-path "a.txt") "hello")
+  (files/create (files/resolve-path "nested/b.txt") "world") 
+  (files/create (files/resolve-path "another/c.txt") "world")
+  (files/create (files/resolve-path "yet/another/d.txt") "world"))
 
 (defn create-empty-fs []
   (files/init (test-fs/test-fs) "/test"))
 
 (defn- create-single-file-fs []
   (files/init (test-fs/test-fs) "/test") 
-  (files/create "a.txt" "hello"))
+  (files/create (files/resolve-path "a.txt") "hello"))
 
 (defn- file-count []
   (count (files/all-in (files/resolve-path "/"))))
