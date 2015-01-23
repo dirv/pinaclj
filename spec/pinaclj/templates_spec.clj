@@ -1,8 +1,8 @@
-(ns pinaclj.core.templates-spec
+(ns pinaclj.templates-spec
   (:require [speclj.core :refer :all]
             [clojure.pprint]
             [net.cgrand.enlive-html :as html]
-            [pinaclj.core.templates :refer :all]))
+            [pinaclj.templates :refer :all]))
 
 
 (def pages [{:url "/1" :title "First post" :content "first post content."}

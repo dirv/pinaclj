@@ -1,5 +1,5 @@
-(ns pinaclj.core.files
-  (:require [pinaclj.core.nio :as nio]))
+(ns pinaclj.files
+  (:require [pinaclj.nio :as nio]))
 
 (defn- as-bytes [st]
   (bytes (byte-array (map byte st))))

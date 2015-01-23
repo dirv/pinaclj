@@ -1,6 +1,6 @@
-(ns pinaclj.core.write-spec
+(ns pinaclj.write-spec
   (:require [speclj.core :refer :all]
-            [pinaclj.core.date-time :refer :all]))
+            [pinaclj.date-time :refer :all]))
 
 (describe "date-time"
   (it "makes a date"

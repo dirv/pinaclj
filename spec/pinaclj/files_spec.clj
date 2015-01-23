@@ -1,6 +1,6 @@
-(ns pinaclj.core.files-spec
-  (:require [pinaclj.core.files :as files]
-            [pinaclj.core.test-fs :as test-fs]
+(ns pinaclj.files-spec
+  (:require [pinaclj.files :as files]
+            [pinaclj.test-fs :as test-fs]
             [speclj.core :refer :all]))
 
 (def single-file

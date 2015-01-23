@@ -1,6 +1,6 @@
-(ns pinaclj.core.compile
-  (:require [pinaclj.core.files :as files]
-            [pinaclj.core.read :as rd]
+(ns pinaclj.compile
+  (:require [pinaclj.files :as files]
+            [pinaclj.read :as rd]
             [markdown.core :as markdown]))
 
 (defn- render-markdown [page]

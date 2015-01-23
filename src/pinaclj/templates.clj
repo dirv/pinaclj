@@ -1,4 +1,4 @@
-(ns pinaclj.core.templates
+(ns pinaclj.templates
   (:require [net.cgrand.enlive-html :as html]))
 
 

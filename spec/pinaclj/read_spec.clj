@@ -1,9 +1,9 @@
-(ns pinaclj.core.read-spec
+(ns pinaclj.read-spec
   (:require [speclj.core :refer :all]
-            [pinaclj.core.read :refer :all]
-            [pinaclj.core.date-time :as date-time]
-            [pinaclj.core.files :as files]
-            [pinaclj.core.test-fs :as test-fs]))
+            [pinaclj.read :refer :all]
+            [pinaclj.date-time :as date-time]
+            [pinaclj.files :as files]
+            [pinaclj.test-fs :as test-fs]))
 
 (def published-at
   (date-time/make 2014 10 31 10 5 0))

@@ -1,6 +1,6 @@
-(ns pinaclj.core.test-fs
+(ns pinaclj.test-fs
   (:require [speclj.core :refer :all]
-            [pinaclj.core.files :as files]) 
+            [pinaclj.files :as files]) 
   (:import (com.google.common.jimfs Jimfs Configuration)))
 
 (defn test-fs []

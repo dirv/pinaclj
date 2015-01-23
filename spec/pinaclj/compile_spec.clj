@@ -1,8 +1,8 @@
-(ns pinaclj.core.compile-spec
-  (:require [pinaclj.core.compile :refer :all]
-            [pinaclj.core.files :as files]
-            [pinaclj.core.test-fs :as test-fs]
-            [pinaclj.core.templates :as templates]
+(ns pinaclj.compile-spec
+  (:require [pinaclj.compile :refer :all]
+            [pinaclj.files :as files]
+            [pinaclj.test-fs :as test-fs]
+            [pinaclj.templates :as templates]
             [speclj.core :refer :all]))
 
 (def nested-page

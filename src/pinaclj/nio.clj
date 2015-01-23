@@ -1,4 +1,4 @@
-(ns pinaclj.core.nio
+(ns pinaclj.nio
   (:import (java.nio.file FileSystems Files LinkOption)
            (java.nio.file.attribute FileTime FileAttribute)
            (java.nio.file Files StandardOpenOption OpenOption)

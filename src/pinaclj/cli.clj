@@ -1,9 +1,9 @@
-(ns pinaclj.core.cli
+(ns pinaclj.cli
   (:require [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
-            [pinaclj.core.compile :as cmp]
-            [pinaclj.core.files :as files]
-            [pinaclj.core.templates :as templates])
+            [pinaclj.compile :as cmp]
+            [pinaclj.files :as files]
+            [pinaclj.templates :as templates])
   (:gen-class))
 
 (def cli-options
