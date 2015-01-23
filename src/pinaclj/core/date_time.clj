@@ -1,4 +1,4 @@
-(ns pinaclj.core.pages.date-time
+(ns pinaclj.core.date-time
   (:import (java.time Instant ZoneId ZonedDateTime LocalDateTime)
            (java.time.format DateTimeFormatter)))
 

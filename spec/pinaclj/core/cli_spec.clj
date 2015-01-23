@@ -1,7 +1,7 @@
 (ns pinaclj.core.cli-spec
   (:require [speclj.core :refer :all]
             [pinaclj.core.cli :as cli]
-            [pinaclj.core.pages.compile :as cmp]))
+            [pinaclj.core.compile :as cmp]))
 
 (describe "cli"
   (around [it] (binding [*out* (new java.io.StringWriter)] (it)))

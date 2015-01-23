@@ -1,7 +1,7 @@
 (ns pinaclj.core.cli
   (:require [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
-            [pinaclj.core.pages.compile :as cmp]
+            [pinaclj.core.compile :as cmp]
             [pinaclj.core.files :as files]
             [pinaclj.core.templates :as templates])
   (:gen-class))

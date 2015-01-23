@@ -1,5 +1,5 @@
-(ns pinaclj.core.pages.compile-spec
-  (:require [pinaclj.core.pages.compile :refer :all]
+(ns pinaclj.core.compile-spec
+  (:require [pinaclj.core.compile :refer :all]
             [pinaclj.core.files :as files]
             [pinaclj.core.test-fs :as test-fs]
             [pinaclj.core.templates :as templates]

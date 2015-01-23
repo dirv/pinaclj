@@ -1,7 +1,7 @@
-(ns pinaclj.core.pages.read
+(ns pinaclj.core.read
   (:require [pinaclj.core.files :as files]
             [pinaclj.core.templates :as templates]
-            [pinaclj.core.pages.date-time :as date-time]))
+            [pinaclj.core.date-time :as date-time]))
 
 (def header-separator
   "")

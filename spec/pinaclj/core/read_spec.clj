@@ -1,7 +1,7 @@
-(ns pinaclj.core.pages.read-spec
+(ns pinaclj.core.read-spec
   (:require [speclj.core :refer :all]
-            [pinaclj.core.pages.read :refer :all]
-            [pinaclj.core.pages.date-time :as date-time]
+            [pinaclj.core.read :refer :all]
+            [pinaclj.core.date-time :as date-time]
             [pinaclj.core.files :as files]
             [pinaclj.core.test-fs :as test-fs]))
 
