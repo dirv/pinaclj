@@ -28,9 +28,8 @@
 (defn read-all-lines [path]
   (Files/readAllLines path StandardCharsets/UTF_8))
 
-(defn exists? [fs-root path]
-  (Files/exists (.resolve fs-root path)
-                (into-array LinkOption [])))
+(defn exists? [path]
+  (Files/exists path (into-array LinkOption [])))
 
 (defn directory? [fs-root path]
   (Files/isDirectory (.resolve fs-root path)

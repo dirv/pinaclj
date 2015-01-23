@@ -21,7 +21,7 @@
 (describe "compile-all"
   (it "creates the file"
     (compile-page simple-page)
-    (should (files/exists? "published/post.html")))
+    (should (files/exists? (files/resolve-path "published/post.html"))))
 
   (it "renders the title"
     (compile-page simple-page)
@@ -35,4 +35,4 @@
 
   (it "compiles files in subdirectories"
     (compile-page nested-page)
-    (should (files/exists? "published/nested/another_post.html"))))
+    (should (files/exists? (files/resolve-path "published/nested/another_post.html")))))

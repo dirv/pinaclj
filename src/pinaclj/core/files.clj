@@ -19,7 +19,7 @@
   (clojure.string/join "\n" (read-lines path)))
 
 (defn exists? [path]
-  (nio/exists? @fs-root path))
+  (nio/exists? path))
 
 (defn directory? [path]
   (nio/directory? @fs-root path))
