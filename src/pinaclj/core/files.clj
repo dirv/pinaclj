@@ -27,9 +27,6 @@
 (defn resolve-path [path-str]
   (nio/resolve-path @fs-root path-str))
 
-(defn relativize [path]
-  (nio/relativize @fs-root (resolve-path path)))
-
 (defn create [path content]
   (nio/create-parent-directories path)
   (nio/create-file path (as-bytes content)))
