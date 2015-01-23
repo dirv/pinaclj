@@ -1,4 +1,4 @@
-(ns pinaclj.compile
+(ns pinaclj.core
   (:require [pinaclj.files :as files]
             [pinaclj.read :as rd]
             [markdown.core :as markdown]))

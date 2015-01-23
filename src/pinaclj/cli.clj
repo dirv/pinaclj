@@ -1,7 +1,7 @@
 (ns pinaclj.cli
   (:require [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as string]
-            [pinaclj.compile :as cmp]
+            [pinaclj.core :as core]
             [pinaclj.files :as files]
             [pinaclj.templates :as templates])
   (:gen-class))
@@ -27,7 +27,7 @@
   (let [fs          (files/init-default)
         source      (files/resolve-path fs (:source opts))
         destination (files/resolve-path fs (:destination opts))]
-    (cmp/compile-all source destination templates/page)))
+    (core/compile-all source destination templates/page)))
 
 (defn main [args]
   (let [{:keys [options summary]} (parse-opts args cli-options)]
