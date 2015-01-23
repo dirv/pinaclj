@@ -24,10 +24,10 @@
        (string/join \newline)))
 
 (defn- run-compile [opts]
-  (files/init-default)
-  (cmp/compile-all (files/resolve-path (:source opts))
-                   (files/resolve-path (:destination opts))
-                   templates/page))
+  (let [fs          (files/init-default)
+        source      (files/resolve-path fs (:source opts))
+        destination (files/resolve-path fs (:destination opts))]
+    (cmp/compile-all source destination templates/page)))
 
 (defn main [args]
   (let [{:keys [options summary]} (parse-opts args cli-options)]
@@ -36,5 +36,4 @@
       :else           (run-compile options))) )
 
 (defn -main [& args]
-  (println args)
   (main args))
