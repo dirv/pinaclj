@@ -13,9 +13,6 @@
 (defn relativize [root-path path]
   (.relativize root-path path))
 
-(defn resolve [root-path path]
-  (.resolve root-path path))
-
 (defn directory-stream [path]
   (Files/newDirectoryStream path))
 

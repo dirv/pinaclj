@@ -45,4 +45,4 @@
   (str (remove-extension (.toString path-str)) ".html"))
 
 (defn change-root [src dest path]
-  (nio/resolve dest (nio/relativize src path)))
+  (nio/resolve-path dest (nio/relativize src path)))
