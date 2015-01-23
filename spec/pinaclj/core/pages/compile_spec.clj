@@ -26,12 +26,12 @@
   (it "renders the title"
     (compile-page simple-page)
     (should-contain "<h1 data-id=\"title\">Test</h1>"
-                    (files/content "published/post.html")))
+                    (files/content (files/resolve-path "published/post.html"))))
 
   (it "renders the content without escaping"
     (compile-page simple-page)
     (should-contain "<h3>Markdown header</h3>"
-                    (files/content "published/post.html")))
+                    (files/content (files/resolve-path "published/post.html"))))
 
   (it "compiles files in subdirectories"
     (compile-page nested-page)

@@ -8,9 +8,9 @@
 (def published-at
   (date-time/make 2014 10 31 10 5 0))
 
-(defn make-page [path page]
-  (write-page path page)
-  (files/content path))
+(defn make-page [path-str page]
+  (write-page  path-str page)
+  (files/content (files/resolve-path path-str)))
 
 (describe "write-page"
   (before (test-fs/create-empty))

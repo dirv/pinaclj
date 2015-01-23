@@ -13,7 +13,7 @@
   (init (nio/default-file-system) (System/getProperty "user.dir")))
 
 (defn read-lines [path]
-  (nio/read-all-lines @fs-root path))
+  (nio/read-all-lines path))
 
 (defn content [path]
   (clojure.string/join "\n" (read-lines path)))

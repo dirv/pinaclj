@@ -25,8 +25,8 @@
 (defn- set-last-modified [path millis]
   (Files/setLastModifiedTime path (FileTime/fromMillis millis)))
 
-(defn read-all-lines [fs-root path]
-  (Files/readAllLines (.resolve fs-root path) StandardCharsets/UTF_8))
+(defn read-all-lines [path]
+  (Files/readAllLines path StandardCharsets/UTF_8))
 
 (defn exists? [fs-root path]
   (Files/exists (.resolve fs-root path)
