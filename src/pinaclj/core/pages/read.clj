@@ -25,8 +25,7 @@
 (defn read-page [path]
   (let [header-and-content (split-header-content (files/read-lines path))
         headers (to-headers (first header-and-content))]
-    (merge {:path (files/relativize path)
-            :content (second header-and-content)}
+    (merge {:content (second header-and-content)}
            (convert-published-at headers))))
 
 (defn- read-all-pages [path]

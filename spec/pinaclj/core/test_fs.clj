@@ -6,10 +6,11 @@
 (defn test-fs []
   (Jimfs/newFileSystem (Configuration/unix)))
 
-(defn create-from [pages]
-  (files/init (test-fs) "/test")
-  (doseq [page pages]
-    (files/create (:path page) (:content page))))
+(defn create-from [files]
+  (let [fs  (files/init (test-fs) "/test")]
+    (doseq [file files]
+      (files/create (files/resolve-path fs (:path file)) (:content file)))
+    fs))
 
 (defn create-empty []
   (create-from []))

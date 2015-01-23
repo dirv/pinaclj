@@ -7,11 +7,14 @@
 (defn get-path [fs path]
   (.getPath fs path (into-array String [])))
 
-(defn relativize [fs-root path]
-  (.toString (.relativize fs-root (.resolve fs-root path))))
+(defn resolve-path [fs-root path]
+  (.resolve fs-root path))
 
-(defn directory-stream [fs-root path]
-  (Files/newDirectoryStream (.resolve fs-root path)))
+(defn relativize [root-path path]
+  (.relativize root-path path))
+
+(defn directory-stream [path]
+  (Files/newDirectoryStream path))
 
 (defn- get-last-modified-time [path]
   (Files/getLastModifiedTime path (into-array LinkOption [])))
@@ -19,21 +22,21 @@
 (defn- set-last-modified [path millis]
   (Files/setLastModifiedTime path (FileTime/fromMillis millis)))
 
-(defn read-all-lines [fs-root path]
-  (Files/readAllLines (.resolve fs-root path) StandardCharsets/UTF_8))
+(defn read-all-lines [path]
+  (Files/readAllLines path StandardCharsets/UTF_8))
 
-(defn exists? [fs-root path]
-   (let [child (.resolve fs-root path)]
-     (Files/exists child (into-array LinkOption []))))
+(defn exists? [path]
+  (Files/exists path (into-array LinkOption [])))
 
-(defn create-parent-directories [fs-root path]
-  (let [parent (.getParent (.resolve fs-root path))]
+(defn directory? [path]
+  (Files/isDirectory path (into-array LinkOption [])))
+
+(defn create-parent-directories [path]
+  (let [parent (.getParent path)]
     (Files/createDirectories parent (into-array FileAttribute []))))
 
-(defn create-file [fs-root path content]
-  (Files/write (.resolve fs-root path)
-               content
-               (into-array OpenOption [StandardOpenOption/CREATE])))
+(defn create-file [path content]
+  (Files/write path content (into-array OpenOption [StandardOpenOption/CREATE])))
 
 (defn default-file-system []
   (FileSystems/getDefault))
