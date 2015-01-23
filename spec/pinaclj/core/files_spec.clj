@@ -3,37 +3,36 @@
             [pinaclj.core.test-fs :as test-fs]
             [speclj.core :refer :all]))
 
-(defn create-simple-nested-fs []
-  (files/init (test-fs/test-fs) "/test")
-  (files/create (files/resolve-path "nested/b.txt") "world"))
+(def single-file
+  [{:path "a.txt"
+    :content ""}])
 
-(defn create-complex-nested-fs []
-  (files/init (test-fs/test-fs) "/test")
-  (files/create (files/resolve-path "a.txt") "hello")
-  (files/create (files/resolve-path "nested/b.txt") "world") 
-  (files/create (files/resolve-path "another/c.txt") "world")
-  (files/create (files/resolve-path "yet/another/d.txt") "world"))
+(def simple-nested
+  [{:path "nested/b.txt"
+    :content ""}])
 
-(defn create-empty-fs []
-  (files/init (test-fs/test-fs) "/test"))
+(def complex-nested
+  [{:path "a.txt"
+    :content ""}
+   {:path "nested/b.txt"
+    :content ""}
+   {:path "another/c.txt"
+    :content ""}
+   {:path "yet/another/d.txt"
+    :content ""}])
 
-(defn- create-single-file-fs []
-  (files/init (test-fs/test-fs) "/test") 
-  (files/create (files/resolve-path "a.txt") "hello"))
-
-(defn- file-count []
-  (count (files/all-in (files/resolve-path "/"))))
+(defn- file-count [fs]
+  (count (files/all-in (files/resolve-path fs "/"))))
 
 (describe "all-in"
   (it "handles zero files"
-    (create-empty-fs)
-    (should= 0 (file-count)))
+    (should= 0 (file-count (test-fs/create-from []))))
+
   (it "handles one file"
-    (create-single-file-fs)
-    (should= 1 (file-count)))
+    (should= 1 (file-count (test-fs/create-from single-file))))
+
   (it "handles single nested file"
-    (create-simple-nested-fs)
-    (should= 1 (file-count)))
+    (should= 1 (file-count (test-fs/create-from simple-nested))))
+
   (it "handles complex nested file"
-    (create-complex-nested-fs)
-    (should= 4 (file-count))))
+    (should= 4 (file-count (test-fs/create-from complex-nested)))))

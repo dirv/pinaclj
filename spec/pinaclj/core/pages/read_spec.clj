@@ -15,26 +15,26 @@
    {:path "second"
     :content "title: foo\nhello: World\n\none\ntwo" }])
 
-(defn do-read [path-str]
-  (read-page (files/resolve-path path-str)))
+(defn do-read [fs path-str]
+  (read-page (files/resolve-path fs path-str)))
 
 (describe "read-page"
-  (before (test-fs/create-from test-pages))
+  (with fs (test-fs/create-from test-pages))
 
   (it "sets the title"
-    (should= "Test" (:title (do-read "first"))))
+    (should= "Test" (:title (do-read @fs "first"))))
 
   (it "sets published-at"
-    (should= published-at (:published-at (do-read "first"))))
+    (should= published-at (:published-at (do-read @fs "first"))))
 
   (it "sets the content"
-    (should= "content body" (:content (do-read "first"))))
+    (should= "content body" (:content (do-read @fs "first"))))
 
   (it "sets content with multiple lines"
-    (should= "one\ntwo" (:content (do-read "second"))))
+    (should= "one\ntwo" (:content (do-read @fs "second"))))
 
   (it "does not set published-at for unpublished pages"
-    (should= nil (:published-at (do-read "second"))))
+    (should= nil (:published-at (do-read @fs "second"))))
 
   (it "includes arbitrary headers"
-    (should= "World" (:hello (do-read "second")))))
+    (should= "World" (:hello (do-read @fs "second")))))

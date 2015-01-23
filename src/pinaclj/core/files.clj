@@ -4,10 +4,8 @@
 (defn- as-bytes [st]
   (bytes (byte-array (map byte st))))
 
-(def fs-root (atom ""))
-
 (defn init [filesystem root]
-  (reset! fs-root (nio/get-path filesystem root)))
+  (nio/get-path filesystem root))
 
 (defn init-default []
   (init (nio/default-file-system) (System/getProperty "user.dir")))
@@ -24,22 +22,24 @@
 (defn directory? [path]
   (nio/directory? path))
 
-(defn resolve-path [path-str]
-  (nio/resolve-path @fs-root path-str))
+(defn resolve-path [fs-root path-str]
+  (nio/resolve-path fs-root path-str))
 
 (defn create [path content]
   (nio/create-parent-directories path)
   (nio/create-file path (as-bytes content)))
 
 (defn all-in [path]
-  (with-open [file (nio/directory-stream path)]
-    (mapcat #(if (directory? %) (all-in %) [%]) file)))
+  (with-open [files (nio/directory-stream path)]
+    (mapcat #(if (directory? %) (all-in %) [%]) files)))
 
-(defn remove-extension [path-str]
-  (subs path-str 0 (.lastIndexOf path-str ".")))
+(defn remove-extension [path]
+  (let [path-str (str path)]
+    (subs path-str 0 (.lastIndexOf path-str "."))))
 
-(defn change-extension-to-html [path-str]
-  (resolve-path (str (remove-extension (.toString path-str)) ".html")))
+(defn change-extension-to-html [path]
+  (.resolveSibling path 
+                   (str (remove-extension path) ".html")))
 
 (defn change-root [src dest path]
   (nio/resolve-path dest (nio/relativize src path)))
