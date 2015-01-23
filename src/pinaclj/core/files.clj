@@ -22,7 +22,7 @@
   (nio/exists? path))
 
 (defn directory? [path]
-  (nio/directory? @fs-root path))
+  (nio/directory? path))
 
 (defn resolve-path [path-str]
   (nio/resolve-path @fs-root path-str))

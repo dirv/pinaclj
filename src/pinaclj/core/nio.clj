@@ -31,9 +31,8 @@
 (defn exists? [path]
   (Files/exists path (into-array LinkOption [])))
 
-(defn directory? [fs-root path]
-  (Files/isDirectory (.resolve fs-root path)
-                     (into-array LinkOption [])))
+(defn directory? [path]
+  (Files/isDirectory path (into-array LinkOption [])))
 
 (defn create-parent-directories [fs-root path]
   (let [parent (.getParent (.resolve fs-root path))]
