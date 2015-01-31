@@ -4,6 +4,9 @@
             [pinaclj.read :as rd]
             [markdown.core :as markdown]))
 
+(def index-page
+  "index.html")
+
 (defn- render-markdown [page]
   (assoc page :content (markdown/md-to-html-string (:content page))))
 
@@ -21,10 +24,18 @@
     (subs url-str 1)
     url-str))
 
+(defn- add-index-page-extension [url-str]
+  (if (= \/ (last url-str))
+    (str url-str index-page)
+    url-str))
+
+(def fix-url
+  (comp trim-url add-index-page-extension))
+
 (defn- publication-path [page src dest page-path]
   (if (nil? (:url page))
     (build-destination src dest page-path)
-    (nio/resolve-path dest (trim-url (:url page)))))
+    (nio/resolve-path dest (fix-url (:url page)))))
 
 (defn compile-all [src dest template]
   (doseq [page-path (files/all-in src)]

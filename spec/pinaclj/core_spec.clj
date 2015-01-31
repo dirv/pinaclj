@@ -21,8 +21,12 @@
   {:path "pages/a-test-path.md"
    :content "url: /a/blog/page.html\npublished-at: 2014-10-31T10:05:00Z\n\nContent"})
 
+(def url-index-page
+  {:path "pages/a-wordpress-style-path.md"
+   :content "url: /a/blog/page/\npublished-at: 2014-10-31T10:05:00Z\n\nContent"})
+
 (def all-pages
-  [nested-page simple-page draft-page url-page])
+  [nested-page simple-page draft-page url-page url-index-page])
 
 (defn- compile-page [fs]
   (compile-all (files/resolve-path fs "pages")
@@ -52,4 +56,7 @@
     (should-not (files/exists? (files/resolve-path @fs "published/a-draft.html"))))
 
   (it "uses the url header if one is present"
-    (should (files/exists? (files/resolve-path @fs "published/a/blog/page.html")))))
+    (should (files/exists? (files/resolve-path @fs "published/a/blog/page.html"))))
+
+  (it "adds html extension if it isn't present"
+    (should (files/exists? (files/resolve-path @fs "published/a/blog/page/index.html")))))
