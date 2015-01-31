@@ -33,7 +33,7 @@
   (let [{:keys [options summary]} (parse-opts args cli-options)]
     (cond
      (:help options)  (println (usage summary))
-      :else           (run-compile options))) )
+      :else           (run-compile options))))
 
 (defn -main [& args]
   (main args))

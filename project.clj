@@ -9,5 +9,5 @@
                  [enlive "1.1.5"]]
   :plugins [[speclj "3.1.0"]]
   :test-paths ["spec"]
-  :main pinaclj.core.cli
+  :main pinaclj.cli
   :profiles {:dev {:dependencies [[speclj "3.1.0"]]}})

@@ -21,5 +21,6 @@
                 (render page template)))
 
 (defn compile-all [src dest template]
+  (println (files/all-in src))
   (doseq [page (files/all-in src)]
     (compile-page src dest page template)))

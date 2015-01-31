@@ -27,18 +27,19 @@
 
 (defn create [path content]
   (nio/create-parent-directories path)
-  (nio/create-file path (as-bytes content)))
+  (nio/create-file path (.getBytes content)))
 
 (defn all-in [path]
   (with-open [files (nio/directory-stream path)]
-    (mapcat #(if (directory? %) (all-in %) [%]) files)))
+    (doall (mapcat #(if (directory? %) (all-in %) [%]) files))
+    ))
 
 (defn remove-extension [path]
   (let [path-str (str path)]
     (subs path-str 0 (.lastIndexOf path-str "."))))
 
 (defn change-extension-to-html [path]
-  (.resolveSibling path 
+  (.resolveSibling path
                    (str (remove-extension path) ".html")))
 
 (defn change-root [src dest path]
