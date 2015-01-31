@@ -27,24 +27,22 @@
 (describe "compile-all"
   (with fs (test-fs/create-from all-pages))
 
+  (before
+    (compile-page @fs))
+
   (it "creates the file"
-    (compile-page @fs)
     (should (files/exists? (files/resolve-path @fs "published/post.html"))))
 
   (it "renders the title"
-    (compile-page @fs)
     (should-contain "<h1 data-id=\"title\">Test</h1>"
                     (files/content (files/resolve-path @fs "published/post.html"))))
 
   (it "renders the content without escaping"
-    (compile-page @fs)
     (should-contain "<h3>Markdown header</h3>"
                     (files/content (files/resolve-path @fs "published/post.html"))))
 
   (it "compiles files in subdirectories"
-    (compile-page @fs)
     (should (files/exists? (files/resolve-path @fs "published/nested/another_post.html"))))
 
   (it "does not publish drafts"
-    (compile-page @fs)
     (should-not (files/exists? (files/resolve-path @fs "published/a-draft.html")))))
