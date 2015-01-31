@@ -6,9 +6,8 @@
 (defn- render-markdown [page]
   (assoc page :content (markdown/md-to-html-string (:content page))))
 
-(defn- render [page-path template]
-  (->> page-path
-       rd/read-page
+(defn- render [page template]
+  (->> page
        render-markdown
        template
        (apply str)))
@@ -16,11 +15,12 @@
 (def build-destination
   (comp files/change-extension-to-html files/change-root))
 
-(defn- compile-page [src dest page template]
-  (files/create (build-destination src dest page)
-                (render page template)))
+(defn- published? [page]
+  (not (nil? (:published-at page))))
 
 (defn compile-all [src dest template]
-  (println (files/all-in src))
-  (doseq [page (files/all-in src)]
-    (compile-page src dest page template)))
+  (doseq [page-path (files/all-in src)]
+    (let [page (rd/read-page page-path)]
+      (if (published? page)
+        (files/create (build-destination src dest page-path)
+                      (render page template))))))
