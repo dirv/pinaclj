@@ -17,8 +17,12 @@
   {:path "pages/a-draft.md"
    :content "title: Not sure yet\n\nDraft post"})
 
+(def url-page
+  {:path "pages/a-test-path.md"
+   :content "url: /a/blog/page.html\npublished-at: 2014-10-31T10:05:00Z\n\nContent"})
+
 (def all-pages
-  [nested-page simple-page draft-page])
+  [nested-page simple-page draft-page url-page])
 
 (defn- compile-page [fs]
   (compile-all (files/resolve-path fs "pages")
@@ -45,4 +49,7 @@
     (should (files/exists? (files/resolve-path @fs "published/nested/another_post.html"))))
 
   (it "does not publish drafts"
-    (should-not (files/exists? (files/resolve-path @fs "published/a-draft.html")))))
+    (should-not (files/exists? (files/resolve-path @fs "published/a-draft.html"))))
+
+  (it "uses the url header if one is present"
+    (should (files/exists? (files/resolve-path @fs "published/a/blog/page.html")))))
