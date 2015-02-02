@@ -16,9 +16,6 @@
 (def build-destination
   (comp files/change-extension-to-html files/change-root))
 
-(defn- published? [page]
-  (not (nil? (:published-at page))))
-
 (defn- trim-url [url-str]
   (if (= \/ (first url-str))
     (subs url-str 1)
@@ -31,6 +28,9 @@
 
 (def fix-url
   (comp trim-url add-index-page-extension))
+
+(defn- published? [page]
+  (not (nil? (:published-at page))))
 
 (defn- publication-path [page src dest page-path]
   (if (nil? (:url page))

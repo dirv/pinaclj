@@ -7,8 +7,9 @@
   (:gen-class))
 
 (def cli-options
-  [["-s" "--source SOURCE          " "Source directory.     " :default "drafts"]
-   ["-d" "--destination DESTINATION" "Destination directory." :default "published"]
+  [["-s" "--source SOURCE          " "Source directory.     " :default "pages"]
+   ["-d" "--destination DESTINATION" "Destination directory." :default "generated"]
+   ["-t" "--theme"                   "Theme directory."       :default "theme"]
    ["-h" "--help" "Print help."]])
 
 (defn- usage [options-summary]
@@ -26,7 +27,8 @@
 (defn- run-compile [opts]
   (let [fs          (files/init-default)
         source      (files/resolve-path fs (:source opts))
-        destination (files/resolve-path fs (:destination opts))]
+        destination (files/resolve-path fs (:destination opts))
+        theme-str   (:theme opts)]
     (core/compile-all source destination templates/page)))
 
 (defn main [args]
