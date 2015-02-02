@@ -3,15 +3,15 @@
             [pinaclj.templates :as templates]
             [pinaclj.date-time :as date-time]))
 
-(def header-separator
-  "")
+(defn- separates-headers? [line]
+  (= line "---"))
 
 (defn- to-header [line]
   (let [headed-line (clojure.string/split line #": ")]
     { (keyword (first headed-line)) (second headed-line)}))
 
 (defn- split-header-content [all-lines]
-  (let [split (split-with #(not (= header-separator %)) all-lines)]
+  (let [split (split-with (complement separates-headers?) all-lines)]
     [(first split) (clojure.string/join "\n" (rest (second split)))]))
 
 (defn- to-headers [header-section]

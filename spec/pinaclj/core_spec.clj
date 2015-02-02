@@ -7,23 +7,23 @@
 
 (def nested-page
    {:path "pages/nested/another_post.md"
-    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n\ncontent\n" })
+    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n---\ncontent\n" })
 
 (def simple-page
   {:path "pages/post.md"
-    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n\n###Markdown header\nMarkdown paragraph."})
+    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n---\n###Markdown header\nMarkdown paragraph."})
 
 (def draft-page
   {:path "pages/a-draft.md"
-   :content "title: Not sure yet\n\nDraft post"})
+   :content "title: Not sure yet\n---\nDraft post"})
 
 (def url-page
   {:path "pages/a-test-path.md"
-   :content "url: /a/blog/page.html\npublished-at: 2014-10-31T10:05:00Z\n\nContent"})
+   :content "url: /a/blog/page.html\npublished-at: 2014-10-31T10:05:00Z\n---\nContent"})
 
 (def url-index-page
   {:path "pages/a-wordpress-style-path.md"
-   :content "url: /a/blog/page/\npublished-at: 2014-10-31T10:05:00Z\n\nContent"})
+   :content "url: /a/blog/page/\npublished-at: 2014-10-31T10:05:00Z\n---\nContent"})
 
 (def all-pages
   [nested-page simple-page draft-page url-page url-index-page])

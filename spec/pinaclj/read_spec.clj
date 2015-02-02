@@ -10,10 +10,9 @@
 
 (def test-pages
   [{:path "first"
-    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n\ncontent body"
-    }
+    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n---\ncontent body"}
    {:path "second"
-    :content "title: foo\nhello: World\n\none\ntwo" }])
+    :content "title: foo\nhello: World\n---\none\ntwo" }])
 
 (defn do-read [fs path-str]
   (read-page (files/resolve-path fs path-str)))
