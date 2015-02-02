@@ -16,6 +16,9 @@
 (defn directory-stream [path]
   (Files/newDirectoryStream path))
 
+(defn input-stream [path]
+  (Files/newInputStream path (into-array OpenOption [])))
+
 (defn- get-last-modified-time [path]
   (Files/getLastModifiedTime path (into-array LinkOption [])))
 

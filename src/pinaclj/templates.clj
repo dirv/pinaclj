@@ -18,7 +18,7 @@
   [(html/attr= :data-id (name (first kv)))])
 
 (defn- build-replacement-transform [kv]
-  (fn [node] 
+  (fn [node]
     (assoc node :content (html/html-snippet (second kv)))))
 
 (defn- build-replacement-kv [kv]
@@ -30,6 +30,5 @@
 (defn- page-replace [page]
   #(html/at* % (build-replacement-list page)))
 
-(html/deftemplate page "templates/page.html"
-  [page]
-  [:body] (page-replace page))
+(defn build-page-func [page-str]
+  (html/template page-str [page] [:body] (page-replace page)))

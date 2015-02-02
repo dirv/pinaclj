@@ -26,6 +26,9 @@
   (it "contains correct number of items"
     (should= 3 (count (re-seq #"data-id=\"page-list-item\"" (render-page-list))))))
 
+(def page
+  (build-page-func "templates/page.html"))
+
 (defn render-page []
    (apply str (page (first pages))))
 

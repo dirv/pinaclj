@@ -30,7 +30,7 @@
 
 (defn- compile-page [fs]
   (compile-all (files/resolve-path fs "pages")
-               (files/resolve-path fs "published") templates/page))
+               (files/resolve-path fs "published") (templates/build-page-func "templates/page.html")))
 
 (describe "compile-all"
   (with fs (test-fs/create-from all-pages))

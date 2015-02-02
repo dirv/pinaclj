@@ -3,13 +3,17 @@
             [clojure.string :as string]
             [pinaclj.core :as core]
             [pinaclj.files :as files]
+            [pinaclj.nio :as nio]
             [pinaclj.templates :as templates])
   (:gen-class))
+
+(def fs
+  (files/init-default))
 
 (def cli-options
   [["-s" "--source SOURCE          " "Source directory.     " :default "pages"]
    ["-d" "--destination DESTINATION" "Destination directory." :default "generated"]
-   ["-t" "--theme"                   "Theme directory."       :default "theme"]
+   ["-t" "--theme THEME"             "Theme directory."       :default "theme"]
    ["-h" "--help" "Print help."]])
 
 (defn- usage [options-summary]
@@ -24,12 +28,17 @@
         ""]
        (string/join \newline)))
 
+(defn- template-path [theme-str]
+  (nio/resolve-path fs (str theme-str "/templates/post.html")))
+
+(defn- template-func [{theme-str :theme}]
+  (templates/build-page-func (nio/input-stream (template-path theme-str))))
+
 (defn- run-compile [opts]
   (let [fs          (files/init-default)
         source      (files/resolve-path fs (:source opts))
-        destination (files/resolve-path fs (:destination opts))
-        theme-str   (:theme opts)]
-    (core/compile-all source destination templates/page)))
+        destination (files/resolve-path fs (:destination opts))]
+    (core/compile-all source destination (template-func opts))))
 
 (defn main [args]
   (let [{:keys [options summary]} (parse-opts args cli-options)]
