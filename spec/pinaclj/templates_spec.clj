@@ -9,6 +9,12 @@
              {:url "/2" :title "Second post" :content "second post content." }
              {:url "/3" :title "Third post" :content "<h1>third</h1> post content." :third-key "Hello, world!"}])
 
+(def page-link
+  (build-link-func "templates/page_list.html"))
+
+(def page-list
+  (build-list-func "templates/page_list.html"))
+
 (defn render-page-link []
    (apply str (html/emit* (page-link (first pages)))))
 

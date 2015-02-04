@@ -2,17 +2,18 @@
   (:require [net.cgrand.enlive-html :as html]))
 
 
-(html/defsnippet page-link "templates/page_list.html"
+(defn build-link-func [page-obj]
+  (html/snippet page-obj
   [(html/attr= :data-id "page-list-item")]
   [page]
   [(html/attr= :data-id "page-link")] (html/do-> (html/set-attr :href (:url page))
-                                   (html/content (:title page))))
+                                   (html/content (:title page)))))
 
-(html/deftemplate page-list "templates/page_list.html"
-  [pages]
+(defn build-list-func [page-obj]
+  (html/template page-obj [pages]
   [[(html/attr= :data-id "page-list")]
    [(html/attr= :data-id "page-list-item")]] (html/clone-for [item pages]
-                                                 [(html/attr= :data-id "page-list")] (html/content (page-link item))))
+                                                 [(html/attr= :data-id "page-list")] (html/content ((build-link-func page-obj) item)))))
 
 (defn- build-replacement-selector [kv]
   [(html/attr= :data-id (name (first kv)))])
@@ -30,5 +31,5 @@
 (defn- page-replace [page]
   #(html/at* % (build-replacement-list page)))
 
-(defn build-page-func [page-str]
-  (html/template page-str [page] [:body] (page-replace page)))
+(defn build-page-func [page-obj]
+  (html/template page-obj [page] [:body] (page-replace page)))
