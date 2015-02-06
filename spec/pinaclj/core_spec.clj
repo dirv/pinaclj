@@ -33,48 +33,46 @@
 
 (defn- compile-page [fs]
   (compile-all (files/resolve-path fs "pages")
-               (files/resolve-path fs "published") (templates/build-page-func "templates/page.html")))
+               (files/resolve-path fs "published")
+               (templates/build-page-func "templates/page.html")
+               (templates/build-list-func "templates/page_list.html")))
+
+(defn render-page-list [fs]
+  (apply str (compile-page fs)))
 
 (describe "compile-all"
   (with fs (test-fs/create-from all-pages))
 
-  (before
-    (compile-page @fs))
+  (describe "page results"
+    (before (compile-page @fs))
 
-  (it "creates the file"
-    (should (files/exists? (files/resolve-path @fs "published/post.html"))))
+    (it "creates the file"
+      (should (files/exists? (files/resolve-path @fs "published/post.html"))))
 
-  (it "renders the title"
-    (should-contain "<h1 data-id=\"title\">Test</h1>"
-                    (files/content (files/resolve-path @fs "published/post.html"))))
+    (it "renders the title"
+      (should-contain "<h1 data-id=\"title\">Test</h1>"
+                      (files/content (files/resolve-path @fs "published/post.html"))))
 
-  (it "renders the content without escaping"
-    (should-contain "<h3>Markdown header</h3>"
-                    (files/content (files/resolve-path @fs "published/post.html"))))
+    (it "renders the content without escaping"
+      (should-contain "<h3>Markdown header</h3>"
+                      (files/content (files/resolve-path @fs "published/post.html"))))
 
-  (it "compiles files in subdirectories"
-    (should (files/exists? (files/resolve-path @fs "published/nested/another_post.html"))))
+    (it "compiles files in subdirectories"
+      (should (files/exists? (files/resolve-path @fs "published/nested/another_post.html"))))
 
-  (it "does not publish drafts"
-    (should-not (files/exists? (files/resolve-path @fs "published/a-draft.html"))))
+    (it "does not publish drafts"
+      (should-not (files/exists? (files/resolve-path @fs "published/a-draft.html"))))
 
-  (it "uses the url header if one is present"
-    (should (files/exists? (files/resolve-path @fs "published/a/blog/page.html"))))
+    (it "uses the url header if one is present"
+      (should (files/exists? (files/resolve-path @fs "published/a/blog/page.html"))))
 
-  (it "adds html extension if it isn't present"
-    (should (files/exists? (files/resolve-path @fs "published/a/blog/page/index.html")))))
+    (it "adds html extension if it isn't present"
+      (should (files/exists? (files/resolve-path @fs "published/a/blog/page/index.html")))))
 
 
-(defn render-page-list []
-  (apply str (render-single (compile-page @fs) (templates/build-list-func "templates/page_list.html"))))
-
-(describe "render-single"
-  (with fs (test-fs/create-from published-pages))
-
-  (it "renders right number of non-draft pages"
-    (should= (count published-pages) (count (re-seq #"<a" (render-page-list)))))
-
-  (it "renders page title"
-    (println (render-page-list))
-    (should-contain "Nested Title" (render-page-list))))
+  (describe "resulting page"
+    (it "renders right number of non-draft pages"
+      (should= (count published-pages) (count (re-seq #"<a" (render-page-list @fs)))))
+    (it "renders page title"
+      (should-contain "Nested Title" (render-page-list @fs)))))
 

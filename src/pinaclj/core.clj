@@ -40,12 +40,9 @@
 (defn compile-one [src dest template page-path]
   (let [page (rd/read-page page-path)]
     (if (published? page)
-      (files/create (publication-path page src dest page-path)
-                    (render page template)))
-    page))
+        (do (files/create (publication-path page src dest page-path)
+                      (render page template))
+            page))))
 
-(defn compile-all [src dest template]
-  (doall (map (partial compile-one src dest template) (files/all-in src))))
-
-(defn render-single [pages template]
-  (template pages))
+(defn compile-all [src dest template-func index-func]
+  (index-func (remove nil? (map (partial compile-one src dest template-func) (files/all-in src)))))

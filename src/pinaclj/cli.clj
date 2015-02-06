@@ -44,8 +44,7 @@
   (let [fs          (files/init-default)
         source      (files/resolve-path fs (:source opts))
         destination (files/resolve-path fs (:destination opts))]
-    (let [pages (core/compile-all source destination (template-func opts))]
-      (println pages))))
+    (core/compile-all source destination (template-func opts) (index-func opts))))
 
 (defn main [args]
   (let [{:keys [options summary]} (parse-opts args cli-options)]
