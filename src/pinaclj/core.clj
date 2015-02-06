@@ -37,12 +37,15 @@
     (build-destination src dest page-path)
     (nio/resolve-path dest (fix-url (:url page)))))
 
-(defn compile-one [src dest template page-path]
+(defn- compile-page [src dest template page-path]
   (let [page (rd/read-page page-path)]
     (if (published? page)
         (do (files/create (publication-path page src dest page-path)
                       (render page template))
             page))))
 
+(defn- compile-pages [src dest template-func files]
+  (remove nil? (map (partial compile-page src dest template-func) files)))
+
 (defn compile-all [src dest template-func index-func]
-  (index-func (remove nil? (map (partial compile-one src dest template-func) (files/all-in src)))))
+  (index-func (compile-pages src dest template-func (files/all-in src))))

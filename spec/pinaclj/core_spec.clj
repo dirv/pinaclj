@@ -37,7 +37,7 @@
                (templates/build-page-func "templates/page.html")
                (templates/build-list-func "templates/page_list.html")))
 
-(defn render-page-list [fs]
+(defn- render-page-list [fs]
   (apply str (compile-page fs)))
 
 (describe "compile-all"
