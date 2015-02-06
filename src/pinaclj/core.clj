@@ -37,9 +37,15 @@
     (build-destination src dest page-path)
     (nio/resolve-path dest (fix-url (:url page)))))
 
+(defn compile-one [src dest template page-path]
+  (let [page (rd/read-page page-path)]
+    (if (published? page)
+      (files/create (publication-path page src dest page-path)
+                    (render page template)))
+    page))
+
 (defn compile-all [src dest template]
-  (doseq [page-path (files/all-in src)]
-    (let [page (rd/read-page page-path)]
-      (if (published? page)
-        (files/create (publication-path page src dest page-path)
-                      (render page template))))))
+  (doall (map (partial compile-one src dest template) (files/all-in src))))
+
+(defn render-single [pages template]
+  (template pages))

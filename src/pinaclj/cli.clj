@@ -31,14 +31,21 @@
 (defn- template-path [theme-str]
   (nio/resolve-path fs (str theme-str "/templates/post.html")))
 
+(defn- index-path [theme-str]
+  (nio/resolve-path fs (str theme-str "/single/index.html")))
+
 (defn- template-func [{theme-str :theme}]
   (templates/build-page-func (nio/input-stream (template-path theme-str))))
+
+(defn- index-func [{theme-str :theme}]
+  (templates/build-list-func (nio/input-stream (index-path theme-str))))
 
 (defn- run-compile [opts]
   (let [fs          (files/init-default)
         source      (files/resolve-path fs (:source opts))
         destination (files/resolve-path fs (:destination opts))]
-    (core/compile-all source destination (template-func opts))))
+    (let [pages (core/compile-all source destination (template-func opts))]
+      (println pages))))
 
 (defn main [args]
   (let [{:keys [options summary]} (parse-opts args cli-options)]

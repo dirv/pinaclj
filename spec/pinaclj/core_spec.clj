@@ -7,7 +7,7 @@
 
 (def nested-page
    {:path "pages/nested/another_post.md"
-    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n---\ncontent\n" })
+    :content "title: Nested Title\npublished-at: 2014-10-31T10:05:00Z\n---\ncontent\n" })
 
 (def simple-page
   {:path "pages/post.md"
@@ -24,6 +24,9 @@
 (def url-index-page
   {:path "pages/a-wordpress-style-path.md"
    :content "url: /a/blog/page/\npublished-at: 2014-10-31T10:05:00Z\n---\nContent"})
+
+(def published-pages
+  [nested-page simple-page url-page url-index-page])
 
 (def all-pages
   [nested-page simple-page draft-page url-page url-index-page])
@@ -60,3 +63,18 @@
 
   (it "adds html extension if it isn't present"
     (should (files/exists? (files/resolve-path @fs "published/a/blog/page/index.html")))))
+
+
+(defn render-page-list []
+  (apply str (render-single (compile-page @fs) (templates/build-list-func "templates/page_list.html"))))
+
+(describe "render-single"
+  (with fs (test-fs/create-from published-pages))
+
+  (it "renders right number of non-draft pages"
+    (should= (count published-pages) (count (re-seq #"<a" (render-page-list)))))
+
+  (it "renders page title"
+    (println (render-page-list))
+    (should-contain "Nested Title" (render-page-list))))
+
