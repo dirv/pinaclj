@@ -31,11 +31,15 @@
 (defn- fs-stream [root-str page-str]
   (files/read-stream fs (str root-str page-str)))
 
+(defn- index-page [theme-str]
+  (fs-stream theme-str "/single/index.html"))
+
 (defn- template-func [theme-str]
   (templates/build-page-func (fs-stream theme-str "/templates/post.html")))
 
 (defn- index-func [theme-str]
-  (templates/build-list-func (fs-stream theme-str "/single/index.html")))
+  (templates/build-list-func (index-page theme-str)
+                             (templates/build-link-func (index-page theme-str))))
 
 (defn- run-compile [{src :source dest :destination theme :theme}]
   (core/compile-all (nio/resolve-path fs src)

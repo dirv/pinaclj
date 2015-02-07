@@ -1,6 +1,6 @@
 (ns pinaclj.test-fs
-  (:require [speclj.core :refer :all]
-            [pinaclj.files :as files]) 
+  (:require [pinaclj.files :as files]
+            [pinaclj.templates :as templates])
   (:import (com.google.common.jimfs Jimfs Configuration)))
 
 (defn test-fs []
@@ -14,3 +14,6 @@
 
 (defn create-empty []
   (create-from []))
+
+(defn resource-stream [path]
+  (.getResourceAsStream (clojure.lang.RT/baseLoader) path))

@@ -8,12 +8,11 @@
   [(html/attr= :data-id "page-link")] (html/do-> (html/set-attr :href (:url page))
                                    (html/content (:title page)))))
 
-(defn build-list-func [page-obj]
-  (let [link-func (build-link-func page-obj)]
-    (html/template page-obj [pages]
-                   [[(html/attr= :data-id "page-list")] [(html/attr= :data-id "page-list-item")]]
-                   (html/clone-for [item pages]
-                                   [(html/attr= :data-id "page-list-item")] (html/content (link-func item))))))
+(defn build-list-func [page-obj link-func]
+  (html/template page-obj [pages]
+                 [[(html/attr= :data-id "page-list")] [(html/attr= :data-id "page-list-item")]]
+                 (html/clone-for [item pages]
+                                 [(html/attr= :data-id "page-list-item")] (html/content (link-func item)))))
 
 (defn- build-replacement-selector [kv]
   [(html/attr= :data-id (name (first kv)))])

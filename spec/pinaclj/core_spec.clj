@@ -2,6 +2,7 @@
   (:require [pinaclj.core :refer :all]
             [pinaclj.files :as files]
             [pinaclj.test-fs :as test-fs]
+            [pinaclj.test-templates :as test-templates]
             [pinaclj.templates :as templates]
             [speclj.core :refer :all]))
 
@@ -35,7 +36,7 @@
   (compile-all (files/resolve-path fs "pages")
                (files/resolve-path fs "published")
                (templates/build-page-func "templates/page.html")
-               (templates/build-list-func "templates/page_list.html")))
+               test-templates/page-list))
 
 (defn- render-page-list [fs]
   (apply str (compile-page fs)))
