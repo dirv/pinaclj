@@ -25,22 +25,20 @@
 (defn resolve-path [fs-root path-str]
   (nio/resolve-path fs-root path-str))
 
+(defn read-stream [fs path]
+  (nio/input-stream (nio/resolve-path fs path)))
+
 (defn create [path content]
   (nio/create-parent-directories path)
   (nio/create-file path (.getBytes content)))
 
 (defn all-in [path]
   (with-open [files (nio/directory-stream path)]
-    (doall (mapcat #(if (directory? %) (all-in %) [%]) files))
-    ))
+    (doall (mapcat #(if (directory? %) (all-in %) [%]) files))))
 
 (defn remove-extension [path]
   (let [path-str (str path)]
     (subs path-str 0 (.lastIndexOf path-str "."))))
 
 (defn change-extension-to-html [path]
-  (.resolveSibling path
-                   (str (remove-extension path) ".html")))
-
-(defn change-root [src dest path]
-  (nio/resolve-path dest (nio/relativize src path)))
+  (str (remove-extension path) ".html"))

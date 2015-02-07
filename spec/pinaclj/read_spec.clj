@@ -12,7 +12,13 @@
   [{:path "first"
     :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n---\ncontent body"}
    {:path "second"
-    :content "title: foo\nhello: World\n---\none\ntwo" }])
+    :content "title: foo\nhello: World\n---\none\ntwo" }
+
+   {:path "titleWithColon"
+    :content "title: test: two\n"}
+
+   {:path "titleWithNoValue"
+    :content "title:\n"}])
 
 (defn do-read [fs path-str]
   (read-page (files/resolve-path fs path-str)))
@@ -36,4 +42,10 @@
     (should= nil (:published-at (do-read @fs "second"))))
 
   (it "includes arbitrary headers"
-    (should= "World" (:hello (do-read @fs "second")))))
+    (should= "World" (:hello (do-read @fs "second"))))
+
+  (it "parses title headers with colons"
+    (should= "test: two" (:title (do-read @fs "titleWithColon"))))
+
+  (it "parses headers with no value"
+    (should-not (:title (do-read @fs "titleWithNoValue")))))

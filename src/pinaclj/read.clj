@@ -7,8 +7,9 @@
   (= line "---"))
 
 (defn- to-header [line]
-  (let [headed-line (clojure.string/split line #": ")]
-    { (keyword (first headed-line)) (second headed-line)}))
+  (let [split-pos (.indexOf line ": ")]
+    (when (not (= -1 split-pos))
+    { (keyword (subs line 0 split-pos)) (subs line (+ 2 split-pos))})))
 
 (defn- split-header-content [all-lines]
   (let [split (split-with (complement separates-headers?) all-lines)]

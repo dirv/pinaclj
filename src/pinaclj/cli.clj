@@ -28,17 +28,24 @@
         ""]
        (string/join \newline)))
 
-(defn- template-path [theme-str]
-  (nio/resolve-path fs (str theme-str "/templates/post.html")))
+(defn- fs-stream [root-str page-str]
+  (files/read-stream fs (str root-str page-str)))
 
-(defn- template-func [{theme-str :theme}]
-  (templates/build-page-func (nio/input-stream (template-path theme-str))))
+(defn- index-page [theme-str]
+  (fs-stream theme-str "/index.html"))
 
-(defn- run-compile [opts]
-  (let [fs          (files/init-default)
-        source      (files/resolve-path fs (:source opts))
-        destination (files/resolve-path fs (:destination opts))]
-    (core/compile-all source destination (template-func opts))))
+(defn- template-func [theme-str]
+  (templates/build-page-func (fs-stream theme-str "/post.html")))
+
+(defn- index-func [theme-str]
+  (templates/build-list-func (index-page theme-str)
+                             (templates/build-link-func (index-page theme-str))))
+
+(defn- run-compile [{src :source dest :destination theme :theme}]
+  (core/compile-all (nio/resolve-path fs src)
+                    (nio/resolve-path fs dest)
+                    (template-func theme)
+                    (index-func theme)))
 
 (defn main [args]
   (let [{:keys [options summary]} (parse-opts args cli-options)]
