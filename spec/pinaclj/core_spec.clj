@@ -70,7 +70,6 @@
     (it "adds html extension if it isn't present"
       (should (files/exists? (files/resolve-path @fs "published/a/blog/page/index.html")))))
 
-
   (describe "index page"
     (it "renders an index page"
       (should (files/exists? (files/resolve-path @fs "published/index.html"))))

@@ -25,6 +25,9 @@
 (defn resolve-path [fs-root path-str]
   (nio/resolve-path fs-root path-str))
 
+(defn read-stream [fs path]
+  (nio/input-stream (nio/resolve-path fs path)))
+
 (defn create [path content]
   (nio/create-parent-directories path)
   (nio/create-file path (.getBytes content)))
@@ -39,6 +42,3 @@
 
 (defn change-extension-to-html [path]
   (str (remove-extension path) ".html"))
-
-(defn change-root [src dest path]
-  (nio/resolve-path dest (nio/relativize src path)))
