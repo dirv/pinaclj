@@ -8,7 +8,8 @@
 
 (defn- to-header [line]
   (let [split-pos (.indexOf line ": ")]
-    { (keyword (subs line 0 split-pos)) (subs line (+ 2 split-pos))}))
+    (when (not (= -1 split-pos))
+    { (keyword (subs line 0 split-pos)) (subs line (+ 2 split-pos))})))
 
 (defn- split-header-content [all-lines]
   (let [split (split-with (complement separates-headers?) all-lines)]

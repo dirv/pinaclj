@@ -15,7 +15,10 @@
     :content "title: foo\nhello: World\n---\none\ntwo" }
 
    {:path "titleWithColon"
-    :content "title: test: two\n"}])
+    :content "title: test: two\n"}
+
+   {:path "titleWithNoValue"
+    :content "title:\n"}])
 
 (defn do-read [fs path-str]
   (read-page (files/resolve-path fs path-str)))
@@ -42,4 +45,7 @@
     (should= "World" (:hello (do-read @fs "second"))))
 
   (it "parses title headers with colons"
-    (should= "test: two" (:title (do-read @fs "titleWithColon")))))
+    (should= "test: two" (:title (do-read @fs "titleWithColon"))))
+
+  (it "parses headers with no value"
+    (should-not (:title (do-read @fs "titleWithNoValue")))))
