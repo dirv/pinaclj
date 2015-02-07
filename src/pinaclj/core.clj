@@ -50,10 +50,13 @@
    (files/create (nio/resolve-path dest path)
                 (apply str (template content))))
 
+(defn- chronological-sort [pages]
+  (reverse (sort-by :published-at pages)))
+
 (defn compile-all [src dest template-func index-func]
   (let [pages (compile-pages src (files/all-in src))]
     (doall (map #(write-templated-page dest (:url %) % template-func) pages))
     (write-templated-page dest
                           index-page
-                          pages
+                          (chronological-sort pages)
                           index-func)))

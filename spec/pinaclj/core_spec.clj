@@ -8,11 +8,11 @@
 
 (def nested-page
    {:path "pages/nested/another_post.md"
-    :content "title: Nested Title\npublished-at: 2014-10-31T10:05:00Z\n---\ncontent\n" })
+    :content "title: Nested Title\npublished-at: 2014-10-31T11:05:00Z\n---\ncontent\n" })
 
 (def simple-page
   {:path "pages/post.md"
-    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n---\n###Markdown header\nMarkdown paragraph."})
+    :content "title: Test\npublished-at: 2014-10-31T12:05:00Z\n---\n###Markdown header\nMarkdown paragraph."})
 
 (def draft-page
   {:path "pages/a-draft.md"
@@ -20,11 +20,11 @@
 
 (def url-page
   {:path "pages/a-test-path.md"
-   :content "url: /a/blog/page.html\npublished-at: 2014-10-31T10:05:00Z\n---\nContent"})
+   :content "title: 3\nurl: /a/blog/page.html\npublished-at: 2014-10-31T13:05:00Z\n---\nContent"})
 
 (def url-index-page
   {:path "pages/a-wordpress-style-path.md"
-   :content "url: /a/blog/page/\npublished-at: 2014-10-31T10:05:00Z\n---\nContent"})
+   :content "title: 4\nurl: /a/blog/page/\npublished-at: 2014-10-31T14:05:00Z\n---\nContent"})
 
 (def published-pages
   [nested-page simple-page url-page url-index-page])
@@ -40,6 +40,9 @@
 
 (defn- render-page-list [fs]
   (apply str (compile-page fs)))
+
+(defn- index-contents [fs]
+  (files/content (files/resolve-path fs "published/index.html")))
 
 (describe "compile-all"
   (with fs (test-fs/create-from all-pages))
@@ -76,8 +79,11 @@
       (should (files/exists? (files/resolve-path @fs "published/index.html"))))
 
     (it "renders right number of non-draft pages"
-      (should= (count published-pages) (count (re-seq #"<a" (files/content (files/resolve-path @fs "published/index.html"))))))
+      (should= (count published-pages) (count (re-seq #"<a" (index-contents @fs)))))
 
     (it "renders page title"
-      (should-contain "Nested Title" (files/content (files/resolve-path @fs "published/index.html"))))))
+      (should-contain "Nested Title" (index-contents @fs)))
+
+    (it "orders pages in reverse chronological order"
+      (should (re-find #"4.*3.*Test.*Nested" (index-contents @fs))))))
 
