@@ -3,10 +3,10 @@
             [pinaclj.templates :as templates]))
 
 (defn- page-stream []
-  (test-fs/resource-stream "templates/page.html"))
+  (test-fs/resource-stream "example_theme/post.html"))
 
 (defn- page-list-stream []
-  (test-fs/resource-stream "templates/page_list.html"))
+  (test-fs/resource-stream "example_theme/index.html"))
 
 (def page-link
   (templates/build-link-func (page-list-stream)))

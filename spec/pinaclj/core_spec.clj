@@ -35,7 +35,7 @@
 (defn- compile-page [fs]
   (compile-all (files/resolve-path fs "pages")
                (files/resolve-path fs "published")
-               (templates/build-page-func "templates/page.html")
+               test-templates/page
                test-templates/page-list))
 
 (defn- render-page-list [fs]

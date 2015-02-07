@@ -32,10 +32,10 @@
   (files/read-stream fs (str root-str page-str)))
 
 (defn- index-page [theme-str]
-  (fs-stream theme-str "/single/index.html"))
+  (fs-stream theme-str "/index.html"))
 
 (defn- template-func [theme-str]
-  (templates/build-page-func (fs-stream theme-str "/templates/post.html")))
+  (templates/build-page-func (fs-stream theme-str "/post.html")))
 
 (defn- index-func [theme-str]
   (templates/build-list-func (index-page theme-str)
