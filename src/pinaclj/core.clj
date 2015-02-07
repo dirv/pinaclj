@@ -14,7 +14,7 @@
   (apply str (template (render-markdown page))))
 
 (def build-destination
-  (comp files/change-extension-to-html files/change-root))
+  (comp files/change-extension-to-html nio/relativize))
 
 (defn- trim-url [url-str]
   (if (= \/ (first url-str))
@@ -32,20 +32,28 @@
 (defn- published? [page]
   (not (nil? (:published-at page))))
 
-(defn- publication-path [page src dest page-path]
+(defn- publication-path [page src page-path]
   (if (nil? (:url page))
-    (build-destination src dest page-path)
-    (nio/resolve-path dest (fix-url (:url page)))))
+    (build-destination src page-path)
+    (fix-url (:url page))))
 
-(defn- compile-page [src dest template page-path]
+(defn- compile-page [src page-path]
   (let [page (rd/read-page page-path)]
     (if (published? page)
-        (do (files/create (publication-path page src dest page-path)
-                      (render page template))
-            page))))
+        (render-markdown
+          (assoc page :url (publication-path page src page-path))))))
 
-(defn- compile-pages [src dest template-func files]
-  (remove nil? (map (partial compile-page src dest template-func) files)))
+(defn- compile-pages [src files]
+  (remove nil? (map (partial compile-page src) files)))
+
+(defn- write-templated-page [dest path content template]
+   (files/create (nio/resolve-path dest path)
+                (apply str (template content))))
 
 (defn compile-all [src dest template-func index-func]
-  (index-func (compile-pages src dest template-func (files/all-in src))))
+  (let [pages (compile-pages src (files/all-in src))]
+    (doall (map #(write-templated-page dest (:url %) % template-func) pages))
+    (write-templated-page dest
+                          index-page
+                          pages
+                          index-func)))

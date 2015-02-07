@@ -43,8 +43,9 @@
 (describe "compile-all"
   (with fs (test-fs/create-from all-pages))
 
+  (before (compile-page @fs))
+
   (describe "page results"
-    (before (compile-page @fs))
 
     (it "creates the file"
       (should (files/exists? (files/resolve-path @fs "published/post.html"))))
@@ -70,9 +71,13 @@
       (should (files/exists? (files/resolve-path @fs "published/a/blog/page/index.html")))))
 
 
-  (describe "resulting page"
+  (describe "index page"
+    (it "renders an index page"
+      (should (files/exists? (files/resolve-path @fs "published/index.html"))))
+
     (it "renders right number of non-draft pages"
-      (should= (count published-pages) (count (re-seq #"<a" (render-page-list @fs)))))
+      (should= (count published-pages) (count (re-seq #"<a" (files/content (files/resolve-path @fs "published/index.html"))))))
+
     (it "renders page title"
-      (should-contain "Nested Title" (render-page-list @fs)))))
+      (should-contain "Nested Title" (files/content (files/resolve-path @fs "published/index.html"))))))
 
