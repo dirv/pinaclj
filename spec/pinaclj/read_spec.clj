@@ -18,7 +18,14 @@
     :content "title: test: two\n"}
 
    {:path "titleWithNoValue"
-    :content "title:\n"}])
+    :content "title:\n"}
+
+   {:path "singleQuotes"
+    :content "\n---\n'singlestart' 'singleend' let's"}
+
+   {:path "doubleQuotes"
+    :content "\n---\n\"doublestart\" \"doubleend\""}]
+  )
 
 (defn do-read [fs path-str]
   (read-page (files/resolve-path fs path-str)))
@@ -54,4 +61,31 @@
   (with fs (test-fs/create-from test-pages))
 
   (it "adds published-at-str to page"
-    (should= "31 October 2014" (:published-at-str (do-read @fs "first")))))
+    (should= "31 October 2014" (:published-at-str (do-read @fs "first"))))
+
+  (it "converts starting single quote to &lsquo;"
+    (should-contain "&lsquo;singlestart" (:content (do-read @fs "singleQuotes"))))
+
+  (it "converts inner single quote to &rsquo;"
+    (should-contain "singlestart&rsquo;" (:content (do-read @fs "singleQuotes"))))
+
+  (it "converts inner single quote to &lsquo;"
+    (should-contain "&lsquo;singleend" (:content (do-read @fs "singleQuotes"))))
+
+  (it "converts ending single quote to &rsquo;"
+    (should-contain "singleend&rsquo;" (:content (do-read @fs "singleQuotes"))))
+
+  (it "converts apostrophe to &rsquo;"
+    (should-contain "let&rsquo;s" (:content (do-read @fs "singleQuotes"))))
+
+  (it "converts starting double quote to &lsquo;"
+    (should-contain "&ldquo;doublestart" (:content (do-read @fs "doubleQuotes"))))
+
+  (it "converts inner double quote to &rsquo;"
+    (should-contain "doublestart&rdquo;" (:content (do-read @fs "doubleQuotes"))))
+
+  (it "converts inner double quote to &lsquo;"
+    (should-contain "&ldquo;doubleend" (:content (do-read @fs "doubleQuotes"))))
+
+  (it "converts ending double quote to &rsquo;"
+    (should-contain "doubleend&rdquo;" (:content (do-read @fs "doubleQuotes")))))
