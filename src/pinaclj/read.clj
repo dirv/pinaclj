@@ -28,6 +28,3 @@
         headers (to-headers (first header-and-content))]
     (merge {:content (second header-and-content)}
            (convert-published-at headers))))
-
-(defn- read-all-pages [path]
-  (map read-page (files/all-in path)))
