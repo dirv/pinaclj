@@ -23,8 +23,13 @@
     (assoc headers :published-at (date-time/from-str published-at))
     headers))
 
+(defn- add-published-at-str [page]
+  (if-let [published-at (:published-at page)]
+    (assoc page :published-at-str (date-time/to-readable-str (:published-at page)))
+    page))
+
 (defn read-page [path]
   (let [header-and-content (split-header-content (files/read-lines path))
         headers (to-headers (first header-and-content))]
-    (merge {:content (second header-and-content)}
-           (convert-published-at headers))))
+    (add-published-at-str (merge {:content (second header-and-content)}
+           (convert-published-at headers)))))
