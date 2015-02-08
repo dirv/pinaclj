@@ -10,9 +10,6 @@
 (defn- render-markdown [page]
   (assoc page :content (markdown/md-to-html-string (:content page))))
 
-(defn- render [page template]
-  (apply str (template (render-markdown page))))
-
 (def build-destination
   (comp files/change-extension-to-html nio/relativize))
 
