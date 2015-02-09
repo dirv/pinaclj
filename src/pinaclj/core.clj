@@ -45,7 +45,7 @@
 
 (defn- write-templated-page [dest path content template]
    (files/create (nio/resolve-path dest path)
-                (apply str (template content))))
+                 (apply str (template content))))
 
 (defn- chronological-sort [pages]
   (reverse (sort-by :published-at pages)))
