@@ -28,16 +28,6 @@
     (assoc page :published-at-str (date-time/to-readable-str (:published-at page)))
     page))
 
-(defn- convert-quote-text [text]
-  (-> text
-      (clojure.string/replace #"(^|\W)(')" "&lsquo;")
-      (clojure.string/replace #"(\w)'" "$1&rsquo;")
-      (clojure.string/replace #"(^|\W)(\")" "&ldquo;")
-      (clojure.string/replace #"(\w)\"" "$1&rdquo;")))
-
-(defn- convert-quotes [page]
-  (assoc page :content (convert-quote-text (:content page))))
-
 (defn parse-page [path]
   (let [header-and-content (split-header-content (files/read-lines path))]
     (merge {:content (second header-and-content)}
@@ -47,5 +37,4 @@
   (-> path
       (parse-page)
       (convert-published-at)
-      (add-published-at-str)
-      (convert-quotes)))
+      (add-published-at-str)))

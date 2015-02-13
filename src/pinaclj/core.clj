@@ -2,13 +2,15 @@
   (:require [pinaclj.files :as files]
             [pinaclj.nio :as nio]
             [pinaclj.read :as rd]
-            [markdown.core :as markdown]))
+            [markdown.core :as markdown]
+            [pinaclj.quote-transform :as quotes]
+            [pinaclj.templates :as templates]))
 
 (def index-page
   "index.html")
 
 (defn- render-markdown [page]
-  (assoc page :content (markdown/md-to-html-string (:content page))))
+  (assoc page :content (quotes/convert-quote-text (markdown/md-to-html-string (:content page)))))
 
 (def build-destination
   (comp files/change-extension-to-html nio/relativize))

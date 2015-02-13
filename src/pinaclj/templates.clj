@@ -32,3 +32,4 @@
 
 (defn build-page-func [page-obj]
   (html/template page-obj [page] [:body] (page-replace page)))
+

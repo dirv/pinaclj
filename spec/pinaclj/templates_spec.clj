@@ -46,3 +46,4 @@
 
   (it "does not escape html in content"
     (should-contain "<h1>third</h1>" (render-third-page))))
+
