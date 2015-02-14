@@ -10,7 +10,7 @@
   "index.html")
 
 (defn- render-markdown [page]
-  (assoc page :content (quotes/convert-quote-text (markdown/md-to-html-string (:content page)))))
+  (assoc page :content (quotes/convert (markdown/md-to-html-string (:content page)))))
 
 (def build-destination
   (comp files/change-extension-to-html nio/relativize))
