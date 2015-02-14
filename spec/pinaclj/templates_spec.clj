@@ -9,10 +9,11 @@
 
 (def pages [{:url "/1" :title "First post" :content "first post content."}
              {:url "/2" :title "Second post" :content "second post content." }
-             {:url "/3" :title "Third post" :content "<h1>third</h1> post content." :third-key "Hello, world!"}])
+             {:url "/3" :title "Third post" :content "<h1>third</h1> post content." :third-key "Hello, world!"}
+            {:url "/4" :title "Fourth post" :content "published" :published-at-str "31 December 2014"}])
 
-(defn render-page-link []
-   (apply str (html/emit* (test-templates/page-link (first pages)))))
+(defn render-page-link [page]
+   (apply str (html/emit* (test-templates/page-link page))))
 
 (defn render-page []
    (apply str (test-templates/page (first pages))))
@@ -25,14 +26,17 @@
 
 (describe "page link snippet"
   (it "contains href"
-    (should-contain "href=\"/1\"" (render-page-link)))
+    (should-contain "href=\"/1\"" (render-page-link (first pages))))
 
   (it "contains title"
-    (should-contain "First post" (render-page-link))))
+    (should-contain "First post" (render-page-link (first pages))))
+
+  (it "contains published-at-str"
+    (should-contain "31 December 2014" (render-page-link (nth pages 3)))))
 
 (describe "page list"
   (it "contains correct number of items"
-    (should= 3 (count (re-seq #"data-id=\"page-list-item\"" (render-page-list))))))
+    (should= (count pages) (count (re-seq #"data-id=\"page-list-item\"" (render-page-list))))))
 
 (describe "page"
   (it "renders title"

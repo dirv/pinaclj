@@ -20,11 +20,11 @@
 
 (def url-page
   {:path "pages/a-test-path.md"
-   :content "title: 3\nurl: /a/blog/page.html\npublished-at: 2014-10-31T13:05:00Z\n---\nContent"})
+   :content "title: Three\nurl: /a/blog/page.html\npublished-at: 2014-10-31T13:05:00Z\n---\nContent"})
 
 (def url-index-page
   {:path "pages/a-wordpress-style-path.md"
-   :content "title: 4\nurl: /a/blog/page/\npublished-at: 2014-10-31T14:05:00Z\n---\nContent"})
+   :content "title: Four\nurl: /a/blog/page/\npublished-at: 2014-10-31T14:05:00Z\n---\nContent"})
 
 (def quote-page
   {:path "pages/quote_test.md"
@@ -92,5 +92,5 @@
       (should-contain "Nested Title" (index-contents @fs)))
 
     (it "orders pages in reverse chronological order"
-      (should (re-find #"4.*3.*Test.*Nested" (index-contents @fs))))))
+      (should (re-find #"(?s)Four.*Three.*Test.*Nested" (index-contents @fs))))))
 
