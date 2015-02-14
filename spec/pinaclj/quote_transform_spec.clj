@@ -11,10 +11,10 @@
 (def doubleQuotes
   "\"doublestart\" \"doubleend\"")
 
-(def insideHtml
+(def inside-html
   "<p>''</p>")
 
-(def insideCodeBlock
+(def inside-code-block
   "<p><code>''\"\"</code></p>")
 
 (def attributes
@@ -22,6 +22,9 @@
 
 (def quote-sentence
   "\"This code is not clean, he said.\"")
+
+(def code-with-class
+  "<p><code class=\"clojure\">''</code></p>")
 
 (describe "replace quotes"
   (it "returns string with no quotes"
@@ -54,13 +57,16 @@
   (it "converts ending double quote to &rsquo;" (should-contain "doubleend&rdquo;" (convert doubleQuotes)))
 
   (it "converts inside html"
-    (should= "<p>&lsquo;&rsquo;</p>" (convert insideHtml)))
+    (should= "<p>&lsquo;&rsquo;</p>" (convert inside-html)))
 
   (it "does not convert inside code block"
-    (should= insideCodeBlock (convert insideCodeBlock)))
+    (should= inside-code-block (convert inside-code-block)))
 
   (it "does not convert attribute quotes"
     (should= attributes (convert attributes)))
 
   (it "quotes after punctuation"
-    (should-contain ".&rdquo;" (convert quote-sentence))))
+    (should-contain ".&rdquo;" (convert quote-sentence)))
+
+  (it "does not convert inside code element with class block"
+    (should= code-with-class (convert code-with-class))))
