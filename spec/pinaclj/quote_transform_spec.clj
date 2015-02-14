@@ -2,13 +2,13 @@
   (:require [speclj.core :refer :all]
             [pinaclj.quote-transform :refer :all]))
 
-(def noQuotes
+(def no-quotes
   "abc")
 
-(def singleQuotes
+(def single-quotes
   "'singlestart' 'singleend' let's")
 
-(def doubleQuotes
+(def double-quotes
   "\"doublestart\" \"doubleend\"")
 
 (def inside-html
@@ -26,47 +26,50 @@
 (def code-with-class
   "<p><code class=\"clojure\">''</code></p>")
 
-(describe "replace quotes"
-  (it "returns string with no quotes"
-    (should= noQuotes (convert noQuotes)))
+(describe "transforms"
+  (it "starting single quote to &lsquo;"
+    (should-contain "&lsquo;singlestart" (transform single-quotes)))
 
-  (it "converts starting single quote to &lsquo;"
-    (should-contain "&lsquo;singlestart" (convert singleQuotes)))
+  (it "inner single quote to &rsquo;"
+    (should-contain "singlestart&rsquo;" (transform single-quotes)))
 
-  (it "converts inner single quote to &rsquo;"
-    (should-contain "singlestart&rsquo;" (convert singleQuotes)))
+  (it "inner single quote to &lsquo;"
+    (should-contain "&lsquo;singleend" (transform single-quotes)))
 
-  (it "converts inner single quote to &lsquo;"
-    (should-contain "&lsquo;singleend" (convert singleQuotes)))
+  (it "ending single quote to &rsquo;"
+    (should-contain "singleend&rsquo;" (transform single-quotes)))
 
-  (it "converts ending single quote to &rsquo;"
-    (should-contain "singleend&rsquo;" (convert singleQuotes)))
+  (it "apostrophe to &rsquo;"
+    (should-contain "let&rsquo;s" (transform single-quotes)))
 
-  (it "converts apostrophe to &rsquo;"
-    (should-contain "let&rsquo;s" (convert singleQuotes)))
+  (it "starting double quote to &lsquo;"
+    (should-contain "&ldquo;doublestart" (transform double-quotes)))
 
-  (it "converts starting double quote to &lsquo;"
-    (should-contain "&ldquo;doublestart" (convert doubleQuotes)))
+  (it "inner double quote to &rsquo;"
+    (should-contain "doublestart&rdquo;" (transform double-quotes)))
 
-  (it "converts inner double quote to &rsquo;"
-    (should-contain "doublestart&rdquo;" (convert doubleQuotes)))
+  (it "inner double quote to &lsquo;"
+    (should-contain "&ldquo;doubleend" (transform double-quotes)))
 
-  (it "converts inner double quote to &lsquo;"
-    (should-contain "&ldquo;doubleend" (convert doubleQuotes)))
+  (it "ending double quote to &rsquo;"
+    (should-contain "doubleend&rdquo;" (transform double-quotes)))
 
-  (it "converts ending double quote to &rsquo;" (should-contain "doubleend&rdquo;" (convert doubleQuotes)))
-
-  (it "converts inside html"
-    (should= "<p>&lsquo;&rsquo;</p>" (convert inside-html)))
-
-  (it "does not convert inside code block"
-    (should= inside-code-block (convert inside-code-block)))
-
-  (it "does not convert attribute quotes"
-    (should= attributes (convert attributes)))
+  (it "inside html"
+    (should= "<p>&lsquo;&rsquo;</p>" (transform inside-html)))
 
   (it "quotes after punctuation"
-    (should-contain ".&rdquo;" (convert quote-sentence)))
+    (should-contain ".&rdquo;" (transform quote-sentence))))
 
-  (it "does not convert inside code element with class block"
-    (should= code-with-class (convert code-with-class))))
+(describe "does not transform"
+
+  (it "string with no quotes"
+    (should= no-quotes (transform no-quotes)))
+
+  (it "inside code element with class block"
+    (should= code-with-class (transform code-with-class)))
+
+  (it "inside code block"
+    (should= inside-code-block (transform inside-code-block)))
+
+  (it "attribute quotes"
+    (should= attributes (transform attributes))))
