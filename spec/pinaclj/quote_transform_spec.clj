@@ -56,10 +56,10 @@
   (it "converts inside html"
     (should= "<p>&lsquo;&rsquo;</p>" (convert insideHtml)))
 
-  (xit "does not convert inside code block"
+  (it "does not convert inside code block"
     (should= insideCodeBlock (convert insideCodeBlock)))
 
-  (xit "does not convert attribute quotes"
+  (it "does not convert attribute quotes"
     (should= attributes (convert attributes)))
 
   (it "quotes after punctuation"
