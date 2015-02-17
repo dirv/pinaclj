@@ -18,7 +18,9 @@
     :content "title: test: two\n"}
 
    {:path "titleWithNoValue"
-    :content "title:\n"}])
+    :content "title:\n"}
+   ]
+  )
 
 (defn do-read [fs path-str]
   (read-page (files/resolve-path fs path-str)))
@@ -49,3 +51,9 @@
 
   (it "parses headers with no value"
     (should-not (:title (do-read @fs "titleWithNoValue")))))
+
+(describe "data conversions"
+  (with fs (test-fs/create-from test-pages))
+
+  (it "adds published-at-str to page"
+    (should= "31 October 2014" (:published-at-str (do-read @fs "first")))))

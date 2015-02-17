@@ -2,16 +2,15 @@
   (:require [pinaclj.files :as files]
             [pinaclj.nio :as nio]
             [pinaclj.read :as rd]
-            [markdown.core :as markdown]))
+            [markdown.core :as markdown]
+            [pinaclj.quote-transform :as quotes]
+            [pinaclj.templates :as templates]))
 
 (def index-page
   "index.html")
 
 (defn- render-markdown [page]
-  (assoc page :content (markdown/md-to-html-string (:content page))))
-
-(defn- render [page template]
-  (apply str (template (render-markdown page))))
+  (assoc page :content (quotes/transform (markdown/md-to-html-string (:content page)))))
 
 (def build-destination
   (comp files/change-extension-to-html nio/relativize))
@@ -48,7 +47,7 @@
 
 (defn- write-templated-page [dest path content template]
    (files/create (nio/resolve-path dest path)
-                (apply str (template content))))
+                 (apply str (template content))))
 
 (defn- chronological-sort [pages]
   (reverse (sort-by :published-at pages)))

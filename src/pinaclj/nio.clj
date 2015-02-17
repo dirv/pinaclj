@@ -39,7 +39,7 @@
     (Files/createDirectories parent (into-array FileAttribute []))))
 
 (defn create-file [path content]
-  (Files/write path content (into-array OpenOption [StandardOpenOption/CREATE])))
+  (Files/write path content (into-array OpenOption [])))
 
 (defn default-file-system []
   (FileSystems/getDefault))
