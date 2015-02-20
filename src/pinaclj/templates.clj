@@ -1,12 +1,11 @@
 (ns pinaclj.templates
   (:require [net.cgrand.enlive-html :as html]))
 
-(defn- build-replacement-selector [kv]
-  [(html/attr= :data-id (name (first kv)))])
+(defn- build-replacement-selector [[field value]]
+  [(html/attr= :data-id (name field))])
 
-(defn- build-replacement-transform [kv]
-  (fn [node]
-    (assoc node :content (html/html-snippet (second kv)))))
+(defn- build-replacement-transform [[field value]]
+  (html/content value))
 
 (defn- build-replacement-kv [kv]
   (doall (list (build-replacement-selector kv) (build-replacement-transform kv))))

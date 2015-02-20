@@ -2,7 +2,7 @@
   (:require [pinaclj.files :as files]
             [pinaclj.nio :as nio]
             [pinaclj.read :as rd]
-            [markdown.core :as markdown]
+            [endophile.core :as md]
             [pinaclj.quote-transform :as quotes]
             [pinaclj.templates :as templates]))
 
@@ -10,7 +10,7 @@
   "index.html")
 
 (defn- render-markdown [page]
-  (assoc page :content (quotes/transform (markdown/md-to-html-string (:content page)))))
+  (assoc page :content (md/to-clj (md/mp (:content page)))))
 
 (def build-destination
   (comp files/change-extension-to-html nio/relativize))

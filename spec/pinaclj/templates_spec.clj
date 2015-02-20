@@ -46,8 +46,5 @@
     (should-contain "first post content" (render-page)))
 
   (it "renders all keys"
-    (should-contain "Hello, world!" (render-third-page)))
-
-  (it "does not escape html in content"
-    (should-contain "<h1>third</h1>" (render-third-page))))
+    (should-contain "Hello, world!" (render-third-page))))
 
