@@ -18,7 +18,7 @@
   #(html/at* % (build-replacement-list page)))
 
 (defn build-page-func [page-obj]
-  (html/template page-obj [page] [:body] (page-replace page)))
+  (html/template page-obj [page] [html/root] (page-replace page)))
 
 (defn build-link-func [page-obj]
   (html/snippet page-obj
