@@ -78,7 +78,7 @@
     (it "adds html extension if it isn't present"
       (should (files/exists? (files/resolve-path @fs "published/a/blog/page/index.html"))))
 
-    (xit "transforms quotes"
+    (it "transforms quotes"
       (should-contain "‘" (files/content (files/resolve-path @fs "published/quote_test.html")))))
 
   (describe "index page"
