@@ -26,7 +26,7 @@
       (first (html/html-snippet (string-fn node)))
     (and (map? node) (not (= :code (:tag node))))
       (assoc node :content (transform-non-code (:content node) string-fn))
-    (seq? node)
+    (or (seq? node) (vector? node))
       (map #(transform-non-code % string-fn) node)
     :else
       node))

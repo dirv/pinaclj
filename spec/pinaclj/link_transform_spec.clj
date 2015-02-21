@@ -29,23 +29,23 @@
 (def unpack-single-node
   (comp :src :attrs :content))
 
-(describe "convert-page"
+(describe "transform"
   (it "does not change for root level"
     (should= "index.html"
-      (unpack-single-node (convert-page root-page))))
+      (unpack-single-node (transform root-page))))
   (it "changes for one level up"
     (should= "../styles.css"
-      (unpack-single-node (convert-page one-deep))))
+      (unpack-single-node (transform one-deep))))
   (it "changes for two levels up"
     (should= "../../styles.css"
-      (unpack-single-node (convert-page two-deep))))
+      (unpack-single-node (transform two-deep))))
   (it "changes href"
     (should= "../../hello.png"
-      (:href (:attrs (:content (convert-page href))))))
+      (:href (:attrs (:content (transform href))))))
   (it "traverses tree"
     (should= "../../deep.png"
-      (:src (:attrs (first (:content (:content (convert-page hierarchy))))))))
+      (:src (:attrs (first (:content (:content (transform hierarchy))))))))
   (it "does not change external pages"
     (should= "//another.com/page.png"
-      (unpack-single-node (convert-page external-site)))))
+      (unpack-single-node (transform external-site)))))
 

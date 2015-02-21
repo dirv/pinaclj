@@ -17,7 +17,7 @@
   #(html/at* % (build-replacement-list page)))
 
 (defn build-page-func [page-obj]
-  (html/template page-obj [page] [html/root] (page-replace page)))
+  (html/snippet page-obj [html/root] [page] [html/root] (page-replace page)))
 
 (defn build-link-func [page-obj]
   (html/snippet page-obj
@@ -31,7 +31,10 @@
                 ))
 
 (defn build-list-func [page-obj link-func]
-  (html/template page-obj [pages]
+  (html/snippet page-obj [html/root] [pages]
                  [[(html/attr= :data-id "page-list-item")]]
                  (html/clone-for [item pages]
                                  [(html/attr= :data-id "page-list-item")] (html/substitute (link-func item)))))
+
+(defn to-str [nodes]
+  (apply str (html/emit* nodes)))

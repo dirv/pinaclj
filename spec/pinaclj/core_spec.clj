@@ -43,7 +43,7 @@
                test-templates/page-list))
 
 (defn- render-page-list [fs]
-  (apply str (compile-page fs)))
+  (templates/to-str (compile-page fs)))
 
 (defn- index-contents [fs]
   (files/content (files/resolve-path fs "published/index.html")))
@@ -79,7 +79,10 @@
       (should (files/exists? (files/resolve-path @fs "published/a/blog/page/index.html"))))
 
     (it "transforms quotes"
-      (should-contain "‘" (files/content (files/resolve-path @fs "published/quote_test.html")))))
+      (should-contain "‘" (files/content (files/resolve-path @fs "published/quote_test.html"))))
+
+    (it "transforms relative urls"
+      (should-contain "../styles.css" (files/content (files/resolve-path @fs "published/nested/another_post.html")))))
 
   (describe "index page"
     (it "renders an index page"

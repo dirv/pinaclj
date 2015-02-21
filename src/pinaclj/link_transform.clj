@@ -27,7 +27,7 @@
       (assoc node
              :attrs (convert-attrs (:attrs node) page-depth)
              :content (convert-urls (:content node) page-depth))
-    (seq? node)
+    (or (seq? node) (vector? node))
       (doall (map #(convert-urls % page-depth) node))
     :else
       node))
@@ -35,7 +35,7 @@
 (defn- page-depth [page]
   (count (filter #(= \/ %) (:url page))))
 
-(defn convert-page [page]
+(defn transform [page]
   (let [page-depth (page-depth page)]
     (if (pos? page-depth)
       (assoc page :content (convert-urls (:content page) page-depth))
