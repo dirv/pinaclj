@@ -1,6 +1,9 @@
 (ns pinaclj.quote-transform
     (:require [net.cgrand.enlive-html :as html]))
 
+(defn transform-dashes [text]
+  (clojure.string/replace text "--" "&emdash;"))
+
 (defn- blank? [ch]
   (or (nil? ch) (Character/isWhitespace ch) (= \> ch)))
 
@@ -20,12 +23,19 @@
                                             next-char))
          :last-char next-char))
 
-(defn transform-text [text]
+(defn transform-quotes [text]
   (:result (reduce stream-convert {} text)))
 
-(defn transform [node]
+(defn- transform-non-code [node string-fn]
   (cond
-    (string? node) (first (html/html-snippet (transform-text node)))
-    (and (map? node) (not (= :code (:tag node)))) (assoc node :content (transform (:content node)))
-    (seq? node) (map transform node)
-    :else node))
+    (string? node)
+      (first (html/html-snippet (string-fn node)))
+    (and (map? node) (not (= :code (:tag node))))
+      (assoc node :content (transform-non-code (:content node) string-fn))
+    (seq? node)
+      (map #(transform-non-code % string-fn) node)
+    :else
+      node))
+
+(defn transform [node]
+  (transform-non-code node (comp transform-quotes transform-dashes)))

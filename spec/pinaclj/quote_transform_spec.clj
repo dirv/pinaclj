@@ -29,53 +29,57 @@
 (def tag-list
   '({:tag :p :content "'"} {:tag :p :content "'"}))
 
-(describe "transforms"
+(describe "transform-quotes"
   (it "starting single quote to &lsquo;"
-    (should-contain "&lsquo;singlestart" (transform-text single-quotes)))
+    (should-contain "&lsquo;singlestart" (transform-quotes single-quotes)))
 
   (it "inner single quote to &rsquo;"
-    (should-contain "singlestart&rsquo;" (transform-text single-quotes)))
+    (should-contain "singlestart&rsquo;" (transform-quotes single-quotes)))
 
   (it "inner single quote to &lsquo;"
-    (should-contain "&lsquo;singleend" (transform-text single-quotes)))
+    (should-contain "&lsquo;singleend" (transform-quotes single-quotes)))
 
   (it "ending single quote to &rsquo;"
-    (should-contain "singleend&rsquo;" (transform-text single-quotes)))
+    (should-contain "singleend&rsquo;" (transform-quotes single-quotes)))
 
   (it "apostrophe to &rsquo;"
-    (should-contain "let&rsquo;s" (transform-text single-quotes)))
+    (should-contain "let&rsquo;s" (transform-quotes single-quotes)))
 
   (it "starting double quote to &lsquo;"
-    (should-contain "&ldquo;doublestart" (transform-text double-quotes)))
+    (should-contain "&ldquo;doublestart" (transform-quotes double-quotes)))
 
   (it "inner double quote to &rsquo;"
-    (should-contain "doublestart&rdquo;" (transform-text double-quotes)))
+    (should-contain "doublestart&rdquo;" (transform-quotes double-quotes)))
 
   (it "inner double quote to &lsquo;"
-    (should-contain "&ldquo;doubleend" (transform-text double-quotes)))
+    (should-contain "&ldquo;doubleend" (transform-quotes double-quotes)))
 
   (it "ending double quote to &rsquo;"
-    (should-contain "doubleend&rdquo;" (transform-text double-quotes)))
-
-  (it "inside html"
-    (should= "‘" (:content (transform inside-html))))
+    (should-contain "doubleend&rdquo;" (transform-quotes double-quotes)))
 
   (it "quotes after punctuation"
-    (should-contain ".&rdquo;" (transform-text quote-sentence)))
+    (should-contain ".&rdquo;" (transform-quotes quote-sentence))))
+
+(describe "transform-dashes"
+  (it "emdash"
+    (should-contain "&emdash;" (transform-dashes "--"))))
+
+(describe "transform"
 
   (it "nested tag"
     (should= "‘" (:content (:content (transform nested-tag)))))
 
   (it "tag list"
-    (should= "‘" (:content (second (transform tag-list))))))
+    (should= "‘" (:content (second (transform tag-list)))))
 
-(describe "does not transform"
+  (it "inside html"
+    (should= "‘" (:content (transform inside-html))))
 
-  (it "string with no quotes"
+  (it "string"
     (should= no-quotes (transform no-quotes)))
 
-  (it "inside code block"
+  (it "nothing inside code block"
     (should= inside-code-block (transform inside-code-block)))
 
-  (it "attribute quotes"
+  (it "nothing inside attributes"
     (should= attributes (transform attributes))))
