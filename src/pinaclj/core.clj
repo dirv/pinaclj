@@ -46,9 +46,9 @@
 (defn- compile-page [src page-path]
   (let [page (rd/read-page page-path)]
     (when (published? page)
-        (assoc page
-               :url (publication-path page src page-path)
-               :content (render-markdown (:content page))))))
+      (assoc page
+             :url (publication-path page src page-path)
+             :content (render-markdown (:content page))))))
 
 (defn- compile-pages [src files]
   (remove nil? (map (partial compile-page src) files)))
