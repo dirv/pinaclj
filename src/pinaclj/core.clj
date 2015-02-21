@@ -9,8 +9,11 @@
 (def index-page
   "index.html")
 
-(defn- render-markdown [page]
-  (assoc page :content (punctuation/transform (md/to-clj (md/mp (:content page))))))
+(defn- apply-content-transforms [page]
+  (assoc page :content (-> (:content page)
+                           md/mp
+                           md/to-clj
+                           punctuation/transform)))
 
 (def build-destination
   (comp files/change-extension-to-html nio/relativize))
@@ -38,8 +41,8 @@
 
 (defn- compile-page [src page-path]
   (let [page (rd/read-page page-path)]
-    (if (published? page)
-        (render-markdown
+    (when (published? page)
+        (apply-content-transforms
           (assoc page :url (publication-path page src page-path))))))
 
 (defn- compile-pages [src files]
