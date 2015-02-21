@@ -1,11 +1,6 @@
 (ns pinaclj.quote-transform
     (:require [net.cgrand.enlive-html :as html]))
 
-(defn transform-dashes [text]
-  (-> text
-      (clojure.string/replace "--" "&emdash;")
-      (clojure.string/replace " - " "&endash;")))
-
 (defn- blank? [ch]
   (or (nil? ch) (Character/isWhitespace ch) (= \> ch)))
 
@@ -25,9 +20,6 @@
                                             next-char))
          :last-char next-char))
 
-(defn transform-quotes [text]
-  (:result (reduce stream-convert {} text)))
-
 (defn- transform-non-code [node string-fn]
   (cond
     (string? node)
@@ -38,6 +30,14 @@
       (map #(transform-non-code % string-fn) node)
     :else
       node))
+
+(defn transform-quotes [text]
+  (:result (reduce stream-convert {} text)))
+
+(defn transform-dashes [text]
+  (-> text
+      (clojure.string/replace "--" "&emdash;")
+      (clojure.string/replace " - " "&endash;")))
 
 (defn transform [node]
   (transform-non-code node (comp transform-quotes transform-dashes)))
