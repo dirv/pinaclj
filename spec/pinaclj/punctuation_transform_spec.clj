@@ -1,6 +1,6 @@
-(ns pinaclj.quote-transform-spec
+(ns pinaclj.punctuation-transform-spec
   (:require [speclj.core :refer :all]
-            [pinaclj.quote-transform :refer :all]))
+            [pinaclj.punctuation-transform :refer :all]))
 
 (def no-quotes
   "abc")

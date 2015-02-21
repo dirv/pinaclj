@@ -3,14 +3,14 @@
             [pinaclj.nio :as nio]
             [pinaclj.read :as rd]
             [endophile.core :as md]
-            [pinaclj.quote-transform :as quotes]
+            [pinaclj.punctuation-transform :as punctuation]
             [pinaclj.templates :as templates]))
 
 (def index-page
   "index.html")
 
 (defn- render-markdown [page]
-  (assoc page :content (quotes/transform (md/to-clj (md/mp (:content page))))))
+  (assoc page :content (punctuation/transform (md/to-clj (md/mp (:content page))))))
 
 (def build-destination
   (comp files/change-extension-to-html nio/relativize))

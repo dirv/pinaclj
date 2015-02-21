@@ -1,4 +1,4 @@
-(ns pinaclj.quote-transform
+(ns pinaclj.punctuation-transform
     (:require [net.cgrand.enlive-html :as html]))
 
 (defn- blank? [ch]
