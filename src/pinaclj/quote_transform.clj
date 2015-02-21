@@ -2,7 +2,9 @@
     (:require [net.cgrand.enlive-html :as html]))
 
 (defn transform-dashes [text]
-  (clojure.string/replace text "--" "&emdash;"))
+  (-> text
+      (clojure.string/replace "--" "&emdash;")
+      (clojure.string/replace " - " "&endash;")))
 
 (defn- blank? [ch]
   (or (nil? ch) (Character/isWhitespace ch) (= \> ch)))

@@ -62,7 +62,13 @@
 
 (describe "transform-dashes"
   (it "emdash"
-    (should-contain "&emdash;" (transform-dashes "--"))))
+    (should-contain "&emdash;" (transform-dashes "--")))
+
+  (it "endash"
+    (should-contain "&endash;" (transform-dashes " - ")))
+
+  (it "hyphen"
+    (should-contain "-" (transform-dashes "bleeding-edge"))))
 
 (describe "transform"
 
