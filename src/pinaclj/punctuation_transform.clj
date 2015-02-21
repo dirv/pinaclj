@@ -36,8 +36,8 @@
 
 (defn transform-dashes [text]
   (-> text
-      (clojure.string/replace "--" "&emdash;")
-      (clojure.string/replace " - " "&endash;")))
+      (clojure.string/replace "--" "&mdash;")
+      (clojure.string/replace " - " "&ndash;")))
 
 (defn transform [node]
   (transform-non-code node (comp transform-quotes transform-dashes)))

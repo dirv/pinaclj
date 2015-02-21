@@ -61,11 +61,11 @@
     (should-contain ".&rdquo;" (transform-quotes quote-sentence))))
 
 (describe "transform-dashes"
-  (it "emdash"
-    (should-contain "&emdash;" (transform-dashes "--")))
+  (it "mdash"
+    (should-contain "&mdash;" (transform-dashes "--")))
 
-  (it "endash"
-    (should-contain "&endash;" (transform-dashes " - ")))
+  (it "ndash"
+    (should-contain "&ndash;" (transform-dashes " - ")))
 
   (it "hyphen"
     (should-contain "-" (transform-dashes "bleeding-edge"))))
