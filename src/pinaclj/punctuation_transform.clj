@@ -1,6 +1,9 @@
 (ns pinaclj.punctuation-transform
     (:require [net.cgrand.enlive-html :as html]))
 
+(def ignored-tags
+  [:code :script])
+
 (defn- blank? [ch]
   (or (nil? ch) (Character/isWhitespace ch) (= \> ch)))
 
@@ -24,7 +27,7 @@
   (cond
     (string? node)
       (first (html/html-snippet (string-fn node)))
-    (and (map? node) (not (= :code (:tag node))))
+    (and (map? node) (not (.contains ignored-tags (:tag node))))
       (assoc node :content (transform-non-code (:content node) string-fn))
     (or (seq? node) (vector? node))
       (map #(transform-non-code % string-fn) node)

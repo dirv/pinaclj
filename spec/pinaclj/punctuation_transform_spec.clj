@@ -17,6 +17,9 @@
 (def inside-code-block
   {:tag :code :content "'"})
 
+(def inside-script
+  {:tag :script :content "'"})
+
 (def attributes
   {:tag :img :attrs {:src "t'est"} :content nil})
 
@@ -86,6 +89,9 @@
 
   (it "nothing inside code block"
     (should= inside-code-block (transform inside-code-block)))
+
+  (it "nothing inside script"
+    (should= inside-script (transform inside-script)))
 
   (it "nothing inside attributes"
     (should= attributes (transform attributes))))
