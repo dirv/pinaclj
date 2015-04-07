@@ -34,5 +34,5 @@ Will generate the file www.yourdomain.com/example/index.html.
 
 Once you have this, you can then run Pinaclj like this:
 
-    lein run -s <pageDir> -d <destinationDir> -t <theme dir>
+    lein run -s <pageDir> -d <destinationDir> -t <themeDir>
 
