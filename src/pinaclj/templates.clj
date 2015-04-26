@@ -1,5 +1,6 @@
 (ns pinaclj.templates
-  (:require [net.cgrand.enlive-html :as html]))
+  (:require [net.cgrand.enlive-html :as html]
+            [pinaclj.date-time :as date]))
 
 (defn- build-replacement-selector [[field value]]
   [(html/attr= :data-id (name field))])
@@ -30,11 +31,19 @@
                 (html/content (:published-at-str page))
                 ))
 
+(defn- find-latest-page [pages]
+  (date/to-str (last (sort-by :published-at (map :published-at pages)))))
+
 (defn build-list-func [page-obj link-func]
-  (html/snippet page-obj [html/root] [pages]
-                 [[(html/attr= :data-id "page-list-item")]]
-                 (html/clone-for [item pages]
-                                 [(html/attr= :data-id "page-list-item")] (html/substitute (link-func item)))))
+  (html/snippet page-obj
+                [html/root]
+                [pages]
+                [[(html/attr= :data-id "page-list-item")]]
+                (html/clone-for [item pages]
+                                [(html/attr= :data-id "page-list-item")] (html/substitute (link-func item)))
+                [[(html/attr= :data-id "latest-published-at")]]
+                (html/content (find-latest-page pages))
+                ))
 
 (defn to-str [nodes]
   (apply str (html/emit* nodes)))

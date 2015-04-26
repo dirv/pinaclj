@@ -5,7 +5,7 @@
 
     <id>feed-id</id>
 	<title>feed-title</title>
-	<updated data-id="published-at"></updated>
+	<updated data-id="latest-published-at"></updated>
 
 	<entry data-id="page-list-item">
         <id data-id="page-link" />
