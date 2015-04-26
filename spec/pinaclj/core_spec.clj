@@ -41,13 +41,16 @@
                (files/resolve-path fs "published")
                test-templates/page
                test-templates/page-list
-               test-templates/feed))
+               test-templates/feed-list))
 
 (defn- render-page-list [fs]
   (templates/to-str (compile-page fs)))
 
 (defn- index-contents [fs]
   (files/content (files/resolve-path fs "published/index.html")))
+
+(defn- feed-contents [fs]
+  (files/content (files/resolve-path fs "published/feed.xml")))
 
 (describe "compile-all"
   (with fs (test-fs/create-from all-pages))
@@ -101,4 +104,3 @@
   (describe "feed xml"
     (it "renders a feed xml file"
       (should (files/exists? (files/resolve-path @fs "published/feed.xml"))))))
-

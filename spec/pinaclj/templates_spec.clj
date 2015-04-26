@@ -24,6 +24,9 @@
 (defn render-page-list []
    (to-str (test-templates/page-list pages)))
 
+(defn render-feed []
+  (to-str (test-templates/feed-list pages)))
+
 (describe "page link snippet"
   (it "contains href"
     (should-contain "href=\"/1\"" (render-page-link (first pages))))
@@ -37,6 +40,10 @@
 (describe "page list"
   (it "contains correct number of items"
     (should= (count pages) (count (re-seq #"data-id=\"page-list-item\"" (render-page-list))))))
+
+(describe "feed"
+   (it "contains correct number of items"
+     (should= (count pages) (count (re-seq #"data-id=\"page-list-item\"" (render-feed))))))
 
 (describe "page"
   (it "renders title"
