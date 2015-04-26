@@ -1,4 +1,5 @@
 (ns pinaclj.templates
+  (:import (java.time ZonedDateTime))
   (:require [net.cgrand.enlive-html :as html]
             [pinaclj.date-time :as date]))
 
@@ -6,9 +7,9 @@
   [(html/attr= :data-id (name field))])
 
 (defn- build-replacement-transform [[field value]]
-  (if (seq? value)
-    (html/content value)
-    (html/content (.toString value))))
+  (if (instance? ZonedDateTime value)
+    (html/content (.toString value))
+    (html/content value)))
 
 (defn- build-replacement-kv [kv]
   (doall (list (build-replacement-selector kv) (build-replacement-transform kv))))
