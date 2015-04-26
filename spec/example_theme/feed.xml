@@ -8,9 +8,9 @@
 	<updated data-id="latest-published-at"></updated>
 
 	<entry data-id="page-list-item">
-        <id data-id="page-link" />
-		<title data-id="page-title"></title>
-		<link data-id="page-link" rel="alternate"/>
+        <id data-id="url" />
+		<title data-id="title"></title>
+		<link data-href="page-link" data-id="title" rel="alternate"/>
 		<updated data-id="published-at"></updated>
 		<summary data-id="page-summary"></summary>
 	</entry>

@@ -6,7 +6,9 @@
   [(html/attr= :data-id (name field))])
 
 (defn- build-replacement-transform [[field value]]
-  (html/content value))
+  (if (seq? value)
+    (html/content value)
+    (html/content (.toString value))))
 
 (defn- build-replacement-kv [kv]
   (doall (list (build-replacement-selector kv) (build-replacement-transform kv))))
@@ -24,11 +26,10 @@
   (html/snippet page-obj
                 [(html/attr= :data-id "page-list-item")]
                 [page]
-                [(html/attr= :data-id "page-link")]
-                (html/do-> (html/set-attr :href (:url page))
-                (html/content (:title page)))
-                [(html/attr= :data-id "published-at-str")]
-                (html/content (:published-at-str page))
+                [(html/attr= :data-href "page-link")]
+                (html/do-> (html/set-attr :href (:url page)))
+                [html/root]
+                (page-replace page)
                 ))
 
 (defn- find-latest-page [pages]
