@@ -40,7 +40,8 @@
   (compile-all (files/resolve-path fs "pages")
                (files/resolve-path fs "published")
                test-templates/page
-               test-templates/page-list))
+               test-templates/page-list
+               test-templates/feed))
 
 (defn- render-page-list [fs]
   (templates/to-str (compile-page fs)))
@@ -95,5 +96,9 @@
       (should-contain "Nested Title" (index-contents @fs)))
 
     (it "orders pages in reverse chronological order"
-      (should (re-find #"(?s)Four.*Three.*Test.*Nested" (index-contents @fs))))))
+      (should (re-find #"(?s)Four.*Three.*Test.*Nested" (index-contents @fs)))))
+
+  (describe "feed xml"
+    (it "renders a feed xml file"
+      (should (files/exists? (files/resolve-path @fs "published/feed.xml"))))))
 

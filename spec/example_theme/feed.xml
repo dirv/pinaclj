@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom"
+    data-id="page-list" data-page-type="post">
+
+    <id>feed-id</id>
+	<title>feed-title</title>
+	<updated data-id="published-at"></updated>
+
+	<entry data-id="page-list-item">
+        <id data-id="page-link" />
+		<title data-id="page-title"></title>
+		<link data-id="page-link" rel="alternate"/>
+		<updated data-id="published-at"></updated>
+		<summary data-id="page-summary"></summary>
+	</entry>
+</feed>
