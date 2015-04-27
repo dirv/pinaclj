@@ -10,8 +10,8 @@
 	<entry data-id="page-list-item">
         <id data-id="url" />
 		<title data-id="title"></title>
-		<link data-href="page-link" data-id="title" rel="alternate"/>
+		<link data-href="page-link" rel="alternate"/>
 		<updated data-id="published-at"></updated>
-		<summary data-id="page-summary"></summary>
+		<summary data-id="summary"></summary>
 	</entry>
 </feed>

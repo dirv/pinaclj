@@ -19,6 +19,9 @@
 
    {:path "titleWithNoValue"
     :content "title:\n"}
+
+   {:path "longPage"
+    :content (str "---\n" (apply str (repeat 200 "ab ")))}
    ]
   )
 
@@ -56,4 +59,10 @@
   (with fs (test-fs/create-from test-pages))
 
   (it "adds published-at-str to page"
-    (should= "31 October 2014" (:published-at-str (do-read @fs "first")))))
+    (should= "31 October 2014" (:published-at-str (do-read @fs "first"))))
+
+  (it "adds summary"
+    (should (> max-summary-length (count (:summary (do-read @fs "longPage"))))))
+
+  (it "adds ellipsis to end of summary"
+    (should (.endsWith (:summary (do-read @fs "longPage")) more-mark))))

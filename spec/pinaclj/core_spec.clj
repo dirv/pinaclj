@@ -36,7 +36,7 @@
 (def all-pages
   [nested-page simple-page draft-page url-page url-index-page quote-page])
 
-(defn- compile-page [fs]
+(defn- do-compile-all [fs]
   (compile-all (files/resolve-path fs "pages")
                (files/resolve-path fs "published")
                test-templates/page
@@ -44,7 +44,7 @@
                test-templates/feed-list))
 
 (defn- render-page-list [fs]
-  (templates/to-str (compile-page fs)))
+  (templates/to-str (compile-all fs)))
 
 (defn- index-contents [fs]
   (files/content (files/resolve-path fs "published/index.html")))
@@ -55,7 +55,7 @@
 (describe "compile-all"
   (with fs (test-fs/create-from all-pages))
 
-  (before (compile-page @fs))
+  (before (do-compile-all @fs))
 
   (describe "page results"
 
