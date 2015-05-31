@@ -45,8 +45,8 @@
                              (templates/build-link-func (index-page theme-str))))
 
 (defn- feed-func [theme-str]
-  (templates/build-list-func (index-page theme-str)
-                             (templates/build-link-func (index-page theme-str))))
+  (templates/build-list-func (feed-page theme-str)
+                             (templates/build-link-func (feed-page theme-str))))
 
 (defn- run-compile [{src :source dest :destination theme :theme}]
   (core/compile-all (nio/resolve-path fs src)
