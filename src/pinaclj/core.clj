@@ -3,14 +3,21 @@
             [pinaclj.nio :as nio]
             [pinaclj.read :as rd]
             [endophile.core :as md]
-            [pinaclj.quote-transform :as quotes]
+            [pinaclj.link-transform :as link]
+            [pinaclj.punctuation-transform :as punctuation]
             [pinaclj.templates :as templates]))
 
 (def index-page
   "index.html")
 
-(defn- render-markdown [page]
-  (assoc page :content (quotes/transform (md/to-clj (md/mp (:content page))))))
+(def render-markdown
+  (comp md/to-clj md/mp))
+
+(defn- apply-transforms [page template]
+  (-> (assoc page :content (template page))
+      punctuation/transform
+      link/transform
+      :content))
 
 (def build-destination
   (comp files/change-extension-to-html nio/relativize))
@@ -38,24 +45,29 @@
 
 (defn- compile-page [src page-path]
   (let [page (rd/read-page page-path)]
-    (if (published? page)
-        (render-markdown
-          (assoc page :url (publication-path page src page-path))))))
+    (when (published? page)
+      (assoc page
+             :url (publication-path page src page-path)
+             :content (render-markdown (:content page))))))
 
 (defn- compile-pages [src files]
   (remove nil? (map (partial compile-page src) files)))
 
-(defn- write-templated-page [dest path content template]
+(defn- write-single-page [dest page template]
+  (files/create (nio/resolve-path dest (:url page))
+                (templates/to-str (apply-transforms page template))))
+
+(defn- write-list-page [dest path pages template]
   (files/create (nio/resolve-path dest path)
-                (apply str (template content))))
+                (templates/to-str (template pages))))
 
 (defn- chronological-sort [pages]
   (reverse (sort-by :published-at pages)))
 
 (defn compile-all [src dest template-func index-func]
   (let [pages (compile-pages src (files/all-in src))]
-    (doall (map #(write-templated-page dest (:url %) % template-func) pages))
-    (write-templated-page dest
-                          index-page
-                          (chronological-sort pages)
-                          index-func)))
+    (doall (map #(write-single-page dest % template-func) pages))
+    (write-list-page dest
+                     index-page
+                     (chronological-sort pages)
+                     index-func)))

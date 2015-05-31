@@ -13,16 +13,16 @@
             {:url "/4" :title "Fourth post" :content "published" :published-at-str "31 December 2014"}])
 
 (defn render-page-link [page]
-   (apply str (html/emit* (test-templates/page-link page))))
+   (to-str (html/emit* (test-templates/page-link page))))
 
 (defn render-page []
-   (apply str (test-templates/page (first pages))))
+   (to-str (test-templates/page (first pages))))
 
 (defn render-third-page []
-  (apply str (test-templates/page (nth pages 2))))
+  (to-str (test-templates/page (nth pages 2))))
 
 (defn render-page-list []
-   (apply str (test-templates/page-list pages)))
+   (to-str (test-templates/page-list pages)))
 
 (describe "page link snippet"
   (it "contains href"
