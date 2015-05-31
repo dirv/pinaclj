@@ -4,13 +4,18 @@
             [net.cgrand.enlive-html :as html]
             [pinaclj.test-fs :as test-fs]
             [pinaclj.test-templates :as test-templates]
-            [pinaclj.templates :refer :all]))
+            [pinaclj.templates :refer :all]
+            [pinaclj.date-time :as date]))
 
 
 (def pages [{:url "/1" :title "First post" :content "first post content."}
              {:url "/2" :title "Second post" :content "second post content." }
-             {:url "/3" :title "Third post" :content "<h1>third</h1> post content." :third-key "Hello, world!"}
-            {:url "/4" :title "Fourth post" :content "published" :published-at-str "31 December 2014"}])
+             {:url "/3" :title "Third post" :content "<h1>third</h1> post content." :third-key "Hello, world!"
+              :published-at (date/make 2014 11 30 0 0 0)
+              :published-at-str "30 November 2014"}
+            {:url "/4" :title "Fourth post" :content "published"
+             :published-at (date/make 2014 12 31 0 0 0)
+             :published-at-str "31 December 2014"}])
 
 (defn render-page-link [page]
    (to-str (html/emit* (test-templates/page-link page))))
@@ -23,6 +28,9 @@
 
 (defn render-page-list []
    (to-str (test-templates/page-list pages)))
+
+(defn render-feed []
+  (to-str (test-templates/feed-list pages)))
 
 (describe "page link snippet"
   (it "contains href"
@@ -37,6 +45,12 @@
 (describe "page list"
   (it "contains correct number of items"
     (should= (count pages) (count (re-seq #"data-id=\"page-list-item\"" (render-page-list))))))
+
+(describe "feed"
+   (it "contains correct number of items"
+     (should= (count pages) (count (re-seq #"data-id=\"page-list-item\"" (render-feed)))))
+   (it "outputs updated date"
+     (should-contain "2014-12-31T00:00:00Z</updated>" (render-feed))))
 
 (describe "page"
   (it "renders title"

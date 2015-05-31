@@ -1,11 +1,15 @@
 (ns pinaclj.templates
-  (:require [net.cgrand.enlive-html :as html]))
+  (:import (java.time ZonedDateTime))
+  (:require [net.cgrand.enlive-html :as html]
+            [pinaclj.date-time :as date]))
 
 (defn- build-replacement-selector [[field value]]
   [(html/attr= :data-id (name field))])
 
 (defn- build-replacement-transform [[field value]]
-  (html/content value))
+  (if (instance? ZonedDateTime value)
+    (html/content (.toString value))
+    (html/content value)))
 
 (defn- build-replacement-kv [kv]
   (doall (list (build-replacement-selector kv) (build-replacement-transform kv))))
@@ -23,18 +27,25 @@
   (html/snippet page-obj
                 [(html/attr= :data-id "page-list-item")]
                 [page]
-                [(html/attr= :data-id "page-link")]
-                (html/do-> (html/set-attr :href (:url page))
-                (html/content (:title page)))
-                [(html/attr= :data-id "published-at-str")]
-                (html/content (:published-at-str page))
+                [(html/attr= :data-href "page-link")]
+                (html/do-> (html/set-attr :href (:url page)))
+                [html/root]
+                (page-replace page)
                 ))
 
+(defn- find-latest-page [pages]
+  (date/to-str (last (sort-by :published-at (map :published-at pages)))))
+
 (defn build-list-func [page-obj link-func]
-  (html/snippet page-obj [html/root] [pages]
-                 [[(html/attr= :data-id "page-list-item")]]
-                 (html/clone-for [item pages]
-                                 [(html/attr= :data-id "page-list-item")] (html/substitute (link-func item)))))
+  (html/snippet page-obj
+                [html/root]
+                [pages]
+                [[(html/attr= :data-id "page-list-item")]]
+                (html/clone-for [item pages]
+                                [(html/attr= :data-id "page-list-item")] (html/substitute (link-func item)))
+                [[(html/attr= :data-id "latest-published-at")]]
+                (html/content (find-latest-page pages))
+                ))
 
 (defn to-str [nodes]
   (apply str (html/emit* nodes)))

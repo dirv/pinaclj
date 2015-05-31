@@ -36,22 +36,26 @@
 (def all-pages
   [nested-page simple-page draft-page url-page url-index-page quote-page])
 
-(defn- compile-page [fs]
+(defn- do-compile-all [fs]
   (compile-all (files/resolve-path fs "pages")
                (files/resolve-path fs "published")
                test-templates/page
-               test-templates/page-list))
+               test-templates/page-list
+               test-templates/feed-list))
 
 (defn- render-page-list [fs]
-  (templates/to-str (compile-page fs)))
+  (templates/to-str (compile-all fs)))
 
 (defn- index-contents [fs]
   (files/content (files/resolve-path fs "published/index.html")))
 
+(defn- feed-contents [fs]
+  (files/content (files/resolve-path fs "published/feed.xml")))
+
 (describe "compile-all"
   (with fs (test-fs/create-from all-pages))
 
-  (before (compile-page @fs))
+  (before (do-compile-all @fs))
 
   (describe "page results"
 
@@ -95,5 +99,8 @@
       (should-contain "Nested Title" (index-contents @fs)))
 
     (it "orders pages in reverse chronological order"
-      (should (re-find #"(?s)Four.*Three.*Test.*Nested" (index-contents @fs))))))
+      (should (re-find #"(?s)Four.*Three.*Test.*Nested" (index-contents @fs)))))
 
+  (describe "feed xml"
+    (it "renders a feed xml file"
+      (should (files/exists? (files/resolve-path @fs "published/feed.xml"))))))

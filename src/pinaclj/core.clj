@@ -10,6 +10,9 @@
 (def index-page
   "index.html")
 
+(def feed-page
+  "feed.xml")
+
 (def render-markdown
   (comp md/to-clj md/mp))
 
@@ -64,9 +67,13 @@
 (defn- chronological-sort [pages]
   (reverse (sort-by :published-at pages)))
 
-(defn compile-all [src dest template-func index-func]
+(defn compile-all [src dest template-func index-func feed-func]
   (let [pages (compile-pages src (files/all-in src))]
     (doall (map #(write-single-page dest % template-func) pages))
+    (write-list-page dest
+                     feed-page
+                     (chronological-sort pages)
+                     feed-func)
     (write-list-page dest
                      index-page
                      (chronological-sort pages)
