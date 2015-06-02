@@ -29,13 +29,15 @@
 
 (defn- add-published-at-str [page]
   (if-let [published-at (:published-at page)]
-    (page/set-lazy-value page :published-at-str
+    (page/set-lazy-value page
+                         :published-at-str
                          to-readable-str)
     page))
 
 (defn parse-page [path]
   (let [header-and-content (split-header-content (files/read-lines path))]
     (merge {:content (second header-and-content)}
+           {:raw-content (second header-and-content)}
            (to-headers (first header-and-content)))))
 
 (def max-summary-length 100)
@@ -45,13 +47,13 @@
 (defn- trim-to-space [content]
   (subs content 0 (.lastIndexOf content " " (- max-summary-length (count more-mark)))))
 
-(defn- to-summary [content]
-  (str (trim-to-space content) more-mark))
+(defn- to-summary [page opts]
+  (if (< max-summary-length (.length (:raw-content page)))
+    (str (trim-to-space (:raw-content page)) more-mark)
+    (:raw-content page)))
 
 (defn- add-summary [page]
-  (if (< max-summary-length (.length (:content page)))
-    (assoc page :summary (to-summary (:content page)))
-    page))
+  (page/set-lazy-value page :summary to-summary))
 
 (defn read-page [path]
   (-> path
