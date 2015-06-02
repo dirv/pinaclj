@@ -3,6 +3,7 @@
             [pinaclj.read :refer :all]
             [pinaclj.date-time :as date-time]
             [pinaclj.files :as files]
+            [pinaclj.page :as page]
             [pinaclj.test-fs :as test-fs]))
 
 (def published-at
@@ -59,7 +60,7 @@
   (with fs (test-fs/create-from test-pages))
 
   (it "adds published-at-str to page"
-    (should= "31 October 2014" (:published-at-str (do-read @fs "first"))))
+    (should= "31 October 2014" (page/retrieve-value (do-read @fs "first") :published-at-str {})))
 
   (it "adds summary"
     (should (> max-summary-length (count (:summary (do-read @fs "longPage"))))))

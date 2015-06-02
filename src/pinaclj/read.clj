@@ -1,7 +1,8 @@
 (ns pinaclj.read
   (:require [pinaclj.files :as files]
             [pinaclj.templates :as templates]
-            [pinaclj.date-time :as date-time]))
+            [pinaclj.date-time :as date-time]
+            [pinaclj.page :as page]))
 
 (defn- separates-headers? [line]
   (= line "---"))
@@ -23,9 +24,13 @@
     (assoc headers :published-at (date-time/from-str published-at))
     headers))
 
+(defn- to-readable-str [page opts]
+  (date-time/to-readable-str (:published-at page)))
+
 (defn- add-published-at-str [page]
   (if-let [published-at (:published-at page)]
-    (assoc page :published-at-str (date-time/to-readable-str (:published-at page)))
+    (page/set-lazy-value page :published-at-str
+                         to-readable-str)
     page))
 
 (defn parse-page [path]
