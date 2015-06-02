@@ -7,3 +7,6 @@
   (if (contains? page k)
     (get page k)
     ((get (:funcs page) k) page opts)))
+
+(defn all-keys [page]
+  (concat (remove #(= :funcs %) (keys page)) (keys (:funcs page))))

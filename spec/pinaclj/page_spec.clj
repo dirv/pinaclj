@@ -25,7 +25,11 @@
   (set-lazy-value {}
                   :x (fn [page opts] counter)))
 
-(describe "retrieve value"
+(def page-with-both
+  (set-lazy-value {:x "test"}
+                  :y (fn [page opts] "test")))
+
+(describe "retrieve-value"
   (it "retrieves a value"
     (should= 123 (retrieve-value simple-page :x {})))
   (it "computes a simple value"
@@ -36,3 +40,7 @@
     (retrieve-value page-with-differing-func-vals :x {})
     (binding [counter 1]
       (should= 0 (retrieve-value page-with-differing-func-vals :x {})))))
+
+(describe "all-keys"
+  (it "gets keys of both static and computed values"
+    (should= '(:x :y) (all-keys page-with-both))))
