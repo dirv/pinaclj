@@ -1,21 +1,24 @@
 (ns pinaclj.templates
   (:import (java.time ZonedDateTime))
   (:require [net.cgrand.enlive-html :as html]
-            [pinaclj.date-time :as date]))
+            [pinaclj.date-time :as date]
+            [pinaclj.page :as page]))
 
-(defn- build-replacement-selector [[field value]]
+(defn- build-replacement-selector [field]
   [(html/attr= :data-id (name field))])
 
-(defn- build-replacement-transform [[field value]]
-  (if (instance? ZonedDateTime value)
-    (html/content (.toString value))
-    (html/content value)))
+(defn- build-replacement-transform [k page]
+  (let [value (page/retrieve-value page k {})]
+    (if (instance? ZonedDateTime value)
+      (html/content (.toString value))
+      (html/content value))))
 
-(defn- build-replacement-kv [kv]
-  (doall (list (build-replacement-selector kv) (build-replacement-transform kv))))
+(defn- build-replacement-kv [k page]
+  (doall (list (build-replacement-selector k)
+               (build-replacement-transform k page))))
 
 (defn- build-replacement-list [page]
-  (map build-replacement-kv page))
+  (map #(build-replacement-kv % page) (page/all-keys page)))
 
 (defn- page-replace [page]
   #(html/at* % (build-replacement-list page)))
