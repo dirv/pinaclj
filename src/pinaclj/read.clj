@@ -28,11 +28,9 @@
   (date-time/to-readable-str (:published-at page)))
 
 (defn- add-published-at-str [page]
-  (if-let [published-at (:published-at page)]
-    (page/set-lazy-value page
-                         :published-at-str
-                         to-readable-str)
-    page))
+  (page/set-lazy-value page
+                       :published-at-str
+                       to-readable-str))
 
 (defn parse-page [path]
   (let [header-and-content (split-header-content (files/read-lines path))]
