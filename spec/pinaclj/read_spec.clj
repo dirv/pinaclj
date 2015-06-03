@@ -38,11 +38,11 @@
   (it "sets published-at"
     (should= published-at (:published-at (do-read @fs "first"))))
 
-  (it "sets the content"
-    (should= "content body" (:content (do-read @fs "first"))))
+  (it "sets the raw content"
+    (should= "content body" (:raw-content (do-read @fs "first"))))
 
   (it "sets content with multiple lines"
-    (should= "one\ntwo" (:content (do-read @fs "second"))))
+    (should= "one\ntwo" (:raw-content (do-read @fs "second"))))
 
   (it "does not set published-at for unpublished pages"
     (should= nil (:published-at (do-read @fs "second"))))

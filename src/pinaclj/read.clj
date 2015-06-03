@@ -34,8 +34,7 @@
 
 (defn parse-page [path]
   (let [header-and-content (split-header-content (files/read-lines path))]
-    (merge {:content (second header-and-content)}
-           {:raw-content (second header-and-content)}
+    (merge {:raw-content (second header-and-content)}
            (to-headers (first header-and-content)))))
 
 (def max-summary-length 100)
