@@ -1,4 +1,5 @@
-(ns pinaclj.link-transform)
+(ns pinaclj.link-transform
+  (:require [pinaclj.page :as page]))
 
 (defn relative-url? [url]
    (not (re-find #"\/\/" url)))
@@ -33,7 +34,7 @@
       node))
 
 (defn- page-depth [page]
-  (count (filter #(= \/ %) (:url page))))
+  (count (filter #(= \/ %) (page/retrieve-value page :url {}))))
 
 (defn transform [page]
   (let [page-depth (page-depth page)]

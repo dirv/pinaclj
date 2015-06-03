@@ -13,6 +13,6 @@
     (str (trim-to-space (:raw-content page)) more-mark)
     (:raw-content page)))
 
-(defn add-summary [page]
+(defn apply-transform [page]
   (page/set-lazy-value page :summary to-summary))
 

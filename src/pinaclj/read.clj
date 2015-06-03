@@ -25,7 +25,8 @@
 
 (defn parse-page [path]
   (let [header-and-content (split-header-content (files/read-lines path))]
-    (merge {:raw-content (second header-and-content)}
+    (merge {:raw-content (second header-and-content)
+            :path path}
            (to-headers (first header-and-content)))))
 
 (defn read-page [path]

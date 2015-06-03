@@ -31,6 +31,9 @@
 (describe "read-page"
   (with fs (test-fs/create-from test-pages))
 
+  (it "sets the path"
+    (should= "/test/first" (.toString (:path (do-read @fs "first")))))
+
   (it "sets the title"
     (should= "Test" (:title (do-read @fs "first"))))
 

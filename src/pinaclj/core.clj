@@ -5,8 +5,8 @@
             [pinaclj.link-transform :as link]
             [pinaclj.punctuation-transform :as punctuation]
             [pinaclj.templates :as templates]
-            [pinaclj.transforms.transforms :as transforms]
-            ))
+            [pinaclj.page :as page]
+            [pinaclj.transforms.transforms :as transforms]))
 
 (def index-page
   "index.html")
@@ -20,42 +20,21 @@
       link/transform
       :content))
 
-(def build-destination
-  (comp files/change-extension-to-html nio/relativize))
-
-(defn- trim-url [url-str]
-  (if (= \/ (first url-str))
-    (subs url-str 1)
-    url-str))
-
-(defn- add-index-page-extension [url-str]
-  (if (= \/ (last url-str))
-    (str url-str index-page)
-    url-str))
-
-(def fix-url
-  (comp trim-url add-index-page-extension))
-
 (defn- published? [page]
   (not (nil? (:published-at page))))
-
-(defn- publication-path [page src page-path]
-  (if (nil? (:url page))
-    (build-destination src page-path)
-    (fix-url (:url page))))
 
 (defn- compile-page [src page-path]
   (let [page (rd/read-page page-path)]
     (when (published? page)
       (-> page
-          (assoc :url (publication-path page src page-path))
+          (assoc :src src) ; todo, possibly move to read-page
           (transforms/apply-all)))))
 
 (defn- compile-pages [src files]
   (remove nil? (map (partial compile-page src) files)))
 
 (defn- write-single-page [dest page template]
-  (files/create (nio/resolve-path dest (:url page))
+  (files/create (nio/resolve-path dest (page/retrieve-value page :destination {}))
                 (templates/to-str (apply-transforms page template))))
 
 (defn- write-list-page [dest path pages template]
