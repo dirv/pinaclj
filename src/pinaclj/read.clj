@@ -9,27 +9,24 @@
 (defn- to-header [line]
   (let [split-pos (.indexOf line ": ")]
     (when (not (= -1 split-pos))
-    { (keyword (subs line 0 split-pos)) (subs line (+ 2 split-pos))})))
+       [(keyword (subs line 0 split-pos))
+        (subs line (+ 2 split-pos))])))
 
 (defn- split-header-content [all-lines]
   (let [split (split-with (complement separates-headers?) all-lines)]
     [(first split) (clojure.string/join "\n" (rest (second split)))]))
 
+(defn- convert [[k v]]
+  (if (= :published-at k)
+    [k (date-time/from-str v)]
+    [k v]))
+
 (defn- to-headers [header-section]
-  (apply merge (map to-header header-section)))
+  (into {} (map (comp convert to-header) header-section)))
 
-(defn- convert-published-at [headers]
-  (if-let [published-at (:published-at headers)]
-    (assoc headers :published-at (date-time/from-str published-at))
-    headers))
-
-(defn parse-page [path]
+(defn read-page [src-root path]
   (let [header-and-content (split-header-content (files/read-lines path))]
-    (merge {:raw-content (second header-and-content)
-            :path path}
-           (to-headers (first header-and-content)))))
-
-(defn read-page [path]
-  (-> path
-      (parse-page)
-      (convert-published-at)))
+    (assoc (to-headers (first header-and-content))
+           :raw-content (second header-and-content)
+           :path path
+           :src-root src-root)))

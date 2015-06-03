@@ -24,11 +24,9 @@
   (not (nil? (:published-at page))))
 
 (defn- compile-page [src page-path]
-  (let [page (rd/read-page page-path)]
+  (let [page (rd/read-page src page-path)]
     (when (published? page)
-      (-> page
-          (assoc :src src) ; todo, possibly move to read-page
-          (transforms/apply-all)))))
+      (transforms/apply-all page))))
 
 (defn- compile-pages [src files]
   (remove nil? (map (partial compile-page src) files)))

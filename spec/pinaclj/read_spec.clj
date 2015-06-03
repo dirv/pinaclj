@@ -26,7 +26,7 @@
    ])
 
 (defn do-read [fs path-str]
-  (read-page (files/resolve-path fs path-str)))
+  (read-page fs (files/resolve-path fs path-str)))
 
 (describe "read-page"
   (with fs (test-fs/create-from test-pages))

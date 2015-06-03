@@ -7,7 +7,7 @@
   (comp files/change-extension-to-html nio/relativize))
 
 (defn- add-url [page opts]
-  (str "/" (build-destination (:src page) (:path page))))
+  (str "/" (build-destination (:src-root page) (:path page))))
 
 (defn apply-transform [page]
   (page/set-lazy-value page :url add-url))
