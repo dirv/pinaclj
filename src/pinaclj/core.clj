@@ -2,20 +2,17 @@
   (:require [pinaclj.files :as files]
             [pinaclj.nio :as nio]
             [pinaclj.read :as rd]
-            [endophile.core :as md]
             [pinaclj.link-transform :as link]
             [pinaclj.punctuation-transform :as punctuation]
             [pinaclj.templates :as templates]
-            [pinaclj.page :as page]))
+            [pinaclj.transforms.transforms :as transforms]
+            ))
 
 (def index-page
   "index.html")
 
 (def feed-page
   "feed.xml")
-
-(def render-markdown
-  (comp md/to-clj md/mp))
 
 (defn- apply-transforms [page template]
   (-> (assoc page :content (template page))
@@ -47,18 +44,12 @@
     (build-destination src page-path)
     (fix-url (:url page))))
 
-(defn- add-rendered-content [page]
-  (page/set-lazy-value page
-                       :content
-                       (fn [page opts]
-                         (render-markdown (:raw-content page)))))
-
 (defn- compile-page [src page-path]
   (let [page (rd/read-page page-path)]
     (when (published? page)
-      (add-rendered-content
-        (assoc page
-             :url (publication-path page src page-path))))))
+      (-> page
+          (assoc :url (publication-path page src page-path))
+          (transforms/apply-all)))))
 
 (defn- compile-pages [src files]
   (remove nil? (map (partial compile-page src) files)))

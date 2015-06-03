@@ -23,8 +23,7 @@
 
    {:path "longPage"
     :content (str "---\n" (apply str (repeat 200 "ab ")))}
-   ]
-  )
+   ])
 
 (defn do-read [fs path-str]
   (read-page (files/resolve-path fs path-str)))
@@ -56,19 +55,3 @@
   (it "parses headers with no value"
     (should-not (:title (do-read @fs "titleWithNoValue")))))
 
-(defn- published-at-str []
-  (page/retrieve-value (do-read @fs "first") :published-at-str {}))
-(defn- summary []
-  (page/retrieve-value (do-read @fs "longPage") :summary {}))
-
-(describe "data conversions"
-  (with fs (test-fs/create-from test-pages))
-
-  (it "adds published-at-str to page"
-    (should= "31 October 2014" (published-at-str)))
-
-  (it "adds summary"
-    (should (> max-summary-length (count (summary)))))
-
-  (it "adds ellipsis to end of summary"
-    (should (.endsWith (summary) more-mark))))
