@@ -1,6 +1,7 @@
 (ns pinaclj.transforms.summary
   (:require [pinaclj.page :as page]
-            [endophile.core :as md]))
+            [endophile.core :as md]
+            [clojure.string :as string]))
 
 (def render-markdown
   (comp md/to-clj md/mp))
@@ -9,16 +10,23 @@
 
 (def more-mark "[…]")
 
-(defn- trim-to-space [content]
+(defn- trim-to-first-para [content]
+  (first (string/split content #"\n\n" 0)))
+
+(defn- chop [content]
   (subs content 0 (.lastIndexOf content " " (- max-summary-length (count more-mark)))))
 
-(defn- trim-summary [page]
-  (if (< max-summary-length (.length (:raw-content page)))
-    (str (trim-to-space (:raw-content page)) more-mark)
-    (:raw-content page)))
+(defn- trim-to-max-length [content]
+  (if (< max-summary-length (.length content))
+    (str (chop content) more-mark)
+    content))
 
 (defn- to-summary [page opts]
-  (render-markdown (trim-summary page)))
+  (-> page
+      :raw-content
+      trim-to-first-para
+      trim-to-max-length
+      render-markdown))
 
 (defn apply-transform [page]
   (page/set-lazy-value page :summary to-summary))
