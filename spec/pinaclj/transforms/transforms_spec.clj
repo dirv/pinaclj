@@ -22,7 +22,4 @@
     (should= "31 October 2014" (published-at-str)))
 
   (it "adds summary"
-    (should (> summary/max-summary-length (count (summary)))))
-
-  (it "adds ellipsis to end of summary"
-    (should (.endsWith (summary) summary/more-mark))))
+    (should (> summary/max-summary-length (count (summary))))))

@@ -1,0 +1,23 @@
+* Latest published-at
+* Absolute URL?
+* Function parameters
+* latest-published-at (for feed) (or maybe this should be a pointer to a specific post, how to do this? e.g. "latest->published at")
+* Anything else for feed
+* Some values will have multiple values for different parameters, so it makes sense that all can have an empty options passed to it.
+* Pubished-at-str should become function using parameters
+
+
+* Summary is based on content, but currently content is not generated until the page is written. That allows incremental builds, so it's advisable to do this.
+* Now, if feeds are NOT incremental, then content is always generated anyway, so this is a bit pointless until feeds are incrementally generated.
+* The issue with using content from pages is that the ENTIRE page template is generated, so if the summary were to use the page template then it would need to "index" into the field marked "content", and this is fine actually.
+
+So strategy is:
+
+1. Until feed build is incremental, build content up front. So do apply-transforms within compile-page.
+2. Then do summary build using content after build, indexing into the right now.
+
+OR.
+
+1. Summary becomes a "function" that can be called at the time of page generation, same with content. So fields are only processed or transformed when templates request them. Once generated, the value remains.
+
+
