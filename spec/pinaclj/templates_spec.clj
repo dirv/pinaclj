@@ -5,7 +5,8 @@
             [pinaclj.test-fs :as test-fs]
             [pinaclj.test-templates :as test-templates]
             [pinaclj.templates :refer :all]
-            [pinaclj.date-time :as date]))
+            [pinaclj.date-time :as date]
+            [pinaclj.page :as page]))
 
 
 (def pages [{:url "/1" :title "First post" :content "first post content."}
@@ -31,6 +32,14 @@
 
 (defn render-feed []
   (to-str (test-templates/feed-list pages)))
+
+(defn- apply-func-a [page]
+  (page/set-lazy-value page
+                       :func
+                       (fn [page opts] (str "format=" (:format opts)))))
+
+(defn render-func-params-page []
+  (to-str (test-templates/func-params (apply-func-a (first pages)))))
 
 (describe "page link snippet"
   (it "contains href"
@@ -62,3 +71,6 @@
   (it "renders all keys"
     (should-contain "Hello, world!" (render-third-page))))
 
+(describe "func params"
+  (it "passes through parameters"
+    (should-contain "format=123" (render-func-params-page))))

@@ -4,14 +4,31 @@
             [pinaclj.date-time :as date]
             [pinaclj.page :as page]))
 
+(def data-prefix "data-")
+
+(def data-prefix-pattern
+  (re-pattern (str data-prefix ".*")))
+
+(defn- remove-data-prefix [attr-name]
+  (subs (name (first attr-name)) (count data-prefix)))
+
+(defn- data-attrs [node]
+  (filter #(re-matches data-prefix-pattern (name (key %))) (:attrs node)))
+
+(defn- renamed-data-attrs [node]
+  (reduce #(assoc %1 (keyword (remove-data-prefix %2)) (second %2))
+          {}
+          (data-attrs node)))
+
 (defn- build-replacement-selector [field]
   [(html/attr= :data-id (name field))])
 
 (defn- build-replacement-transform [k page]
-  (let [value (page/retrieve-value page k {})]
-    (if (instance? ZonedDateTime value)
-      (html/content (.toString value))
-      (html/content value))))
+  (fn [node]
+    (let [value (page/retrieve-value page k (renamed-data-attrs node))]
+      (if (instance? ZonedDateTime value)
+        ((html/content (.toString value)) node)
+        ((html/content value) node)))))
 
 (defn- build-replacement-kv [k page]
   (doall (list (build-replacement-selector k)
