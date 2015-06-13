@@ -10,8 +10,8 @@
 (defn to-str [date-time]
   (.format date-time DateTimeFormatter/ISO_INSTANT))
 
-(defn to-readable-str [date-time]
-  (.format date-time (DateTimeFormatter/ofPattern "d MMMM yyyy")))
+(defn to-readable-str [date-time format-string]
+  (.format date-time (DateTimeFormatter/ofPattern format-string)))
 
 (defn from-str [value]
   (.atZone (Instant/parse value) (ZoneId/of "UTC")))
