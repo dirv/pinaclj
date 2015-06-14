@@ -12,7 +12,7 @@
     default-format))
 
 (defn to-readable-str [page opts]
-    (date-time/to-readable-str (:published-at page) (to-format opts)))
+  (date-time/to-readable-str (:published-at page) (to-format opts)))
 
 (defn apply-transform [page]
   (page/set-lazy-value page :published-at to-readable-str))
