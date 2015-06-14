@@ -1,3 +1,5 @@
+* Have a list of files which should have their data attributes removed
+ (or maybe just do this for all XML files)
 * latest-published-at (for feed) (or maybe this should be a pointer to a specific post, how to do this? e.g. "latest->published at")
 * Anything else for feed
 * Redo the transforms stuff so that it's somewhat pluggable
