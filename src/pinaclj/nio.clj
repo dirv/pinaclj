@@ -19,10 +19,10 @@
 (defn input-stream [path]
   (Files/newInputStream path (into-array OpenOption [])))
 
-(defn- get-last-modified-time [path]
-  (Files/getLastModifiedTime path (into-array LinkOption [])))
+(defn get-last-modified-time [path]
+  (.toMillis (Files/getLastModifiedTime path (into-array LinkOption []))))
 
-(defn- set-last-modified [path millis]
+(defn set-last-modified [path millis]
   (Files/setLastModifiedTime path (FileTime/fromMillis millis)))
 
 (defn read-all-lines [path]

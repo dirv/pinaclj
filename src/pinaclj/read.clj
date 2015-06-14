@@ -1,7 +1,7 @@
 (ns pinaclj.read
   (:require [pinaclj.files :as files]
-            [pinaclj.date-time :as date-time]
-            ))
+            [pinaclj.nio :as nio]
+            [pinaclj.date-time :as date-time]))
 
 (defn- separates-headers? [line]
   (= line "---"))
@@ -29,4 +29,5 @@
     (assoc (to-headers (first header-and-content))
            :raw-content (second header-and-content)
            :path path
-           :src-root src-root)))
+           :src-root src-root
+           :modified (nio/get-last-modified-time path))))

@@ -1,5 +1,6 @@
 (ns pinaclj.test-fs
   (:require [pinaclj.files :as files]
+            [pinaclj.nio :as nio]
             [pinaclj.templates :as templates])
   (:import (com.google.common.jimfs Jimfs Configuration)))
 
@@ -9,7 +10,10 @@
 (defn create-from [files]
   (let [fs  (files/init (test-fs) "/test")]
     (doseq [file files]
-      (files/create (files/resolve-path fs (:path file)) (:content file)))
+      (let [path (files/resolve-path fs (:path file))]
+        (files/create path (:content file))
+        (when (contains? file :modified)
+          (nio/set-last-modified path (:modified file)))))
     fs))
 
 (defn create-empty []

@@ -11,7 +11,9 @@
 
 (def test-pages
   [{:path "first"
-    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n---\ncontent body"}
+    :content "title: Test\npublished-at: 2014-10-31T10:05:00Z\n---\ncontent body"
+    :modified 1}
+
    {:path "second"
     :content "title: foo\nhello: World\n---\none\ntwo" }
 
@@ -56,5 +58,8 @@
     (should= "test: two" (:title (do-read @fs "titleWithColon"))))
 
   (it "parses headers with no value"
-    (should-not (:title (do-read @fs "titleWithNoValue")))))
+    (should-not (:title (do-read @fs "titleWithNoValue"))))
+
+  (it "sets modified"
+    (should= 1 (:modified (do-read @fs "first")))))
 
