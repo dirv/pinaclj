@@ -15,3 +15,9 @@
 
 (defn from-str [value]
   (.atZone (Instant/parse value) (ZoneId/of "UTC")))
+
+(defn valid? [format-string]
+  (try
+    (DateTimeFormatter/ofPattern format-string)
+    true
+    (catch IllegalArgumentException e false)))
