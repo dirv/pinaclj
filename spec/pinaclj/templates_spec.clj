@@ -13,10 +13,10 @@
              {:url "/2" :title "Second post" :content "second post content." }
              {:url "/3" :title "Third post" :content "<h1>third</h1> post content." :third-key "Hello, world!"
               :published-at (date/make 2014 11 30 0 0 0)
-              :published-at-str "30 November 2014"}
+              }
             {:url "/4" :title "Fourth post" :content "published"
              :published-at (date/make 2014 12 31 0 0 0)
-             :published-at-str "31 December 2014"}])
+             }])
 
 (defn render-page-link [page]
    (to-str (html/emit* (test-templates/page-link page))))
@@ -46,10 +46,7 @@
     (should-contain "href=\"/1\"" (render-page-link (first pages))))
 
   (it "contains title"
-    (should-contain "First post" (render-page-link (first pages))))
-
-  (it "contains published-at-str"
-    (should-contain "31 December 2014" (render-page-link (nth pages 3)))))
+    (should-contain "First post" (render-page-link (first pages)))))
 
 (describe "page list"
   (it "contains correct number of items"

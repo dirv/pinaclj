@@ -29,6 +29,10 @@
   (set-lazy-value {:x "test"}
                   :y (fn [page opts] "test")))
 
+(def page-with-override
+  (set-lazy-value {:x "foo"}
+                  :x (fn [page opts] "bar")))
+
 (describe "retrieve-value"
   (it "retrieves a value"
     (should= 123 (retrieve-value simple-page :x {})))
@@ -36,6 +40,8 @@
     (should= 123 (retrieve-value page-with-simple-func :x {})))
   (it "computes a value based on page content"
     (should= "test" (retrieve-value page-with-complex-func :y {})))
+  (it "computes an override value"
+    (should= "bar" (retrieve-value page-with-override :x {})))
   (it "memoizes"
     (retrieve-value page-with-differing-func-vals :x {})
     (binding [counter 1]

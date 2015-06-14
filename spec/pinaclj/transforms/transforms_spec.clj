@@ -10,16 +10,16 @@
     {:raw-content (apply str (repeat 200 "ab "))
      :published-at (date-time/from-str "2014-10-31T10:05:00Z")}))
 
-(defn- published-at-str []
-  (page/retrieve-value page :published-at-str {}))
+(defn- published-at []
+  (page/retrieve-value page :published-at {}))
 
 (defn- summary []
   (page/retrieve-value page :summary {}))
 
 (describe "data conversions"
 
-  (it "adds published-at-str to page"
-    (should= "31 October 2014" (published-at-str)))
+  (it "adds published-at to page"
+    (should= "31 October 2014" (published-at)))
 
   (it "adds summary"
     (should (> summary/max-summary-length (count (summary))))))

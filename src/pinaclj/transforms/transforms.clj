@@ -1,5 +1,5 @@
 (ns pinaclj.transforms.transforms
-  (:require [pinaclj.transforms.published-at-str :as published-at-str]
+  (:require [pinaclj.transforms.published-at :as published-at]
             [pinaclj.transforms.summary :as summary]
             [pinaclj.transforms.content :as content]
             [pinaclj.transforms.url :as url]
@@ -7,7 +7,7 @@
 
 (defn apply-all [page]
   (-> page
-      (published-at-str/apply-transform)
+      (published-at/apply-transform)
       (content/apply-transform)
       (summary/apply-transform)
       (url/apply-transform)
