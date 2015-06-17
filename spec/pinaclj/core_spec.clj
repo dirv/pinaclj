@@ -8,7 +8,7 @@
 
 (def nested-page
    {:path "pages/nested/another_post.md"
-    :content "title: Nested Title\npublished-at: 2014-10-31T11:05:00Z\n---\ncontent\n" })
+    :content "title: Nested Title\npublished-at: 2014-10-31T11:05:00Z\n---\ncontent\n"})
 
 (def simple-page
   {:path "pages/post.md"
@@ -104,3 +104,20 @@
   (describe "feed xml"
     (it "renders a feed xml file"
       (should (files/exists? (files/resolve-path @fs "published/feed.xml"))))))
+
+(def published-content
+  "published-at: 2014-04-24T00:00:00Z\n---\n")
+(def published-index-page {:path "published/index.html" :modified 1 :content ""})
+(def old-page {:path "pages/old.md" :modified 1 :content published-content})
+(def new-page {:path "pages/new.md" :modified 2 :content published-content})
+
+(describe "write-single-page"
+  (with fs (test-fs/create-from [published-index-page old-page new-page]))
+
+  (before (do-compile-all @fs))
+
+  (it "writes new page"
+    (should (files/exists? (files/resolve-path @fs "published/new.html"))))
+
+  (it "does not write old page"
+    (should-not (files/exists? (files/resolve-path @fs "published/old.html")))))
