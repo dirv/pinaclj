@@ -2,8 +2,6 @@
   (:require [pinaclj.files :as files]
             [pinaclj.nio :as nio]
             [pinaclj.read :as rd]
-            [pinaclj.link-transform :as link]
-            [pinaclj.punctuation-transform :as punctuation]
             [pinaclj.templates :as templates]
             [pinaclj.page :as page]
             [pinaclj.transforms.transforms :as transforms]))
@@ -13,12 +11,6 @@
 
 (def feed-page
   "feed.xml")
-
-(defn- apply-transforms [page template]
-  (-> (assoc page :content (template page))
-      punctuation/transform
-      link/transform
-      :content))
 
 (defn- published? [page]
   (not (nil? (:published-at page))))
@@ -40,10 +32,16 @@
 (defn- modified-since-last-publish? [dest page]
   (> (:modified page) (dest-last-modified dest)))
 
+(defn- dest-path [dest page]
+  (nio/resolve-path dest (page/retrieve-value page :destination {})))
+
+(defn- templated-content [page template]
+  (page/retrieve-value page :templated-content {:template template}))
+
 (defn- write-single-page [dest page template]
   (when (modified-since-last-publish? dest page)
-    (files/create (nio/resolve-path dest (page/retrieve-value page :destination {}))
-                (templates/to-str (apply-transforms page template)))))
+    (files/create (dest-path dest page)
+                  (templated-content page template))))
 
 (defn- write-list-page [dest path pages template]
   (files/create (nio/resolve-path dest path)

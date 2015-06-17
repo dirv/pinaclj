@@ -3,7 +3,8 @@
             [pinaclj.transforms.summary :as summary]
             [pinaclj.transforms.content :as content]
             [pinaclj.transforms.url :as url]
-            [pinaclj.transforms.destination :as destination]))
+            [pinaclj.transforms.destination :as destination]
+            [pinaclj.transforms.templated-content :as template]))
 
 (defn apply-all [page]
   (-> page
@@ -11,5 +12,6 @@
       (content/apply-transform)
       (summary/apply-transform)
       (url/apply-transform)
-      (destination/apply-transform)))
+      (destination/apply-transform)
+      (template/apply-transform)))
 
