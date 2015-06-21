@@ -9,8 +9,7 @@
       punctuation/transform
       link/transform
       :content
-      templates/to-str
-      ))
+      templates/to-str))
 
 (defn apply-transform [page]
   (page/set-lazy-value page :templated-content do-template))

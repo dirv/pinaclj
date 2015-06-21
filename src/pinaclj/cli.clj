@@ -41,8 +41,7 @@
   (templates/build-page-func (fs-stream theme-str "/post.html")))
 
 (defn- index-func [theme-str]
-  (templates/build-list-func (index-page theme-str)
-                             (templates/build-link-func (index-page theme-str))))
+  (templates/build-page-func (index-page theme-str)))
 
 (defn- feed-func [theme-str]
   (templates/build-list-func (feed-page theme-str)

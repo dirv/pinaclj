@@ -22,11 +22,19 @@
 (defn- build-replacement-selector [field]
   [(html/attr= :data-id (name field))])
 
+(declare page-replace)
+
 (defn- build-replacement-transform [k page]
   (fn [node]
     (let [value (page/retrieve-value page k (renamed-data-attrs node))]
-      (if (seq? value)
+      (cond
+        (map? value)
+        ((html/clone-for [item (:pages value)]
+                         [(html/attr= :data-id "page-list-item")]
+                         (page-replace item)) node)
+        (seq? value)
         ((html/content value) node)
+        :else
         ((html/content (.toString value)) node)))))
 
 (defn- build-replacement-kv [k page]

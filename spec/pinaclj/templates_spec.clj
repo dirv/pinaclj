@@ -2,6 +2,7 @@
   (:require [speclj.core :refer :all]
             [clojure.pprint]
             [net.cgrand.enlive-html :as html]
+            [pinaclj.transforms.transforms :as transforms]
             [pinaclj.test-fs :as test-fs]
             [pinaclj.test-templates :as test-templates]
             [pinaclj.templates :refer :all]
@@ -18,6 +19,10 @@
              :published-at (date/make 2014 12 31 0 0 0)
              }])
 
+(def list-page
+  (transforms/apply-all {:pages pages
+                         :published-at (date/make 2014 12 31 0 0 0)}))
+
 (defn render-page-link [page]
    (to-str (html/emit* (test-templates/page-link page))))
 
@@ -28,7 +33,7 @@
   (to-str (test-templates/page (nth pages 2))))
 
 (defn render-page-list []
-   (to-str (test-templates/page-list pages)))
+   (to-str (test-templates/page-list list-page)))
 
 (defn render-feed []
   (to-str (test-templates/feed-list pages)))

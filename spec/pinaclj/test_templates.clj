@@ -21,7 +21,7 @@
   (templates/build-link-func (feed-stream)))
 
 (def page-list
-  (templates/build-list-func (page-list-stream) page-link))
+  (templates/build-page-func (page-list-stream)))
 
 (def feed-list
   (templates/build-list-func (feed-stream) feed-link))

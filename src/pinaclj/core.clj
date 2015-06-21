@@ -4,7 +4,8 @@
             [pinaclj.read :as rd]
             [pinaclj.templates :as templates]
             [pinaclj.page :as page]
-            [pinaclj.transforms.transforms :as transforms]))
+            [pinaclj.transforms.transforms :as transforms]
+            [pinaclj.date-time :as date]))
 
 (def index-page
   "index.html")
@@ -59,5 +60,6 @@
                      feed-func)
     (write-list-page dest
                      index-page
-                     (chronological-sort pages)
+                     (transforms/apply-all {:pages (chronological-sort pages)
+                                            :published-at (date/make 2015 01 01 01 01 01)})
                      index-func)))
