@@ -10,4 +10,4 @@
     (get page k)))
 
 (defn all-keys [page]
-  (concat (remove #(= :funcs %) (keys page)) (keys (:funcs page))))
+  (distinct (concat (remove #(= :funcs %) (keys page)) (keys (:funcs page)))))

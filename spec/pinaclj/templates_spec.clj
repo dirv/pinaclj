@@ -9,22 +9,19 @@
             [pinaclj.date-time :as date]
             [pinaclj.page :as page]))
 
-
-(def pages [{:url "/1" :title "First post" :content "first post content."}
-             {:url "/2" :title "Second post" :content "second post content." }
-             {:url "/3" :title "Third post" :content "<h1>third</h1> post content." :third-key "Hello, world!"
+(def pages (map transforms/apply-all
+                [{:url "/1" :title "First post" :raw-content "first post content."}
+             {:url "/2" :title "Second post" :raw-content "second post content." }
+             {:url "/3" :title "Third post" :raw-content "<h1>third</h1> post content." :third-key "Hello, world!"
               :published-at (date/make 2014 11 30 0 0 0)
               }
-            {:url "/4" :title "Fourth post" :content "published"
+            {:url "/4" :title "Fourth post" :raw-content "published"
              :published-at (date/make 2014 12 31 0 0 0)
-             }])
+             }]))
 
 (def list-page
   (transforms/apply-all {:pages pages
-                         :published-at (date/make 2014 12 31 0 0 0)}))
-
-(defn render-page-link [page]
-   (to-str (html/emit* (test-templates/page-link page))))
+                         }))
 
 (defn render-page []
    (to-str (test-templates/page (first pages))))
@@ -36,7 +33,7 @@
    (to-str (test-templates/page-list list-page)))
 
 (defn render-feed []
-  (to-str (test-templates/feed-list pages)))
+  (to-str (test-templates/feed-list list-page)))
 
 (defn- apply-func-a [page]
   (page/set-lazy-value page
@@ -46,20 +43,19 @@
 (defn render-func-params-page []
   (to-str (test-templates/func-params (apply-func-a (first pages)))))
 
-(describe "page link snippet"
-  (it "contains href"
-    (should-contain "href=\"/1\"" (render-page-link (first pages))))
+(describe "page list"
+  (it "contains item href"
+    (should-contain "href=\"/1\"" (render-page-list)))
 
   (it "contains title"
-    (should-contain "First post" (render-page-link (first pages)))))
+    (should-contain "First post" (render-page-list)))
 
-(describe "page list"
   (it "contains correct number of items"
-    (should= (count pages) (count (re-seq #"data-id=\"page-list-item\"" (render-page-list))))))
+    (should= (count pages) (count (re-seq #"data-id=\"page-list\"" (render-page-list))))))
 
 (describe "feed"
    (it "contains correct number of items"
-     (should= (count pages) (count (re-seq #"data-id=\"page-list-item\"" (render-feed)))))
+     (should= (count pages) (count (re-seq #"data-id=\"page-list\"" (render-feed)))))
    (it "outputs updated date"
      (should-contain "2014-12-31T00:00:00Z</updated>" (render-feed))))
 

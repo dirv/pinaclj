@@ -48,18 +48,20 @@
   (files/create (nio/resolve-path dest path)
                 (templates/to-str (template pages))))
 
-(defn- chronological-sort [pages]
-  (reverse (sort-by :published-at pages)))
+(defn- root-page [pages]
+  (transforms/apply-all {:pages pages
+                         :raw-content ""
+                         :published-at (date/make 2015 01 01 01 01 01) }))
 
 (defn compile-all [src dest template-func index-func feed-func]
-  (let [pages (compile-pages src (files/all-in src))]
+  (let [pages (compile-pages src (files/all-in src))
+        root-page (root-page pages)]
     (doall (map #(write-single-page dest % template-func) pages))
     (write-list-page dest
                      feed-page
-                     (chronological-sort pages)
+                     root-page
                      feed-func)
     (write-list-page dest
                      index-page
-                     (transforms/apply-all {:pages (chronological-sort pages)
-                                            :published-at (date/make 2015 01 01 01 01 01)})
+                     root-page
                      index-func)))

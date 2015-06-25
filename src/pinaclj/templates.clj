@@ -1,6 +1,5 @@
 (ns pinaclj.templates
   (:require [net.cgrand.enlive-html :as html]
-            [pinaclj.date-time :as date]
             [pinaclj.page :as page]))
 
 (def data-prefix "data-")
@@ -20,7 +19,7 @@
           (data-attrs node)))
 
 (defn- build-replacement-selector [field]
-  [(html/attr= :data-id (name field))])
+  [#{html/root (html/but (html/attr= :data-id "page-list"))} :> (html/attr= :data-id (name field))])
 
 (declare page-replace)
 
@@ -30,7 +29,7 @@
       (cond
         (map? value)
         ((html/clone-for [item (:pages value)]
-                         [(html/attr= :data-id "page-list-item")]
+                         [(html/attr= :data-id "page-list")]
                          (page-replace item)) node)
         (seq? value)
         ((html/content value) node)
@@ -41,38 +40,18 @@
   (doall (list (build-replacement-selector k)
                (build-replacement-transform k page))))
 
+(defn- add-link [rs page]
+  (cons (list [(html/attr= :data-href "page-link")]
+                (html/do-> (html/set-attr :href (:url page)))) rs))
+
 (defn- build-replacement-list [page]
   (map #(build-replacement-kv % page) (page/all-keys page)))
 
 (defn- page-replace [page]
-  #(html/at* % (build-replacement-list page)))
+  #(html/at* % (add-link (build-replacement-list page) page)))
 
 (defn build-page-func [page-obj]
   (html/snippet page-obj [html/root] [page] [html/root] (page-replace page)))
-
-(defn build-link-func [page-obj]
-  (html/snippet page-obj
-                [(html/attr= :data-id "page-list-item")]
-                [page]
-                [(html/attr= :data-href "page-link")]
-                (html/do-> (html/set-attr :href (:url page)))
-                [html/root]
-                (page-replace page)
-                ))
-
-(defn- find-latest-page [pages]
-  (date/to-str (last (sort-by :published-at (map :published-at pages)))))
-
-(defn build-list-func [page-obj link-func]
-  (html/snippet page-obj
-                [html/root]
-                [pages]
-                [[(html/attr= :data-id "page-list-item")]]
-                (html/clone-for [item pages]
-                                [(html/attr= :data-id "page-list-item")] (html/substitute (link-func item)))
-                [[(html/attr= :data-id "latest-published-at")]]
-                (html/content (find-latest-page pages))
-                ))
 
 (defn to-str [nodes]
   (apply str (html/emit* nodes)))

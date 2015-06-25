@@ -14,17 +14,11 @@
 (defn- func-params-stream []
   (test-fs/resource-stream "example_theme/func_params.html"))
 
-(def page-link
-  (templates/build-link-func (page-list-stream)))
-
-(def feed-link
-  (templates/build-link-func (feed-stream)))
-
 (def page-list
   (templates/build-page-func (page-list-stream)))
 
 (def feed-list
-  (templates/build-list-func (feed-stream) feed-link))
+  (templates/build-page-func (feed-stream)))
 
 (def page
   (templates/build-page-func (page-stream)))
