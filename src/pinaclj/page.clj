@@ -1,4 +1,5 @@
-(ns pinaclj.page)
+(ns pinaclj.page
+  (:require [pinaclj.date-time :as date]))
 
 (defn set-lazy-value [page fk fv]
   (assoc-in page [:funcs fk] (memoize fv)))
@@ -11,3 +12,8 @@
 
 (defn all-keys [page]
   (distinct (concat (remove #(= :funcs %) (keys page)) (keys (:funcs page)))))
+
+(defn root-page [pages]
+  {:pages pages
+   :raw-content ""
+   :published-at (date/make 2015 01 01 01 01 01) })

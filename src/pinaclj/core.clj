@@ -4,8 +4,7 @@
             [pinaclj.read :as rd]
             [pinaclj.templates :as templates]
             [pinaclj.page :as page]
-            [pinaclj.transforms.transforms :as transforms]
-            [pinaclj.date-time :as date]))
+            [pinaclj.transforms.transforms :as transforms]))
 
 (def index-page
   "index.html")
@@ -48,14 +47,9 @@
   (files/create (nio/resolve-path dest path)
                 (templates/to-str (template pages))))
 
-(defn- root-page [pages]
-  (transforms/apply-all {:pages pages
-                         :raw-content ""
-                         :published-at (date/make 2015 01 01 01 01 01) }))
-
 (defn compile-all [src dest template-func index-func feed-func]
   (let [pages (compile-pages src (files/all-in src))
-        root-page (root-page pages)]
+        root-page (transforms/apply-all (page/root-page pages))]
     (doall (map #(write-single-page dest % template-func) pages))
     (write-list-page dest
                      feed-page
