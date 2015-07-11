@@ -2,7 +2,7 @@
   (:require [pinaclj.page :as page]))
 
 (defn relative-url? [url]
-   (not (re-find #"\/\/" url)))
+  (not (re-find #"\/\/" url)))
 
 (defn- up-dir-str [page-depth]
   (apply str (repeat page-depth "../")))
@@ -13,7 +13,7 @@
     url))
 
 (defn- convert-attr [attrs attr page-depth]
-  (if (contains? attrs attr)
+  (if-let [url (get attrs attr)]
     (assoc attrs attr (convert-url (get attrs attr) page-depth))
     attrs))
 

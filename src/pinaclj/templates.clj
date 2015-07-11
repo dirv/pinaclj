@@ -29,7 +29,7 @@
       (cond
         (map? value)
         ((html/clone-for [item (:pages value)]
-                         [(html/attr= :data-id "page-list")]
+                         [(html/attr= :data-id (name k))]
                          (page-replace item)) node)
         (seq? value)
         ((html/content value) node)

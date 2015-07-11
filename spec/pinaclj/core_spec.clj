@@ -30,11 +30,15 @@
   {:path "pages/quote_test.md"
    :content "published-at: 2014-10-31T15:05:00Z\n---\n'"})
 
+(def tag-page
+  {:path "pages/tag_test.md"
+   :content "published-at: 2014-10-31T15:05:00Z\ntags: tagA,tagB,tagC\n---\n'"})
+
 (def published-pages
-  [nested-page simple-page url-page url-index-page quote-page])
+  [nested-page simple-page url-page url-index-page quote-page tag-page])
 
 (def all-pages
-  [nested-page simple-page draft-page url-page url-index-page quote-page])
+  [nested-page simple-page draft-page url-page url-index-page quote-page tag-page])
 
 (defn- do-compile-all [fs]
   (compile-all (files/resolve-path fs "pages")
@@ -86,7 +90,10 @@
       (should-contain "‘" (files/content (files/resolve-path @fs "published/quote_test.html"))))
 
     (it "transforms relative urls"
-      (should-contain "../styles.css" (files/content (files/resolve-path @fs "published/nested/another_post.html")))))
+      (should-contain "../styles.css" (files/content (files/resolve-path @fs "published/nested/another_post.html"))))
+
+    (it "adds tags"
+      (should-contain "/tags/tagA/" (files/content (files/resolve-path @fs "published/tag_test.html")))))
 
   (describe "index page"
     (it "renders an index page"
