@@ -40,6 +40,9 @@
 (def all-pages
   [nested-page simple-page draft-page url-page url-index-page quote-page tag-page])
 
+(defn- file-exists? [fs file-path]
+  (files/exists? (files/resolve-path fs file-path)))
+
 (defn- do-compile-all [fs]
   (compile-all (files/resolve-path fs "pages")
                (files/resolve-path fs "published")
@@ -64,7 +67,7 @@
   (describe "page results"
 
     (it "creates the file"
-      (should (files/exists? (files/resolve-path @fs "published/post.html"))))
+      (should (file-exists? @fs "published/post.html")))
 
     (it "renders the title"
       (should-contain "<h1 data-id=\"title\">Test</h1>"
@@ -75,16 +78,16 @@
                       (files/content (files/resolve-path @fs "published/post.html"))))
 
     (it "compiles files in subdirectories"
-      (should (files/exists? (files/resolve-path @fs "published/nested/another_post.html"))))
+      (should (file-exists? @fs "published/nested/another_post.html")))
 
     (it "does not publish drafts"
-      (should-not (files/exists? (files/resolve-path @fs "published/a-draft.html"))))
+      (should-not (file-exists? @fs "published/a-draft.html")))
 
     (it "uses the url header if one is present"
-      (should (files/exists? (files/resolve-path @fs "published/a/blog/page.html"))))
+      (should (file-exists? @fs "published/a/blog/page.html")))
 
     (it "adds html extension if it isn't present"
-      (should (files/exists? (files/resolve-path @fs "published/a/blog/page/index.html"))))
+      (should (file-exists? @fs "published/a/blog/page/index.html")))
 
     (it "transforms quotes"
       (should-contain "‘" (files/content (files/resolve-path @fs "published/quote_test.html"))))
@@ -97,7 +100,7 @@
 
   (describe "index page"
     (it "renders an index page"
-      (should (files/exists? (files/resolve-path @fs "published/index.html"))))
+      (should (file-exists? @fs "published/index.html")))
 
     (it "renders right number of non-draft pages"
       (should= (count published-pages) (count (re-seq #"<a" (index-contents @fs)))))
@@ -110,7 +113,13 @@
 
   (describe "feed xml"
     (it "renders a feed xml file"
-      (should (files/exists? (files/resolve-path @fs "published/feed.xml"))))))
+      (should (file-exists? @fs "published/feed.xml"))))
+
+  (describe "tag pages"
+    (it "creates tag pages"
+      (should (file-exists? @fs "published/tags/tagA/index.html"))
+      (should (file-exists? @fs "published/tags/tagB/index.html"))
+      (should (file-exists? @fs "published/tags/tagC/index.html")))))
 
 (def published-content
   "published-at: 2014-04-24T00:00:00Z\n---\n")
@@ -124,7 +133,7 @@
   (before (do-compile-all @fs))
 
   (it "writes new page"
-    (should (files/exists? (files/resolve-path @fs "published/new.html"))))
+    (should (file-exists? @fs "published/new.html")))
 
   (it "does not write old page"
-    (should-not (files/exists? (files/resolve-path @fs "published/old.html")))))
+    (should-not (file-exists? @fs "published/old.html"))))

@@ -4,7 +4,7 @@
             [pinaclj.read :as rd]
             [pinaclj.templates :as templates]
             [pinaclj.page :as page]
-            [pinaclj.transforms.transforms :as transforms]))
+            [pinaclj.page-builder :as pb]))
 
 (def index-page
   "index.html")
@@ -12,13 +12,9 @@
 (def feed-page
   "feed.xml")
 
-(defn- published? [page]
-  (not (nil? (:published-at page))))
-
 (defn- compile-page [src page-path]
   (let [page (rd/read-page src page-path)]
-    (when (published? page)
-      (transforms/apply-all page))))
+    (pb/build-if-published page)))
 
 (defn- compile-pages [src files]
   (remove nil? (map (partial compile-page src) files)))
@@ -47,14 +43,20 @@
   (files/create (nio/resolve-path dest path)
                 (templates/to-str (template pages))))
 
+(defn- write-tag-pages [dest tag-pages page-func]
+  (doall (map #(write-single-page dest % page-func) tag-pages)))
+
 (defn compile-all [src dest template-func index-func feed-func]
   (let [pages (compile-pages src (files/all-in src))
-        root-page (transforms/apply-all (page/root-page pages))]
+        root-page (pb/build-list-page pages)]
     (doall (map #(write-single-page dest % template-func) pages))
     (write-list-page dest
                      feed-page
                      root-page
                      feed-func)
+    (write-tag-pages dest
+                     (pb/build-tag-pages (:pages root-page))
+                     index-func)
     (write-list-page dest
                      index-page
                      root-page

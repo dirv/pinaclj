@@ -13,7 +13,3 @@
 (defn all-keys [page]
   (distinct (concat (remove #(= :funcs %) (keys page)) (keys (:funcs page)))))
 
-(defn root-page [pages]
-  {:pages pages
-   :raw-content ""
-   :published-at (date/make 2015 01 01 01 01 01) })
