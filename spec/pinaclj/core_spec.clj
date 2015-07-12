@@ -43,12 +43,15 @@
 (defn- file-exists? [fs file-path]
   (files/exists? (files/resolve-path fs file-path)))
 
+(def pages
+  {:feed.xml test-templates/feed-list
+   :index.html test-templates/page-list})
+
 (defn- do-compile-all [fs]
   (compile-all (files/resolve-path fs "pages")
                (files/resolve-path fs "published")
                test-templates/page
-               test-templates/page-list
-               test-templates/feed-list))
+               pages))
 
 (defn- render-page-list [fs]
   (templates/to-str (compile-all fs)))

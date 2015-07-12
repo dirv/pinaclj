@@ -40,12 +40,15 @@
 (defn- feed-func [theme-str]
   (templates/build-page-func (fs-stream theme-str "/feed.xml")))
 
+(defn- pages [theme]
+  {:feed.xml (feed-func theme)
+   :index.html (index-func theme)})
+
 (defn- run-compile [{src :source dest :destination theme :theme}]
   (core/compile-all (nio/resolve-path fs src)
                     (nio/resolve-path fs dest)
                     (template-func theme)
-                    (index-func theme)
-                    (feed-func theme)))
+                    (pages theme)))
 
 (defn main [args]
   (let [{:keys [options summary]} (parse-opts args cli-options)]
