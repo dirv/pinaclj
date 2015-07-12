@@ -11,19 +11,18 @@
   (when (published? page)
       (transforms/apply-all page)))
 
-(defn- create-list-page [pages]
+(defn- create-list-page [pages url]
   {:pages pages
    :raw-content ""
+   :url url
    :modified (System/currentTimeMillis)
    :published-at (dt/make 2015 01 01 01 01 01) })
 
-(defn build-list-page [pages]
-  (transforms/apply-all (create-list-page pages)))
+(defn build-list-page [pages url]
+  (transforms/apply-all (create-list-page pages url)))
 
 (defn- build-tag-page [[tag pages]]
-  (assoc (build-list-page pages)
-         :url
-         (str "/tags/" (name tag) "/")))
+  (build-list-page pages (str "/tags/" (name tag) "/")))
 
 (defn build-tag-pages [pages]
   (map build-tag-page (tp/pages-by-tag pages)))

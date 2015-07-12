@@ -8,7 +8,8 @@
             [pinaclj.transforms.destination :as destination]
             [pinaclj.transforms.templated-content :as template]
             [pinaclj.transforms.page-list :as page-list]
-            [pinaclj.transforms.tag-list :as tag-list]))
+            [pinaclj.transforms.tag-list :as tag-list]
+            [pinaclj.transforms.modified :as modified]))
 
 (defn apply-all [page]
   (-> page
@@ -21,4 +22,5 @@
       (destination/apply-transform)
       (template/apply-transform)
       (page-list/apply-transform)
-      (tag-list/apply-transform)))
+      (tag-list/apply-transform)
+      (modified/apply-transform)))
