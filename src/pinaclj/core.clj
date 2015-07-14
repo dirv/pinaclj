@@ -3,7 +3,8 @@
             [pinaclj.nio :as nio]
             [pinaclj.read :as rd]
             [pinaclj.page :as page]
-            [pinaclj.page-builder :as pb]))
+            [pinaclj.page-builder :as pb]
+            [pinaclj.theme :as theme]))
 
 (def index-page
   "index.html")
@@ -15,11 +16,14 @@
 (defn- compile-pages [src files]
   (remove nil? (map (partial compile-page src) files)))
 
-(defn- dest-last-modified [dest]
+(defn- dest-last-modified-fn [dest]
   (let [index-file (nio/resolve-path dest index-page)]
     (if (nio/exists? index-file)
       (nio/get-last-modified-time index-file)
       0)))
+
+(def dest-last-modified
+  (memoize dest-last-modified-fn))
 
 (defn- modified-since-last-publish? [dest page]
   (> (page/retrieve-value page :modified {})
@@ -31,22 +35,27 @@
 (defn- templated-content [page template]
   (page/retrieve-value page :templated-content {:template template}))
 
-(defn- write-single-page [dest page-func page]
+(defn- write-page [dest page-func page]
   (when (modified-since-last-publish? dest page)
     (files/create (dest-path dest page)
                   (templated-content page page-func))))
 
-(defn- write-multiple-pages [dest pages page-func]
-  (doall (map (partial write-single-page dest page-func) pages)))
+(defn- read-pages [src]
+  (compile-pages src (files/all-in src)))
 
-(defn- index-func [root-pages]
-  (:index.html root-pages))
+(defn- write-pages [dest theme pages]
+  (doall (map #(write-page dest
+                           (theme/get-template theme (first %))
+                           (second %))
+              pages)))
 
-(defn compile-all [src dest template-func root-pages]
-  (let [pages (compile-pages src (files/all-in src))
-        root-page (partial pb/build-list-page pages)]
-    (write-multiple-pages dest pages template-func)
-    (write-multiple-pages dest (pb/build-tag-pages pages) index-func)
-    (doall (map #(write-single-page dest
-                             (val %)
-                             (root-page (name (key %)))) root-pages))))
+(defn- generate-list [pages theme]
+  (concat (map #(vector :post %) pages)
+          (map #(vector :index.html %) (pb/build-tag-pages pages))
+          (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme))))
+
+(defn compile-all [fs src-path dest-path theme-path]
+  (let [pages (read-pages (nio/resolve-path fs src-path))
+        theme (theme/build-theme fs theme-path)
+        dest (nio/resolve-path fs dest-path)]
+    (write-pages dest theme (generate-list pages theme))))

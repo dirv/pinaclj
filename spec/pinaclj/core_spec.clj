@@ -43,18 +43,8 @@
 (defn- file-exists? [fs file-path]
   (files/exists? (files/resolve-path fs file-path)))
 
-(def pages
-  {:feed.xml test-templates/feed-list
-   :index.html test-templates/page-list})
-
 (defn- do-compile-all [fs]
-  (compile-all (files/resolve-path fs "pages")
-               (files/resolve-path fs "published")
-               test-templates/page
-               pages))
-
-(defn- render-page-list [fs]
-  (templates/to-str (compile-all fs)))
+  (compile-all fs "pages" "published" "theme"))
 
 (defn- index-contents [fs]
   (files/content (files/resolve-path fs "published/index.html")))
@@ -64,6 +54,8 @@
 
 (describe "compile-all"
   (with fs (test-fs/create-from all-pages))
+
+  (before (test-templates/write-to-fs @fs))
 
   (before (do-compile-all @fs))
 
@@ -133,6 +125,7 @@
 (describe "write-single-page"
   (with fs (test-fs/create-from [published-index-page old-page new-page]))
 
+  (before (test-templates/write-to-fs @fs))
   (before (do-compile-all @fs))
 
   (it "writes new page"

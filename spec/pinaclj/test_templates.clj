@@ -14,6 +14,11 @@
 (defn- func-params-stream []
   (test-fs/resource-stream "example_theme/func_params.html"))
 
+(defn write-to-fs [fs]
+  (doall (map #(test-fs/write-stream-file fs %) [["/theme/post.html" (page-stream)]
+                                          ["/theme/index.html" (page-list-stream)]
+                                           ["/theme/feed.xml" (feed-stream)]])))
+
 (def page-list
   (templates/build-page-func (page-list-stream)))
 

@@ -28,27 +28,8 @@
         ""]
        (string/join \newline)))
 
-(defn- fs-stream [root-str page-str]
-  (files/read-stream fs (str root-str page-str)))
-
-(defn- template-func [theme-str]
-  (templates/build-page-func (fs-stream theme-str "/post.html")))
-
-(defn- index-func [theme-str]
-  (templates/build-page-func (fs-stream theme-str "/index.html")))
-
-(defn- feed-func [theme-str]
-  (templates/build-page-func (fs-stream theme-str "/feed.xml")))
-
-(defn- pages [theme]
-  {:feed.xml (feed-func theme)
-   :index.html (index-func theme)})
-
 (defn- run-compile [{src :source dest :destination theme :theme}]
-  (core/compile-all (nio/resolve-path fs src)
-                    (nio/resolve-path fs dest)
-                    (template-func theme)
-                    (pages theme)))
+  (core/compile-all fs src dest theme))
 
 (defn main [args]
   (let [{:keys [options summary]} (parse-opts args cli-options)]

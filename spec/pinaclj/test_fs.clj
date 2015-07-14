@@ -16,6 +16,10 @@
           (nio/set-last-modified path (:modified file)))))
     fs))
 
+(defn write-stream-file [fs [path stream]]
+  (files/create (files/resolve-path fs (str "/test" path))
+                (slurp stream)))
+
 (defn create-empty []
   (create-from []))
 
