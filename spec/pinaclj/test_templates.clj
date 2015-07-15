@@ -19,6 +19,13 @@
                                           ["/theme/index.html" (page-list-stream)]
                                            ["/theme/feed.xml" (feed-stream)]])))
 
+(defn- build [str]
+  (templates/build-page-func
+    (test-fs/resource-stream str)))
+
+(def split-list
+  (build "example_theme/split_list.html"))
+
 (def page-list
   (templates/build-page-func (page-list-stream)))
 
@@ -30,3 +37,4 @@
 
 (def func-params
   (templates/build-page-func (func-params-stream)))
+

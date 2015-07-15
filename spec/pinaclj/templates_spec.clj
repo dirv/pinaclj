@@ -1,9 +1,7 @@
 (ns pinaclj.templates-spec
   (:require [speclj.core :refer :all]
             [clojure.pprint]
-            [net.cgrand.enlive-html :as html]
             [pinaclj.transforms.transforms :as transforms]
-            [pinaclj.test-fs :as test-fs]
             [pinaclj.test-templates :as test-templates]
             [pinaclj.templates :refer :all]
             [pinaclj.date-time :as date]
@@ -20,8 +18,7 @@
              }]))
 
 (def list-page
-  (transforms/apply-all {:pages pages
-                         }))
+  (transforms/apply-all {:pages pages}))
 
 (defn render-page []
    (to-str (test-templates/page (first pages))))
@@ -31,6 +28,9 @@
 
 (defn render-page-list []
    (to-str (test-templates/page-list list-page)))
+
+(defn render-split-list []
+   (to-str (test-templates/split-list list-page)))
 
 (defn render-feed []
   (to-str (test-templates/feed-list list-page)))
@@ -52,6 +52,10 @@
 
   (it "contains correct number of items"
     (should= (count pages) (count (re-seq #"data-id=\"page-list\"" (render-page-list))))))
+
+(describe "split list"
+  (it "contains only max items"
+    (should= 2 (count (re-seq #"<li" (render-split-list))))))
 
 (describe "feed"
    (it "contains correct number of items"
