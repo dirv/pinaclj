@@ -1,20 +1,12 @@
 (ns pinaclj.core
   (:require [pinaclj.files :as files]
             [pinaclj.nio :as nio]
-            [pinaclj.read :as rd]
             [pinaclj.page :as page]
             [pinaclj.page-builder :as pb]
             [pinaclj.theme :as theme]))
 
 (def index-page
   "index.html")
-
-(defn- compile-page [src page-path]
-  (let [page (rd/read-page src page-path)]
-    (pb/build-if-published page)))
-
-(defn- compile-pages [src files]
-  (remove nil? (map (partial compile-page src) files)))
 
 (defn- dest-last-modified-fn [dest]
   (let [index-file (nio/resolve-path dest index-page)]
@@ -36,12 +28,14 @@
   (page/retrieve-value page :templated-content {:template template}))
 
 (defn- write-page [dest page-func page]
-  (when (modified-since-last-publish? dest page)
-    (files/create (dest-path dest page)
-                  (templated-content page page-func))))
+  (files/create (dest-path dest page)
+                (templated-content page page-func)))
 
-(defn- read-pages [src]
-  (compile-pages src (files/all-in src)))
+(defn- create-pages [src]
+  (map (partial pb/create-page src) (files/all-in src)))
+
+(defn- modified-pages [dest pages]
+  (filter #(modified-since-last-publish? dest %) pages))
 
 (defn- write-pages [dest theme pages]
   (doall (map #(write-page dest
@@ -49,13 +43,14 @@
                            (second %))
               pages)))
 
-(defn- generate-list [pages theme]
-  (concat (map #(vector :post %) pages)
+(defn- generate-list [modified-pages pages theme]
+  (concat (map #(vector :post %) modified-pages)
           (map #(vector :index.html %) (pb/build-tag-pages pages))
           (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme))))
 
 (defn compile-all [fs src-path dest-path theme-path]
-  (let [pages (read-pages (nio/resolve-path fs src-path))
+  (let [pages (pb/load-published-pages (create-pages (nio/resolve-path fs src-path)))
         theme (theme/build-theme fs theme-path)
-        dest (nio/resolve-path fs dest-path)]
-    (write-pages dest theme (generate-list pages theme))))
+        dest (nio/resolve-path fs dest-path)
+        modified-pages (pb/load-published-pages (modified-pages dest pages))]
+    (write-pages dest theme (generate-list modified-pages pages theme))))

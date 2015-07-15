@@ -3,7 +3,7 @@
             [pinaclj.read :refer :all]
             [pinaclj.date-time :as date-time]
             [pinaclj.files :as files]
-            [pinaclj.page :as page]
+            [pinaclj.page-builder :as pb]
             [pinaclj.test-fs :as test-fs]))
 
 (def published-at
@@ -28,7 +28,7 @@
    ])
 
 (defn do-read [fs path-str]
-  (read-page fs (files/resolve-path fs path-str)))
+  (read-page (pb/create-page fs (files/resolve-path fs path-str))))
 
 (describe "read-page"
   (with fs (test-fs/create-from test-pages))
@@ -58,8 +58,5 @@
     (should= "test: two" (:title (do-read @fs "titleWithColon"))))
 
   (it "parses headers with no value"
-    (should-not (:title (do-read @fs "titleWithNoValue"))))
-
-  (it "sets modified"
-    (should= 1 (:modified (do-read @fs "first")))))
+    (should-not (:title (do-read @fs "titleWithNoValue")))))
 

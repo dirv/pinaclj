@@ -24,10 +24,8 @@
 (defn- to-headers [header-section]
   (into {} (map (comp convert to-header) header-section)))
 
-(defn read-page [src-root path]
-  (let [header-and-content (split-header-content (files/read-lines path))]
-    (assoc (to-headers (first header-and-content))
-           :raw-content (second header-and-content)
-           :path path
-           :src-root src-root
-           :modified (nio/get-last-modified-time path))))
+(defn read-page [page]
+  (let [header-and-content (split-header-content (files/read-lines (:path page)))]
+    (merge page
+           (to-headers (first header-and-content))
+           {:raw-content (second header-and-content)})))

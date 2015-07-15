@@ -1,5 +1,6 @@
 (ns pinaclj.page-builder
   (:require [pinaclj.page :as page]
+            [pinaclj.read :as rd]
             [pinaclj.date-time :as dt]
             [pinaclj.transforms.transforms :as transforms]
             [pinaclj.tag-page :as tp]))
@@ -7,9 +8,11 @@
 (defn- published? [page]
   (not (nil? (:published-at page))))
 
-(defn build-if-published [page]
-  (when (published? page)
-      (transforms/apply-all page)))
+(defn load-published-pages [pages]
+  (filter published? (map rd/read-page pages)))
+
+(defn create-page [src path]
+  (transforms/apply-all {:path path :src-root src}))
 
 (defn- create-list-page [pages url]
   {:pages pages
