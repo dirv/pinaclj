@@ -2,6 +2,9 @@
   (:require [net.cgrand.enlive-html :as html]
             [pinaclj.page :as page]))
 
+(def page-list-selector
+  (html/attr= :data-id "page-list"))
+
 (def data-prefix "data-")
 
 (def data-prefix-pattern
@@ -19,7 +22,7 @@
           (data-attrs node)))
 
 (defn- build-replacement-selector [field]
-  [#{html/root (html/but (html/attr= :data-id "page-list"))} :> (html/attr= :data-id (name field))])
+  [#{html/root (html/but page-list-selector)} :> (html/attr= :data-id (name field))])
 
 (declare page-replace)
 
@@ -53,10 +56,16 @@
 (defn- build-page-func [page-obj]
   (html/snippet page-obj [html/root] [page] [html/root] (page-replace page)))
 
+(defn- build-page-list-opts [page]
+  (let [node (html/select page [page-list-selector])]
+    (when (seq? node)
+      (renamed-data-attrs (first node)))))
+
 (defn build-template [page-stream]
   (let [page-resource (html/html-resource page-stream)]
     {:template-func (build-page-func page-resource)
-     :page-resource page-resource}))
+     :page-resource page-resource
+     :page-list-opts (build-page-list-opts page-resource)}))
 
 (defn to-str [nodes]
   (apply str (html/emit* nodes)))
