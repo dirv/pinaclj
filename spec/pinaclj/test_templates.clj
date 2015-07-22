@@ -24,17 +24,17 @@
     (test-fs/resource-stream str)))
 
 (def split-list
-  (:template-func (build "example_theme/split_list.html")))
+  (build "example_theme/split_list.html"))
 
 (def page-list
-  (:template-func (templates/build-template (page-list-stream))))
+  (templates/build-template (page-list-stream)))
 
 (def feed-list
-  (:template-func (templates/build-template (feed-stream))))
+  (templates/build-template (feed-stream)))
 
 (def page
-  (:template-func (templates/build-template (page-stream))))
+  (templates/build-template (page-stream)))
 
 (def func-params
-  (:template-func (templates/build-template (func-params-stream))))
+  (templates/build-template (func-params-stream)))
 

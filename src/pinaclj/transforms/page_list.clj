@@ -1,6 +1,5 @@
 (ns pinaclj.transforms.page-list
-  (:require [pinaclj.page :as page]
-            [net.cgrand.enlive-html :as html]))
+  (:require [pinaclj.page :as page]))
 
 (defn- max-pages [opts]
   (if (contains? opts :max)

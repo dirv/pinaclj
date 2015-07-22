@@ -21,19 +21,19 @@
   (transforms/apply-all {:pages pages}))
 
 (defn render-page []
-   (to-str (test-templates/page (first pages))))
+  (to-str ((:template-func test-templates/page) (first pages))))
 
 (defn render-third-page []
-  (to-str (test-templates/page (nth pages 2))))
+  (to-str ((:template-func test-templates/page) (nth pages 2))))
 
 (defn render-page-list []
-   (to-str (test-templates/page-list list-page)))
+  (to-str ((:template-func test-templates/page-list) list-page)))
 
 (defn render-split-list []
-   (to-str (test-templates/split-list list-page)))
+  (to-str ((:template-func test-templates/split-list) list-page)))
 
 (defn render-feed []
-  (to-str (test-templates/feed-list list-page)))
+  (to-str ((:template-func test-templates/feed-list) list-page)))
 
 (defn- apply-func-a [page]
   (page/set-lazy-value page
@@ -41,7 +41,7 @@
                        (fn [page opts] (str "format=" (:format opts)))))
 
 (defn render-func-params-page []
-  (to-str (test-templates/func-params (apply-func-a (first pages)))))
+  (to-str ((:template-func test-templates/func-params) (apply-func-a (first pages)))))
 
 (describe "page list"
   (it "contains item href"
