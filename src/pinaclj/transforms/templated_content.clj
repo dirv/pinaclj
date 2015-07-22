@@ -4,8 +4,11 @@
             [pinaclj.link-transform :as link]
             [pinaclj.punctuation-transform :as punctuation]))
 
+(defn- build [page opts]
+  ((:template-func (:template opts)) page))
+
 (defn- do-template [page opts]
-  (-> (assoc page :content ((:template opts) page))
+  (-> (assoc page :content (build page opts))
       punctuation/transform
       link/transform
       :content

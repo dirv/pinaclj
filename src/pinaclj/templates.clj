@@ -50,8 +50,13 @@
 (defn- page-replace [page]
   #(html/at* % (add-link (build-replacement-list page) page)))
 
-(defn build-page-func [page-obj]
+(defn- build-page-func [page-obj]
   (html/snippet page-obj [html/root] [page] [html/root] (page-replace page)))
+
+(defn build-template [page-stream]
+  (let [page-resource (html/html-resource page-stream)]
+    {:template-func (build-page-func page-resource)
+     :page-resource page-resource}))
 
 (defn to-str [nodes]
   (apply str (html/emit* nodes)))

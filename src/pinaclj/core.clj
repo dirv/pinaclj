@@ -27,9 +27,9 @@
 (defn- templated-content [page template]
   (page/retrieve-value page :templated-content {:template template}))
 
-(defn- write-page [dest page-func page]
+(defn- write-page [dest template page]
   (files/create (dest-path dest page)
-                (templated-content page page-func)))
+                (templated-content page template)))
 
 (defn- create-pages [src]
   (map (partial pb/create-page src) (files/all-in src)))

@@ -20,21 +20,21 @@
                                            ["/theme/feed.xml" (feed-stream)]])))
 
 (defn- build [str]
-  (templates/build-page-func
+  (templates/build-template
     (test-fs/resource-stream str)))
 
 (def split-list
-  (build "example_theme/split_list.html"))
+  (:template-func (build "example_theme/split_list.html")))
 
 (def page-list
-  (templates/build-page-func (page-list-stream)))
+  (:template-func (templates/build-template (page-list-stream))))
 
 (def feed-list
-  (templates/build-page-func (feed-stream)))
+  (:template-func (templates/build-template (feed-stream))))
 
 (def page
-  (templates/build-page-func (page-stream)))
+  (:template-func (templates/build-template (page-stream))))
 
 (def func-params
-  (templates/build-page-func (func-params-stream)))
+  (:template-func (templates/build-template (func-params-stream))))
 
