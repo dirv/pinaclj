@@ -29,3 +29,21 @@
 
 (defn build-tag-pages [pages]
   (map build-tag-page (tp/pages-by-tag pages)))
+
+(defn- create-url [{url :url} num]
+  (if (zero? num)
+    url
+    (let [[start ext] (.split url "\\.")]
+      (str start "-" (inc num) "." ext))))
+
+(defn- duplicate-page [page start num-pages]
+  (assoc page
+         :start start
+         :url (create-url page (/ start num-pages))
+         :pages (take num-pages (drop start (:pages page)))))
+
+(defn divide [page {max-pages :max-pages}]
+  (if (nil? max-pages)
+    [page]
+    (let [starts (range 0 (count (:pages page)) max-pages)]
+      (map #(duplicate-page page % max-pages) starts))))
