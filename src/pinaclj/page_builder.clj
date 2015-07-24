@@ -30,9 +30,10 @@
 (defn build-tag-pages [pages]
   (map build-tag-page (tp/pages-by-tag pages)))
 
-(defn- create-url [{url :url} num]
-  (if (zero? num)
-    url
+(defn- create-url [{url :url pages :pages} num]
+  (cond
+    (= num 0) url
+    (and (> num 0) (< num (dec (count pages))))
     (let [[start ext] (.split url "\\.")]
       (str start "-" (inc num) "." ext))))
 
@@ -40,7 +41,9 @@
   (assoc page
          :start start
          :url (create-url page (/ start num-pages))
-         :pages (take num-pages (drop start (:pages page)))))
+         :pages (take num-pages (drop start (:pages page)))
+         :previous (create-url page (dec (/ start num-pages)))
+         :next (create-url page (inc (/ start num-pages)))))
 
 (defn divide [page {max-pages :max-pages}]
   (if (nil? max-pages)
