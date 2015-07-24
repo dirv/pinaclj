@@ -54,7 +54,7 @@
     (should= (count pages) (count (re-seq #"data-id=\"page-list\"" (render-page-list)))))
 
   (it "extracts max pages from page list"
-    (should= "3" (:max-pages (:page-list-opts test-templates/page-list)))))
+    (should= "3" (:max-pages test-templates/page-list))))
 
 (describe "split list"
   (it "contains only max items"

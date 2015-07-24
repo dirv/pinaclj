@@ -63,9 +63,9 @@
 
 (defn build-template [page-stream]
   (let [page-resource (html/html-resource page-stream)]
-    {:template-func (build-page-func page-resource)
-     :page-resource page-resource
-     :page-list-opts (build-page-list-opts page-resource)}))
+    (assoc (build-page-list-opts page-resource)
+           :template-func (build-page-func page-resource)
+           :page-resource page-resource)))
 
 (defn to-str [nodes]
   (apply str (html/emit* nodes)))
