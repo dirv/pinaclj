@@ -38,12 +38,13 @@
       (str start "-" (inc num) "." ext))))
 
 (defn- duplicate-page [page start num-pages]
-  (assoc page
+  (let [page-num (/ start num-pages)]
+    (assoc page
          :start start
-         :url (create-url page (/ start num-pages))
+         :url (create-url page page-num)
          :pages (take num-pages (drop start (:pages page)))
-         :previous (create-url page (dec (/ start num-pages)))
-         :next (create-url page (inc (/ start num-pages)))))
+         :previous (create-url page (dec page-num))
+         :next (create-url page (inc page-num)))))
 
 (defn divide [page {max-pages :max-pages}]
   (if (nil? max-pages)

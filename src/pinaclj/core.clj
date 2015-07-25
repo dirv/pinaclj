@@ -48,9 +48,16 @@
           (map #(vector :index.html %) (pb/build-tag-pages pages))
           (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme))))
 
+(defn- divide-page [theme [template page]]
+  (map #(vector template %)
+       (pb/divide page (theme/get-template theme template))))
+
+(defn- divide-pages [pages theme]
+  (mapcat #(divide-page theme %) pages))
+
 (defn compile-all [fs src-path dest-path theme-path]
   (let [pages (pb/load-published-pages (create-pages (nio/resolve-path fs src-path)))
         theme (theme/build-theme fs theme-path)
         dest (nio/resolve-path fs dest-path)
         modified-pages (pb/load-published-pages (modified-pages dest pages))]
-    (write-pages dest theme (generate-list modified-pages pages theme))))
+    (write-pages dest theme (divide-pages (generate-list modified-pages pages theme) theme))))

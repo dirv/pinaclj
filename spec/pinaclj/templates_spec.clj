@@ -54,11 +54,11 @@
     (should= (count pages) (count (re-seq #"data-id=\"page-list\"" (render-page-list)))))
 
   (it "extracts max pages from page list"
-    (should= "3" (:max-pages test-templates/page-list))))
+    (should= 3 (:max-pages test-templates/split-list))))
 
 (describe "split list"
   (it "contains only max items"
-    (should= 2 (count (re-seq #"<li" (render-split-list))))))
+    (should= 3 (count (re-seq #"<li" (render-split-list))))))
 
 (describe "feed"
    (it "contains correct number of items"

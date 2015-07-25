@@ -116,6 +116,16 @@
       (should (file-exists? @fs "published/tags/tagB/index.html"))
       (should (file-exists? @fs "published/tags/tagC/index.html")))))
 
+(describe "split pages"
+  (with fs (test-fs/create-from all-pages))
+
+  (before (test-templates/write-split-to-fs @fs))
+
+  (before (do-compile-all @fs))
+
+  (it "writes multiple index pages"
+   (should (file-exists? @fs "published/index-2.html"))))
+
 (def published-content
   "published-at: 2014-04-24T00:00:00Z\n---\n")
 (def published-index-page {:path "published/index.html" :modified 1 :content ""})

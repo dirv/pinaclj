@@ -1,9 +1,9 @@
 (ns pinaclj.transforms.page-list
   (:require [pinaclj.page :as page]))
 
-(defn- max-pages [opts]
-  (if (contains? opts :max)
-    (Integer/parseInt (get opts :max))))
+(defn- max-pages [{max-pages :max-pages}]
+  (when-not (nil? max-pages)
+    (Integer/parseInt max-pages)))
 
 (defn- chronological-sort [pages]
   (reverse (sort-by :published-at pages)))
@@ -12,7 +12,7 @@
   (let [children (chronological-sort (:pages page-set))
         max-pages (max-pages opts)]
     (if (nil? max-pages)
-     {:pages children }
+     {:pages children}
      {:pages (take max-pages children)})))
 
 (defn apply-transform [page-set]

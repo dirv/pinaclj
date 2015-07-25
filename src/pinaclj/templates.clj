@@ -56,10 +56,15 @@
 (defn- build-page-func [page-obj]
   (html/snippet page-obj [html/root] [page] [html/root] (page-replace page)))
 
+(defn- convert-max-page-str [page]
+  (if (contains? page :max-pages)
+    (assoc page :max-pages (Integer/parseInt (:max-pages page)))
+    page))
+
 (defn- build-page-list-opts [page]
   (let [node (html/select page [page-list-selector])]
     (when (seq? node)
-      (renamed-data-attrs (first node)))))
+      (convert-max-page-str (renamed-data-attrs (first node))))))
 
 (defn build-template [page-stream]
   (let [page-resource (html/html-resource page-stream)]

@@ -14,17 +14,21 @@
 (defn- func-params-stream []
   (test-fs/resource-stream "example_theme/func_params.html"))
 
+(defn- split-list-stream []
+  (test-fs/resource-stream "example_theme/split_list.html"))
+
 (defn write-to-fs [fs]
   (doall (map #(test-fs/write-stream-file fs %) [["/theme/post.html" (page-stream)]
                                           ["/theme/index.html" (page-list-stream)]
                                            ["/theme/feed.xml" (feed-stream)]])))
 
-(defn- build [str]
-  (templates/build-template
-    (test-fs/resource-stream str)))
+(defn write-split-to-fs [fs]
+  (doall (map #(test-fs/write-stream-file fs %) [["/theme/post.html" (page-stream)]
+                                          ["/theme/index.html" (split-list-stream)]
+                                           ["/theme/feed.xml" (feed-stream)]])))
 
 (def split-list
-  (build "example_theme/split_list.html"))
+  (templates/build-template (split-list-stream)))
 
 (def page-list
   (templates/build-template (page-list-stream)))
