@@ -25,16 +25,19 @@
   (transforms/apply-all (create-list-page pages url)))
 
 (defn- build-tag-page [[tag pages]]
-  (build-list-page pages (str "/tags/" (name tag) "/")))
+  (build-list-page pages (str "tags/" (name tag) "/")))
 
 (defn build-tag-pages [pages]
   (map build-tag-page (tp/pages-by-tag pages)))
 
-(defn- create-url [{url :url pages :pages} num]
+(defn- split-page-url [page]
+  (.split (page/retrieve-value page :destination {}) "\\."))
+
+(defn- create-url [page num]
   (cond
-    (= num 0) url
-    (and (> num 0) (< num (dec (count pages))))
-    (let [[start ext] (.split url "\\.")]
+    (= num 0) (:url page)
+    (and (> num 0) (< num (dec (count (:pages page)))))
+    (let [[start ext] (split-page-url page)]
       (str start "-" (inc num) "." ext))))
 
 (defn- duplicate-page [page start num-pages]

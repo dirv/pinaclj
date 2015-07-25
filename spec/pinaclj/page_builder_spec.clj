@@ -2,12 +2,15 @@
   (require [speclj.core :refer :all]
            [pinaclj.page-builder :refer :all]))
 
-(def page-a {:title "a"})
-(def page-b {:title "b"})
-(def page-c {:title "c"})
+(def page-a {:title "a" :tags ["test"]})
+(def page-b {:title "b" :tags ["test"]})
+(def page-c {:title "c" :tags ["test"]})
 
 (def pages
-  {:pages [page-a page-b page-c] :url "index.html"})
+  (build-list-page [page-a page-b page-c] "index.html"))
+
+(def tag-page
+  (first (build-tag-pages [page-a page-b page-c])))
 
 (def template-with-no-max
   nil)
@@ -37,4 +40,7 @@
   (it "adds previous link to second page only"
     (should= [nil "index.html"] (map :previous (divide-pages))))
   (it "adds next link to first page only"
-    (should= ["index-2.html" nil] (map :next (divide-pages)))))
+    (should= ["index-2.html" nil] (map :next (divide-pages))))
+  (it "sets url using correct definition"
+    (should= ["tags/test/" "tags/test/index-2.html"]
+      (map :url (divide tag-page template-with-low-max)))))
