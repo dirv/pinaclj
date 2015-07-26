@@ -9,7 +9,8 @@
             [pinaclj.transforms.templated-content :as template]
             [pinaclj.transforms.page-list :as page-list]
             [pinaclj.transforms.tag-list :as tag-list]
-            [pinaclj.transforms.modified :as modified]))
+            [pinaclj.transforms.modified :as modified]
+            [pinaclj.transforms.latest :as latest]))
 
 (defn apply-all [page]
   (-> page
@@ -23,4 +24,5 @@
       (template/apply-transform)
       (page-list/apply-transform)
       (tag-list/apply-transform)
-      (modified/apply-transform)))
+      (modified/apply-transform)
+      (latest/apply-transform)))
