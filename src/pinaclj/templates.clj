@@ -26,8 +26,8 @@
 
 (declare page-replace)
 
-(defn- transform-child-pages [k value node]
-  ((html/clone-for [item (:pages value)]
+(defn- transform-child-pages [k {child-pages :pages} node]
+  ((html/clone-for [item child-pages]
                    [(html/attr= :data-id (name k))]
                    (page-replace item)) node))
 

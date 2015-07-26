@@ -20,20 +20,26 @@
 (def list-page
   (transforms/apply-all {:pages pages}))
 
+(defn- build [stream]
+  (:template-func (build-template (test-templates/stream stream))))
+
+(defn- render [stream obj]
+  (to-str ((build stream) obj)))
+
 (defn render-page []
-  (to-str ((:template-func test-templates/page) (first pages))))
+  (render "post.html" (first pages)))
 
 (defn render-third-page []
-  (to-str ((:template-func test-templates/page) (nth pages 2))))
+  (render "post.html" (nth pages 2)))
 
 (defn render-page-list []
-  (to-str ((:template-func test-templates/page-list) list-page)))
+  (render "index.html" list-page))
 
 (defn render-split-list []
-  (to-str ((:template-func test-templates/split-list) list-page)))
+  (render "split_list.html" list-page))
 
 (defn render-feed []
-  (to-str ((:template-func test-templates/feed-list) list-page)))
+  (render "feed.xml" list-page))
 
 (defn- apply-func-a [page]
   (page/set-lazy-value page
@@ -41,7 +47,7 @@
                        (fn [page opts] (str "format=" (:format opts)))))
 
 (defn render-func-params-page []
-  (to-str ((:template-func test-templates/func-params) (apply-func-a (first pages)))))
+  (render "func_params.html" (apply-func-a (first pages))))
 
 (describe "page list"
   (it "contains item href"
@@ -54,7 +60,7 @@
     (should= (count pages) (count (re-seq #"data-id=\"page-list\"" (render-page-list)))))
 
   (it "extracts max pages from page list"
-    (should= 3 (:max-pages test-templates/split-list))))
+    (should= 3 (:max-pages (build-template (test-templates/stream "split_list.html"))))))
 
 (describe "split list"
   (it "contains only max items"

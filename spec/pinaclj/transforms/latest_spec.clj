@@ -14,4 +14,4 @@
 
 (describe "get-latest"
   (it "gets latest"
-    (should= latest (get-latest parent {}))))
+    (should= latest (:page (get-latest parent {})))))
