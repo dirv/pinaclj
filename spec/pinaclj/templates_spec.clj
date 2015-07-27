@@ -41,6 +41,9 @@
 (defn render-feed []
   (render "feed.xml" list-page))
 
+(defn render-latest-post []
+  (render "latest_post.html" list-page))
+
 (defn- apply-func-a [page]
   (page/set-lazy-value page
                        :func
@@ -85,3 +88,7 @@
 (describe "func params"
   (it "passes through parameters"
     (should-contain "format=123" (render-func-params-page))))
+
+(describe "latest post"
+  (it "displays the latest post"
+    (should-contain "Fourth post" (render-latest-post))))

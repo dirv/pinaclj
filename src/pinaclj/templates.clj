@@ -26,12 +26,20 @@
 
 (declare page-replace)
 
-(defn- transform-child-pages [k {child-pages :pages} node]
-  ((html/clone-for [item child-pages]
+(defn- transform-child-pages [node k {child-pages :pages}]
+  (if (nil? child-pages)
+    node
+    ((html/clone-for [item child-pages]
                    [(html/attr= :data-id (name k))]
-                   (page-replace item)) node))
+                   (page-replace item)) node)))
 
-(defn- transform-content [value node]
+
+(defn- transform-nested-page [node {page :page}]
+  (if (nil? page)
+    node
+    ((page-replace page) node)))
+
+(defn- transform-content [node value]
   ((html/content value) node))
 
 (defn- build-replacement-transform [k page]
@@ -39,11 +47,13 @@
     (let [value (page/retrieve-value page k (renamed-data-attrs node))]
       (cond
         (map? value)
-        (transform-child-pages k value node)
+        (-> node
+            (transform-child-pages k value)
+            (transform-nested-page value))
         (seq? value)
-        (transform-content value node)
+        (transform-content node value)
         :else
-        (transform-content (.toString value) node)))))
+        (transform-content node (.toString value))))))
 
 (defn- build-replacement-kv [k page]
   (doall (list (build-replacement-selector k)
@@ -51,7 +61,7 @@
 
 (defn- add-link [rs page]
   (cons (list [(html/attr= :data-href "page-link")]
-                (html/set-attr :href (:url page))) rs))
+              (html/set-attr :href (:url page))) rs))
 
 (defn- build-replacement-list [page]
   (map #(build-replacement-kv % page) (page/all-keys page)))
