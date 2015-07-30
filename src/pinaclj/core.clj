@@ -44,9 +44,11 @@
               pages)))
 
 (defn- generate-list [modified-pages pages theme]
-  (concat (map #(vector :post %) modified-pages)
-          (map #(vector :index.html %) (pb/build-tag-pages pages))
-          (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme))))
+  (let [tags (pb/build-tag-pages pages)
+        attached-pages (pb/attach-tag-pages modified-pages tags)]
+  (concat (map #(vector :post %) attached-pages)
+          (map #(vector :index.html %) (vals tags))
+          (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme)))))
 
 (defn- divide-page [theme [template page]]
   (map #(vector template %)

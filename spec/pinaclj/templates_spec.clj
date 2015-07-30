@@ -54,7 +54,7 @@
 
 (describe "page list"
   (it "contains item href"
-    (should-contain "href=\"/1\"" (render-page-list)))
+    (should-contain "href=\"1\"" (render-page-list)))
 
   (it "contains title"
     (should-contain "First post" (render-page-list)))

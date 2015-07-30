@@ -5,6 +5,12 @@
 (def page-list-selector
   (html/attr= :data-id "page-list"))
 
+(def tag-list-selector
+  (html/attr= :data-id "tag-list"))
+
+(def page-or-tag-list-selector
+  #{page-list-selector tag-list-selector})
+
 (def data-prefix "data-")
 
 (def data-prefix-pattern
@@ -22,52 +28,47 @@
           (data-attrs node)))
 
 (defn- build-replacement-selector [field]
-  [#{html/root (html/but page-list-selector)} :> (html/attr= :data-id (name field))])
+  [#{html/root (html/but page-or-tag-list-selector)} :> (html/attr= :data-id (name field))])
 
 (declare page-replace)
 
-(defn- transform-child-pages [node k {child-pages :pages}]
-  (if (nil? child-pages)
-    node
-    ((html/clone-for [item child-pages]
+(defmulti transform (fn [node k value] (key value)))
+
+(defmethod transform :pages [node k child-pages]
+  ((html/clone-for [item (val child-pages)]
                    [(html/attr= :data-id (name k))]
-                   (page-replace item)) node)))
+                   (page-replace item)) node))
 
+(defmethod transform :page [node k page]
+  ((page-replace (val page)) node))
 
-(defn- transform-nested-page [node {page :page}]
-  (if (nil? page)
-    node
-    ((page-replace page) node)))
+(defmethod transform :attrs [node k attrs]
+  ((html/set-attr (first (first (val attrs))) (second (first (val attrs)))) node))
 
-(defn- transform-content [node value]
-  ((html/content value) node))
+(defmethod transform :content [node k content]
+  ((html/content (val content)) node))
+
+(defn- transform-content [node content]
+  (if (seq? content)
+    ((html/content content) node)  
+    ((html/content (.toString content)) node)))
 
 (defn- build-replacement-transform [k page]
   (fn [node]
     (let [value (page/retrieve-value page k (renamed-data-attrs node))]
-      (cond
-        (map? value)
-        (-> node
-            (transform-child-pages k value)
-            (transform-nested-page value))
-        (seq? value)
-        (transform-content node value)
-        :else
-        (transform-content node (.toString value))))))
+      (if (map? value)
+        (reduce #(transform %1 k %2) node value)
+        (transform-content node value)))))
 
 (defn- build-replacement-kv [k page]
   (doall (list (build-replacement-selector k)
                (build-replacement-transform k page))))
 
-(defn- add-link [rs page]
-  (cons (list [(html/attr= :data-href "page-link")]
-              (html/set-attr :href (:url page))) rs))
-
 (defn- build-replacement-list [page]
   (map #(build-replacement-kv % page) (page/all-keys page)))
 
 (defn- page-replace [page]
-  #(html/at* % (add-link (build-replacement-list page) page)))
+  #(html/at* % (build-replacement-list page)))
 
 (defn- build-page-func [page-obj]
   (html/snippet page-obj [html/root] [page] [html/root] (page-replace page)))

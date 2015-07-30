@@ -10,7 +10,9 @@
             [pinaclj.transforms.page-list :as page-list]
             [pinaclj.transforms.tag-list :as tag-list]
             [pinaclj.transforms.modified :as modified]
-            [pinaclj.transforms.latest :as latest]))
+            [pinaclj.transforms.latest :as latest]
+            [pinaclj.transforms.href :as href]
+            [pinaclj.transforms.page-link :as page-link]))
 
 (defn apply-all [page]
   (-> page
@@ -25,4 +27,6 @@
       (page-list/apply-transform)
       (tag-list/apply-transform)
       (modified/apply-transform)
-      (latest/apply-transform)))
+      (latest/apply-transform)
+      (href/apply-transform)
+      (page-link/apply-transform)))

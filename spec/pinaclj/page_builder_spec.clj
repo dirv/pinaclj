@@ -7,10 +7,13 @@
 (def page-c {:title "c" :tags ["test"]})
 
 (def pages
-  (build-list-page [page-a page-b page-c] "index.html"))
+  [page-a page-b page-c])
+
+(def list-page
+  (build-list-page pages "index.html"))
 
 (def tag-page
-  (first (build-tag-pages [page-a page-b page-c])))
+  (:test (build-tag-pages [page-a page-b page-c])))
 
 (def template-with-no-max
   nil)
@@ -22,19 +25,19 @@
   {:max-pages 3})
 
 (defn- divide-pages []
-  (divide pages template-with-low-max))
+  (divide list-page template-with-low-max))
 
 (describe "divide"
   (it "does not divide pages without max-pages set"
-    (should= [pages] (divide pages template-with-no-max)))
+    (should= [list-page] (divide list-page template-with-no-max)))
   (it "does not divide pages which does not hit max-pages"
-    (should= 1 (count (divide pages template-with-high-max))))
+    (should= 1 (count (divide list-page template-with-high-max))))
   (it "divides pages with low max-pages"
-    (should= 2 (count (divide pages template-with-low-max))))
+    (should= 2 (count (divide list-page template-with-low-max))))
   (it "contains pages in order when dividing pages"
     (should= [[page-a page-b] [page-c]] (map :pages (divide-pages))))
   (it "sets start page when dividing"
-    (should= [0 2] (map :start (divide pages template-with-low-max))))
+    (should= [0 2] (map :start (divide list-page template-with-low-max))))
   (it "modifies all but first urls"
     (should= ["index.html" "index-2.html"] (map :url (divide-pages))))
   (it "adds previous link to second page only"
@@ -44,3 +47,12 @@
   (it "sets url using correct definition"
     (should= ["tags/test/" "tags/test/index-2.html"]
       (map :url (divide tag-page template-with-low-max)))))
+
+(defn- attached-pages []
+  (attach-tag-pages pages (build-tag-pages pages)))
+
+(describe "attach-tag-pages"
+  (it "attaches"
+    (should= 3 (count (attached-pages)))
+    (should= '("a" "b" "c") (map :title (attached-pages)))
+    (should= '(:test) (map key (:tag-pages (first (attached-pages)))))))

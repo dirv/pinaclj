@@ -88,10 +88,7 @@
       (should-contain "‘" (files/content (files/resolve-path @fs "published/quote_test.html"))))
 
     (it "transforms relative urls"
-      (should-contain "../styles.css" (files/content (files/resolve-path @fs "published/nested/another_post.html"))))
-
-    (it "adds tags"
-      (should-contain "/tags/tagA/" (files/content (files/resolve-path @fs "published/tag_test.html")))))
+      (should-contain "../styles.css" (files/content (files/resolve-path @fs "published/nested/another_post.html")))))
 
   (describe "index page"
     (it "renders an index page"
@@ -143,3 +140,11 @@
 
   (it "does not write old page"
     (should-not (file-exists? @fs "published/old.html"))))
+
+(describe "page with tags"
+  (with fs (test-fs/create-from [tag-page]))
+  (before (test-templates/write-to-fs @fs))
+  (before (do-compile-all @fs))
+
+  (it "adds tags"
+    (should-contain "/tags/tagA/" (files/content (files/resolve-path @fs "published/tag_test.html")))))

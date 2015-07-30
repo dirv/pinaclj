@@ -25,10 +25,18 @@
   (transforms/apply-all (create-list-page pages url)))
 
 (defn- build-tag-page [[tag pages]]
-  (build-list-page pages (str "tags/" (name tag) "/")))
+  {tag (assoc (build-list-page pages (str "tags/" (name tag) "/"))
+         :title (name tag))})
 
 (defn build-tag-pages [pages]
-  (map build-tag-page (tp/pages-by-tag pages)))
+  (apply merge (map build-tag-page (tp/pages-by-tag pages))))
+
+(defn- page-tags [page]
+  (map keyword (page/retrieve-value page :tags {})))
+
+(defn attach-tag-pages [pages tag-pages]
+  (map #(assoc % :tag-pages
+               (select-keys tag-pages (page-tags %))) pages))
 
 (defn- split-page-url [page]
   (.split (page/retrieve-value page :destination {}) "\\."))
@@ -44,6 +52,7 @@
   (let [page-num (/ start num-pages)]
     (assoc page
          :start start
+         :raw-content ""
          :url (create-url page page-num)
          :pages (take num-pages (drop start (:pages page)))
          :previous (create-url page (dec page-num))

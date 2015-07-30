@@ -13,3 +13,9 @@
 (defn all-keys [page]
   (distinct (concat (remove #(= :funcs %) (keys page)) (keys (:funcs page)))))
 
+(defn print-page [page]
+  (print "{")
+  (doall (map #(println % " " (retrieve-value page % {}))
+              (all-keys page)))
+  (println "}"))
+
