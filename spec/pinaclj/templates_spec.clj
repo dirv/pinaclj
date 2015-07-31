@@ -5,7 +5,8 @@
             [pinaclj.test-templates :as test-templates]
             [pinaclj.templates :refer :all]
             [pinaclj.date-time :as date]
-            [pinaclj.page :as page]))
+            [pinaclj.page :as page]
+            [net.cgrand.enlive-html :as html]))
 
 (def pages (map transforms/apply-all
                 [{:url "/1" :title "First post" :raw-content "first post content."}
@@ -92,3 +93,20 @@
 (describe "latest post"
   (it "displays the latest post"
     (should-contain "Fourth post" (render-latest-post))))
+
+(defn- template [body]
+  (build-page-func (html/html-snippet (str "<html><body>" body "</body></html>"))))
+
+(defn- do-replace [template-body-str page]
+  (to-str ((template template-body-str) page)))
+
+(describe "html attrs"
+  (it "changes any attribute"
+    (should-contain
+      "test=\"test-val\""
+      (do-replace "<p data-id=\"item\"></p>"
+                  {:item {:attrs {:test "test-val"}}}))
+    (should-contain
+      "two=\"b\""
+      (do-replace "<p data-id=\"item\"></p>"
+                  {:item {:attrs {:one "a" :two "b"}}}))))

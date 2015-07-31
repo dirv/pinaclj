@@ -43,14 +43,16 @@
   ((page-replace (val page)) node))
 
 (defmethod transform :attrs [node k attrs]
-  ((html/set-attr (first (first (val attrs))) (second (first (val attrs)))) node))
+  (reduce #((html/set-attr (first %2) (second %2)) %1)
+          node
+          (val attrs)))
 
 (defmethod transform :content [node k content]
   ((html/content (val content)) node))
 
 (defn- transform-content [node content]
   (if (seq? content)
-    ((html/content content) node)  
+    ((html/content content) node)
     ((html/content (.toString content)) node)))
 
 (defn- build-replacement-transform [k page]
@@ -70,7 +72,7 @@
 (defn- page-replace [page]
   #(html/at* % (build-replacement-list page)))
 
-(defn- build-page-func [page-obj]
+(defn build-page-func [page-obj]
   (html/snippet page-obj [html/root] [page] [html/root] (page-replace page)))
 
 (defn- convert-max-page-str [page]
