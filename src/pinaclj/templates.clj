@@ -80,7 +80,7 @@
     (assoc page :max-pages (Integer/parseInt (:max-pages page)))
     page))
 
-(defn- build-page-list-opts [page]
+(defn build-page-list-opts [page]
   (let [node (html/select page [page-list-selector])]
     (when (seq? node)
       (convert-max-page-str (renamed-data-attrs (first node))))))
@@ -88,8 +88,7 @@
 (defn build-template [page-stream]
   (let [page-resource (html/html-resource page-stream)]
     (assoc (build-page-list-opts page-resource)
-           :template-func (build-page-func page-resource)
-           :page-resource page-resource)))
+           :template-func (build-page-func page-resource))))
 
 (defn to-str [nodes]
   (apply str (html/emit* nodes)))
