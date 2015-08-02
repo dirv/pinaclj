@@ -20,5 +20,4 @@
 (defn add-destination [page opts]
   (fix-url (page/retrieve-value page :url {})))
 
-(defn apply-transform [page]
-  (page/set-lazy-value page :destination add-destination))
+(def transform [:destination add-destination])

@@ -1,5 +1,4 @@
-(ns pinaclj.transforms.page-list
-  (:require [pinaclj.page :as page]))
+(ns pinaclj.transforms.page-list)
 
 (defn- max-pages [{max-pages :max-pages}]
   (when-not (nil? max-pages)
@@ -15,5 +14,4 @@
      {:pages children}
      {:pages (take max-pages children)})))
 
-(defn apply-transform [page-set]
-  (page/set-lazy-value page-set :page-list clone-pages))
+(def transform [:page-list clone-pages])

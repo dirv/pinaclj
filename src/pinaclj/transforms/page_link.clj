@@ -5,5 +5,4 @@
   {:attrs {:href (page/retrieve-value page :destination {})}
    :content (:title page)})
 
-(defn apply-transform [page]
-  (page/set-lazy-value page :page-link set-page-link))
+(def transform [:page-link set-page-link])

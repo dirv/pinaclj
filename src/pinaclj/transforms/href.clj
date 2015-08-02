@@ -1,8 +1,6 @@
-(ns pinaclj.transforms.href
-  (:require [pinaclj.page :as page]))
+(ns pinaclj.transforms.href)
 
 (defn- set-href [page opts]
   {:attrs {:href (:url page)}})
 
-(defn apply-transform [page]
-  (page/set-lazy-value page :href set-href))
+(def transform [:href set-href])

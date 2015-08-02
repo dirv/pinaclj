@@ -1,6 +1,5 @@
 (ns pinaclj.transforms.templated-content
-  (:require [pinaclj.page :as page]
-            [pinaclj.templates :as templates]
+  (:require [pinaclj.templates :as templates]
             [pinaclj.link-transform :as link]
             [pinaclj.punctuation-transform :as punctuation]))
 
@@ -14,5 +13,4 @@
       :content
       templates/to-str))
 
-(defn apply-transform [page]
-  (page/set-lazy-value page :templated-content do-template))
+(def transform [:templated-content do-template])

@@ -1,9 +1,6 @@
-(ns pinaclj.transforms.latest
-  (:require [pinaclj.page :as page]))
-
+(ns pinaclj.transforms.latest)
 
 (defn get-latest [{pages :pages} opts]
   {:page (last (sort-by :published-at pages))})
 
-(defn apply-transform [page-set]
-  (page/set-lazy-value page-set :latest get-latest))
+(def transform [:latest get-latest])

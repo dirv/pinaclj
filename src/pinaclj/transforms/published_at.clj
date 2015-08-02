@@ -1,6 +1,5 @@
 (ns pinaclj.transforms.published-at
-  (:require [pinaclj.date-time :as date-time]
-            [pinaclj.page :as page]))
+  (:require [pinaclj.date-time :as date-time]))
 
 (def default-format
   "d MMMM yyyy")
@@ -16,6 +15,4 @@
     (date-time/to-readable-str (:published-at page) (to-format opts))
     ""))
 
-(defn apply-transform [page]
-  (page/set-lazy-value page :published-at to-readable-str))
-
+(def transform [:published-at to-readable-str])

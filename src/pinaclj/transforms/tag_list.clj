@@ -1,8 +1,6 @@
-(ns pinaclj.transforms.tag-list
-  (:require [pinaclj.page :as page]))
+(ns pinaclj.transforms.tag-list)
 
 (defn get-tags [page opts]
   {:pages (vals (:tag-pages page))})
 
-(defn apply-transform [page]
-  (page/set-lazy-value page :tag-list get-tags))
+(def transform [:tag-list get-tags])

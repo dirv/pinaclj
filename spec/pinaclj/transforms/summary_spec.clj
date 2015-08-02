@@ -1,22 +1,21 @@
 (ns pinaclj.transforms.summary-spec
   (require [speclj.core :refer :all]
            [pinaclj.transforms.summary :refer :all]
-           [pinaclj.page :as page]
            [pinaclj.templates :as templates]))
 
 (def short-page
-  (apply-transform {:raw-content "One\n\nTwo"}))
+  {:raw-content "One\n\nTwo"})
 
 (def long-page
-  (apply-transform {:raw-content (apply str (repeat 200 "ab "))}))
+  {:raw-content (apply str (repeat 200 "ab "))})
 
 (defn- summary-text []
-  (templates/to-str (page/retrieve-value (apply-transform short-page) :summary {})))
+  (templates/to-str (to-summary short-page {})))
 
 (defn- summary-content []
-  (templates/to-str (:content (first (page/retrieve-value (apply-transform long-page) :summary {})))))
+  (templates/to-str (:content (first (to-summary long-page {})))))
 
-(describe "apply-transform"
+(describe "to-summary"
   (it "converts markdown"
     (should-contain "<p>" (summary-text))
     (should-contain "</p>" (summary-text)))

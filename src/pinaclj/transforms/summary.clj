@@ -1,6 +1,5 @@
 (ns pinaclj.transforms.summary
-  (:require [pinaclj.page :as page]
-            [endophile.core :as md]
+  (:require [endophile.core :as md]
             [clojure.string :as string]))
 
 (def render-markdown
@@ -21,13 +20,11 @@
     (str (chop content) more-mark)
     content))
 
-(defn- to-summary [page opts]
+(defn to-summary [page opts]
   (-> page
       :raw-content
       trim-to-first-para
       trim-to-max-length
       render-markdown))
 
-(defn apply-transform [page]
-  (page/set-lazy-value page :summary to-summary))
-
+(def transform [:summary to-summary])
