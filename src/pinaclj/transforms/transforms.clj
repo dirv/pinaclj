@@ -1,32 +1,27 @@
 (ns pinaclj.transforms.transforms
-  (:require [pinaclj.transforms.published-at :as published-at]
-            [pinaclj.transforms.tags :as tags]
-            [pinaclj.transforms.latest-published-at :as latest-published-at]
-            [pinaclj.transforms.summary :as summary]
-            [pinaclj.transforms.content :as content]
-            [pinaclj.transforms.url :as url]
-            [pinaclj.transforms.destination :as destination]
-            [pinaclj.transforms.templated-content :as template]
-            [pinaclj.transforms.page-list :as page-list]
-            [pinaclj.transforms.tag-list :as tag-list]
-            [pinaclj.transforms.modified :as modified]
-            [pinaclj.transforms.latest :as latest]
-            [pinaclj.transforms.href :as href]
-            [pinaclj.transforms.page-link :as page-link]))
+  (:require [clojure.tools.namespace.find :as find]
+            [clojure.java.classpath :as cp]))
+
+(defn- transform-ns? [ns]
+  (and (.startsWith ns "pinaclj.transforms.")
+       (not (.endsWith ns "-spec"))
+       (not (.endsWith ns ".transforms"))))
+
+(defn- all-namespaces []
+  (find/find-namespaces (cp/classpath)))
+
+(defn- get-transforms []
+  (filter #(transform-ns? (name (.getName %)))
+          (all-namespaces)))
+
+(defn- do-apply [transform ns]
+  (require ns)
+  (if-let [nt (ns-resolve ns 'apply-transform)]
+    (nt transform)
+    transform))
+
+(def transforms
+  (vec (get-transforms)))
 
 (defn apply-all [page]
-  (-> page
-      (tags/apply-transform)
-      (published-at/apply-transform)
-      (latest-published-at/apply-transform)
-      (content/apply-transform)
-      (summary/apply-transform)
-      (url/apply-transform)
-      (destination/apply-transform)
-      (template/apply-transform)
-      (page-list/apply-transform)
-      (tag-list/apply-transform)
-      (modified/apply-transform)
-      (latest/apply-transform)
-      (href/apply-transform)
-      (page-link/apply-transform)))
+  (reduce do-apply page transforms))
