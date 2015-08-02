@@ -57,11 +57,14 @@
       (should-contain "two=\"b\"" result)
       (should-contain ">testing</p>" result)))
 
-  (let [result (do-replace page-list-template page-with-child-pages)]
-    (it "includes all child pages"
+  (it "includes all child pages"
+    (let [result (do-replace page-list-template page-with-child-pages)]
       (should-contain "val1" result)
-      (should-contain "val2" result))
-    (it "contains correct number of child items"
+      (should-contain "val2" result)))
+
+  (it "contains correct number of child items"
+    (let [result (do-replace page-list-template page-with-child-pages)]
+      (should-contain "val1" result)
       (should= 2 (count (re-seq #"data-id=\"page-list\"" result)))))
 
   (it "transforms nested page"
@@ -84,9 +87,11 @@
   (def test-split-page
     {:page-list {:pages [{:title "hello world"}]}})
 
-  (let [template (build-template (samples/stream "split_list.html"))]
-    (it "parses max pages"
-      (should= 3 (:max-pages template)))
-    (it "sets template func"
-      (should-contain "hello world" (to-str ((:template-func template)
-                                             test-split-page))))))
+  (defn- build-split-list-template []
+    (build-template (samples/stream "split_list.html")))
+
+  (it "parses max pages"
+    (should= 3 (:max-pages (build-split-list-template))))
+  (it "sets template func"
+    (let [template-func (:template-func (build-split-list-template))]
+      (should-contain "hello world" (to-str (template-func test-split-page))))))

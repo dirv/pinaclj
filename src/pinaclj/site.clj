@@ -3,6 +3,9 @@
             [pinaclj.page-builder :as pb]
             [pinaclj.theme :as theme]))
 
+(defn- published? [page]
+  (not (nil? (:published-at page))))
+
 (defn- modified-since-last-publish? [page dest-last-modified]
   (> (page/retrieve-value page :modified {}) dest-last-modified))
 
@@ -27,8 +30,14 @@
 (defn- divide-pages [pages theme]
   (mapcat #(divide-page theme %) pages))
 
-(defn build [input-pages theme dest-last-modified]
-  (-> input-pages
+(defn- published-only [pages]
+  (filter published? pages))
+
+(defn- build-published [published-pages theme dest-last-modified]
+  (-> published-pages
       (modified-pages dest-last-modified)
-      (generate-list input-pages theme)
+      (generate-list published-pages theme)
       (divide-pages theme)))
+
+(defn build [input-pages theme dest-last-modified]
+  (build-published (published-only input-pages) theme dest-last-modified))

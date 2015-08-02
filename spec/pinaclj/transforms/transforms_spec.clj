@@ -1,9 +1,9 @@
 (ns pinaclj.transforms.transforms-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.transforms.transforms :refer :all]
-           [pinaclj.date-time :as date-time]
-           [pinaclj.transforms.summary :as summary]
-           [pinaclj.page :as page]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.transforms.transforms :refer :all]
+            [pinaclj.date-time :as date-time]
+            [pinaclj.transforms.summary :as summary]
+            [pinaclj.page :as page]))
 
 (def page
   (apply-all

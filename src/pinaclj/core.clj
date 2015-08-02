@@ -1,5 +1,6 @@
 (ns pinaclj.core
   (:require [pinaclj.files :as files]
+            [pinaclj.read :as rd]
             [pinaclj.nio :as nio]
             [pinaclj.site :as site]
             [pinaclj.page-builder :as pb]
@@ -17,11 +18,14 @@
 (defn- write-page [dest-root [page-path content]]
   (files/create (nio/resolve-path dest-root page-path) content))
 
+(defn- create-page [src-root src-file]
+  (rd/read-page (pb/create-page src-root src-file)))
+
 (defn- create-pages [src]
-  (map (partial pb/create-page src) (files/all-in src)))
+  (map #(create-page src %) (files/all-in src)))
 
 (defn compile-all [fs src-path dest-path theme-path]
-  (let [pages (pb/load-published-pages (create-pages (nio/resolve-path fs src-path)))
+  (let [pages (create-pages (nio/resolve-path fs src-path))
         theme (theme/build-theme fs theme-path)
         dest (nio/resolve-path fs dest-path)]
     (doall (map (partial write-page dest) (site/build pages theme (dest-last-modified dest))))))

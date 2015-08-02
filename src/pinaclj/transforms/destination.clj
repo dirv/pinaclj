@@ -17,7 +17,7 @@
 (def fix-url
   (comp trim-url add-index-page-extension))
 
-(defn- add-destination [page opts]
+(defn add-destination [page opts]
   (fix-url (page/retrieve-value page :url {})))
 
 (defn apply-transform [page]
