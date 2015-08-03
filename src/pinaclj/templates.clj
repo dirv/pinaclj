@@ -8,8 +8,11 @@
 (def tag-list-selector
   (html/attr= :data-id "tag-list"))
 
-(def page-or-tag-list-selector
-  #{page-list-selector tag-list-selector})
+(def latest-selector
+  (html/attr= :data-id "latest"))
+
+(def nested-selector
+  #{page-list-selector tag-list-selector latest-selector})
 
 (def data-prefix "data-")
 
@@ -28,7 +31,7 @@
           (data-attrs node)))
 
 (defn- build-replacement-selector [field]
-  [#{html/root (html/but page-or-tag-list-selector)} :> (html/attr= :data-id (name field))])
+  [#{html/root (html/but nested-selector)} :> (html/attr= :data-id (name field))])
 
 (declare page-replace)
 
