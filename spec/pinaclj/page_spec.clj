@@ -1,6 +1,9 @@
 (ns pinaclj.page-spec
   (require [speclj.core :refer :all]
-           [pinaclj.page :refer :all]))
+           [pinaclj.page :refer :all]
+           [pinaclj.files :as files]
+           [pinaclj.nio :as nio]
+           [pinaclj.test-fs :as test-fs]))
 
 (def ^:dynamic counter 0)
 
@@ -50,3 +53,31 @@
 (describe "all-keys"
   (it "gets keys of both static and computed values"
     (should= '(:x :y) (all-keys page-with-both))))
+
+(defn- read-file [fs path]
+  (clojure.string/join "\n" (files/read-lines (nio/resolve-path fs path))))
+
+(defn- file-exists? [fs path]
+  (nio/exists? (nio/resolve-path fs path)))
+
+(describe "write"
+  (with fs (test-fs/create-from []))
+
+  (def page-to-write
+    {:path "pages/test.md"
+     :raw-content "test"
+     :a "a"
+     :b "b"})
+
+  (before (write-page page-to-write @fs))
+
+  (it "writes page to disk"
+    (should (file-exists? @fs "pages/test.md")))
+  (it "writes correct content to disk"
+    (should (.endsWith (read-file @fs "pages/test.md") "---\ntest")))
+  (it "writes all headers"
+    (should-contain "a: a\n" (read-file @fs "pages/test.md"))
+    (should-contain "b: b\n" (read-file @fs "pages/test.md")))
+  (it "does not write out path or raw-content as headers"
+    (should-not-contain "path: " (read-file @fs "pages/test.md"))
+    (should-not-contain "raw-content: " (read-file @fs "pages/test.md"))))

@@ -1,5 +1,7 @@
 (ns pinaclj.page
-  (:require [pinaclj.date-time :as date]))
+  (:require [pinaclj.date-time :as date]
+            [pinaclj.nio :as nio]
+            [pinaclj.files :as files]))
 
 (defn set-lazy-value [page fk fv]
   (assoc-in page [:funcs fk] (memoize fv)))
@@ -19,3 +21,15 @@
               (all-keys page)))
   (println "}"))
 
+(def non-written-headers #{:raw-content :path})
+
+(defn- written-kv-headers [page]
+  (filter #(not (non-written-headers (key %))) page))
+
+(defn- to-headers [page]
+  (apply str (map #(str (name (key %)) ": " (val %) "\n")
+                  (written-kv-headers page))))
+
+(defn write-page [page fs]
+    (files/create (nio/resolve-path fs (:path page))
+                  (str (to-headers page) "---\n"  (:raw-content page))))
