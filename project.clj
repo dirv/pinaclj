@@ -9,7 +9,7 @@
                  [com.google.jimfs/jimfs "1.0"]
                  [endophile "0.1.2"]
                  [enlive "1.1.6"]]
+  :eval-in-leiningen true
   :plugins [[speclj "3.3.1"]]
   :test-paths ["spec"]
-  :main pinaclj.cli
   :profiles {:dev {:dependencies [[speclj "3.3.1"]]}})

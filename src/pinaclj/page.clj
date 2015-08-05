@@ -21,7 +21,7 @@
               (all-keys page)))
   (println "}"))
 
-(def non-written-headers #{:raw-content :path})
+(def non-written-headers #{:raw-content :path :funcs :src-root})
 
 (defn- written-kv-headers [page]
   (filter #(not (non-written-headers (key %))) page))
