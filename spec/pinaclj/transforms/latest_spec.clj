@@ -1,6 +1,6 @@
 (ns pinaclj.transforms.latest-spec
   (require [speclj.core :refer :all]
-           [pinaclj.date-time :as dt]
+           [pinaclj.date-time-helpers :as dt]
            [pinaclj.transforms.latest :refer :all]))
 
 (def earliest

@@ -1,7 +1,7 @@
 (ns pinaclj.site-spec
   (require [speclj.core :refer :all]
            [pinaclj.site :refer :all]
-           [pinaclj.date-time :as dt]))
+           [pinaclj.date-time-helpers :as dt]))
 
 (defn- title-writing-template [x]
   (apply str (map :title (:pages x))))

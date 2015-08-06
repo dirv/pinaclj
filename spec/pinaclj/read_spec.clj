@@ -1,13 +1,13 @@
 (ns pinaclj.read-spec
   (:require [speclj.core :refer :all]
             [pinaclj.read :refer :all]
-            [pinaclj.date-time :as date-time]
+            [pinaclj.date-time-helpers :as dt]
             [pinaclj.files :as files]
             [pinaclj.page-builder :as pb]
             [pinaclj.test-fs :as test-fs]))
 
 (def published-at
-  (date-time/make 2014 10 31 10 5 0))
+  (dt/make 2014 10 31 10 5 0))
 
 (def test-pages
   [{:path "first"
