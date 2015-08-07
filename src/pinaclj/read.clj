@@ -24,8 +24,9 @@
 (defn- to-headers [header-section]
   (into {} (map (comp convert to-header) header-section)))
 
+(defn- merge-page [page [header content]]
+  (assoc (merge page (to-headers header))
+         :raw-content content))
+
 (defn read-page [page]
-  (let [header-and-content (split-header-content (files/read-lines (:path page)))]
-    (merge page
-           (to-headers (first header-and-content))
-           {:raw-content (second header-and-content)})))
+  (merge-page page (split-header-content (files/read-lines (:path page)))))
