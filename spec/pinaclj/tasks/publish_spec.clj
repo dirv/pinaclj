@@ -2,6 +2,7 @@
   (:require [speclj.core :refer :all]
             [pinaclj.tasks.publish :refer :all]
             [pinaclj.nio :as nio]
+            [pinaclj.date-time :as dt]
             [pinaclj.test-fs :as test-fs]))
 
 (defn- test-time []
@@ -23,16 +24,23 @@
   {:path "test.md"
    :content "title: a\n---\nhello"})
 
-(defn- read-page [fs path]
-  (clojure.string/join "\n" (nio/read-all-lines (nio/resolve-path fs "test.md"))))
+(def rewrite
+  {:path "rewrite.md"
+   :content "title: test\npublished-at: 2015-01-01T15:00:00.102Z\n---\ntest2"})
+
+(defn- read-file [fs path]
+  (clojure.string/join "\n" (nio/read-all-lines (nio/resolve-path fs path))))
 
 (describe "publish-path"
-  (with fs (test-fs/create-from [simple-page]))
+  (with fs (test-fs/create-from [simple-page rewrite]))
   (before (publish-path @fs "test.md" test-time))
   (it "publishes-path"
-    (should-contain "published-at: test-time\n" (read-page @fs "test.md")))
+    (should-contain "published-at: test-time\n" (read-file @fs "test.md")))
   (it "maintains content"
-    (should-contain "\n---\nhello" (read-page @fs "test.md")))
+    (should-contain "\n---\nhello" (read-file @fs "test.md")))
   (it "maintains other headers"
-    (should-contain "title: a\n" (read-page @fs "test.md"))))
+    (should-contain "title: a\n" (read-file @fs "test.md")))
+  (it "writes out headers in same order as read"
+    (publish-path @fs "rewrite.md" dt/now)
+    (should= (:content rewrite) (read-file @fs "rewrite.md"))))
 

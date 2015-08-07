@@ -21,15 +21,20 @@
               (all-keys page)))
   (println "}"))
 
-(def non-written-headers #{:raw-content :path :funcs :src-root})
+(def non-written-headers #{:read-headers :raw-content :path :funcs :src-root})
 
-(defn- written-kv-headers [page]
-  (filter #(not (non-written-headers (key %))) page))
+(defn- header-keys [page]
+  (clojure.set/difference (set (keys page)) non-written-headers))
+
+(defn- ordered-header-keys [page]
+  (concat (:read-headers page)
+          (clojure.set/difference (header-keys page)
+                                  (set (:read-headers page)))))
 
 (defn- to-headers [page]
-  (apply str (map #(str (name (key %)) ": " (val %) "\n")
-                  (written-kv-headers page))))
+  (apply str (map #(str (name %) ": " (% page) "\n")
+                  (ordered-header-keys page))))
 
 (defn write-page [page fs]
-    (files/create (nio/resolve-path fs (:path page))
-                  (str (to-headers page) "---\n"  (:raw-content page))))
+  (files/create (nio/resolve-path fs (:path page))
+                (str (to-headers page) "---\n"  (:raw-content page) "\n")))

@@ -80,4 +80,15 @@
     (should-contain "b: b\n" (read-file @fs "pages/test.md")))
   (it "does not write out path or raw-content as headers"
     (should-not-contain "path: " (read-file @fs "pages/test.md"))
-    (should-not-contain "raw-content: " (read-file @fs "pages/test.md"))))
+    (should-not-contain "raw-content: " (read-file @fs "pages/test.md")))
+
+  (def previously-written-page
+    {:path "pages/previous.md"
+     :raw-content "test"
+     :a "a" :b "b" :c "c"
+     :read-headers [:b :a]})
+
+  (before (write-page previously-written-page @fs))
+
+  (it "writes previously written headers first and in order"
+    (should (re-find #"(?m)b:.*\na:.*\nc:" (read-file @fs "pages/previous.md")))))

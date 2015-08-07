@@ -25,8 +25,10 @@
   (into {} (map (comp convert to-header) header-section)))
 
 (defn- merge-page [page [header content]]
-  (assoc (merge page (to-headers header))
-         :raw-content content))
+  (let [headers (to-headers header)]
+    (assoc (merge page headers)
+         :read-headers (vec (keys headers))
+         :raw-content content)))
 
 (defn read-page [page]
   (merge-page page (split-header-content (files/read-lines (:path page)))))
