@@ -1,7 +1,6 @@
 (ns pinaclj.core-spec
   (:require [pinaclj.core :refer :all]
-            [pinaclj.files :as files]
-            [pinaclj.test-fs :as test-fs]
+            [pinaclj.test-fs :refer :all]
             [pinaclj.test-templates :as test-templates]
             [speclj.core :refer :all]))
 
@@ -13,11 +12,8 @@
   {:path "pages/post.md"
     :content "title: Test\npublished-at: 2014-10-31T12:05:00Z\n---\ncontent"})
 
-(defn- file-exists? [fs file-path]
-  (files/exists? (files/resolve-path fs file-path)))
-
 (describe "compile-all"
-  (with fs (test-fs/create-from [nested-page simple-page]))
+  (with fs (create-from [nested-page simple-page]))
 
   (before (test-templates/write-to-fs @fs))
 

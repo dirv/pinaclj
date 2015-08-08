@@ -12,7 +12,7 @@
    :raw-content ""
    :url url
    :modified (System/currentTimeMillis)
-   :published-at (dt/now) })
+   :published-at (dt/now)})
 
 (defn build-list-page [pages url]
   (transforms/apply-all (create-list-page pages url)))

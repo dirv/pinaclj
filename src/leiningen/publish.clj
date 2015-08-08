@@ -1,10 +1,7 @@
 (ns leiningen.publish
   (:require [pinaclj.tasks.publish :as task]
-            [pinaclj.files :as files])
-  (:import (java.time Instant)))
-
-(defn- now []
-  (Instant/now))
+            [pinaclj.files :as files]
+            [pinaclj.date-time :as dt]))
 
 (def fs
   (files/init-default))
@@ -12,5 +9,6 @@
 (defn ^{:no-project-needed true
         :help '[[file-path]]}
   publish [projects & args]
-  (task/publish-path fs (first args) now))
+  (let [message (task/publish-path fs (first args) dt/now)]
+    (println (last message))))
 

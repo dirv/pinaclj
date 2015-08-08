@@ -25,3 +25,7 @@
 
 (defn resource-stream [path]
   (.getResourceAsStream (clojure.lang.RT/baseLoader) path))
+
+(defn file-exists? [fs file-path]
+  (files/exists? (files/resolve-path fs file-path)))
+
