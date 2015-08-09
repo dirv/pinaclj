@@ -29,3 +29,5 @@
 (defn file-exists? [fs file-path]
   (files/exists? (files/resolve-path fs file-path)))
 
+(defn read-file [fs path]
+  (clojure.string/join "\n" (nio/read-all-lines (nio/resolve-path fs path))))

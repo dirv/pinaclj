@@ -11,5 +11,5 @@
 (defn ^{:no-project-needed true
         :help '[[file-path]]}
   publish [projects & args]
-  (doall (for [message (task/publish-path fs (first args) dt/now)]
+  (doall (for [message (task/publish fs args dt/now)]
            (main/info message))))

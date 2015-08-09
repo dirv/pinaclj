@@ -24,9 +24,12 @@
     (t :en :already-published (:path page))
     (add-header src-root page time-fn)))
 
-(defn publish-path [src-root src-path time-fn]
+(defn- publish-path [src-root src-path time-fn]
+  (let [path (files/resolve-path src-root src-path)]
+    (if (files/exists? path)
+      (publish-if-required src-root (read-page src-root path) time-fn)
+      (t :en :not-found src-path))))
+
+(defn publish [src-root src-paths time-fn]
   (tower/with-tscope :publish
-    [(let [path (files/resolve-path src-root src-path)]
-      (if (files/exists? path)
-        (publish-if-required src-root (read-page src-root path) time-fn)
-        (t :en :not-found src-path)))]))
+    (vec (map #(publish-path src-root % time-fn) src-paths))))
