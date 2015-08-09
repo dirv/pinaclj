@@ -8,18 +8,6 @@
 (defn- test-time []
   "test-time")
 
-(def empty-page {})
-(def published-page {:published-at "existing-time"})
-
-(describe "add-header"
-  (it "inserts published-at key/value"
-    (should= {:published-at "test-time"}
-      (add-header empty-page test-time)))
-
-  (it "doesn't insert published-at when already published"
-    (should= {:published-at "existing-time"}
-      (add-header published-page test-time))))
-
 (def simple-page
   {:path "test.md"
    :content "title: a\n---\nhello"})
@@ -32,9 +20,12 @@
   (clojure.string/join "\n" (nio/read-all-lines (nio/resolve-path fs path))))
 
 (describe "publish-path"
-  (with fs (create-from [simple-page rewrite]))
+  (with-all fs (create-from [simple-page rewrite]))
   (describe "with unpublished page"
-    (before (publish-path @fs "test.md" test-time))
+    (with-all messages (publish-path @fs "test.md" test-time))
+    (it "outputs published message"
+      (should-contain "was published at" (last @messages))
+      (should-contain "test.md" (last @messages)))
     (it "publishes-path"
       (should-contain "published-at: test-time\n" (read-file @fs "test.md")))
     (it "maintains content"
@@ -42,12 +33,16 @@
     (it "maintains other headers"
       (should-contain "title: a\n" (read-file @fs "test.md"))))
   (describe "with published path"
-    (it "writes out headers in same order as read"
-      (publish-path @fs "rewrite.md" dt/now)
+    (with-all messages (publish-path @fs "rewrite.md" test-time))
+    (it "outputs error message"
+      (should-contain "already published" (last @messages))
+      (should-contain "rewrite.md" (last @messages)))
+    (it "does not touch file"
       (should= (:content rewrite) (read-file @fs "rewrite.md"))))
   (describe "with unknown file"
+    (with-all messages (publish-path @fs "unknown.md" test-time))
     (it "outputs error message"
-      (should-contain #"not found" (last (publish-path @fs "unknown.md" dt/now))))
+      (should-contain "not found" (last @messages))
+      (should-contain "unknown.md" (last @messages)))
     (it "doesn't write file"
-      (publish-path @fs "unknown.md" dt/now)
       (should-not (file-exists? @fs "unknown.md")))))

@@ -4,7 +4,7 @@
             [pinaclj.theme :as theme]))
 
 (defn- published? [page]
-  (not (nil? (:published-at page))))
+  (some? (:published-at page)))
 
 (defn- modified-since-last-publish? [page dest-last-modified]
   (> (page/retrieve-value page :modified {}) dest-last-modified))
