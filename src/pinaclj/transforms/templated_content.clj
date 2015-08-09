@@ -4,7 +4,9 @@
             [pinaclj.punctuation-transform :as punctuation]))
 
 (defn- build [page opts]
-  ((:template-func (:template opts)) page))
+  (if (contains? opts :template)
+    ((:template-func (:template opts)) page)
+    ""))
 
 (defn do-template [page opts]
   (-> (assoc page :content (build page opts))

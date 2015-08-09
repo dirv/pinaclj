@@ -24,7 +24,7 @@
   (describe "with unpublished page"
     (with-all messages (publish-path @fs "test.md" test-time))
     (it "outputs published message"
-      (should-contain "was published at" (last @messages))
+      (should-contain "has been published at" (last @messages))
       (should-contain "test.md" (last @messages)))
     (it "publishes-path"
       (should-contain "published-at: test-time\n" (read-file @fs "test.md")))
