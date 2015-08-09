@@ -4,6 +4,7 @@
             [pinaclj.page :as page]
             [pinaclj.page-builder :as pb]
             [taoensso.tower :as tower]
+            [pinaclj.tasks.task :as task]
             [pinaclj.translate :refer :all]))
 
 (def description
@@ -15,20 +16,20 @@
 (defn add-header [src-root page time-fn]
   (let [published-page (assoc page :published-at (time-fn))]
     (page/write-page published-page src-root)
-    (t :en :was-published
-       (:path published-page)
-       (:published-at published-page))))
+    (task/success (t :en :was-published
+                     (:path published-page)
+                     (:published-at published-page)))))
 
 (defn- publish-if-required [src-root page time-fn]
   (if (contains? page :published-at)
-    (t :en :already-published (:path page))
+    (task/error (t :en :already-published (:path page)))
     (add-header src-root page time-fn)))
 
 (defn- publish-path [src-root src-path time-fn]
   (let [path (files/resolve-path src-root src-path)]
     (if (files/exists? path)
       (publish-if-required src-root (read-page src-root path) time-fn)
-      (t :en :not-found src-path))))
+      (task/error (t :en :not-found src-path)))))
 
 (defn publish [src-root src-paths time-fn]
   (tower/with-tscope :publish

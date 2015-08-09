@@ -28,9 +28,10 @@
 
   (describe "with unpublished page"
     (it "outputs published message"
-      (let [messages (publish-one @fs "test.md")]
-        (should-contain "has been published at" messages)
-        (should-contain "test.md" messages)))
+      (let [message (publish-one @fs "test.md")]
+        (should-contain "has been published at" (:msg message))
+        (should-contain "test.md" (:msg message))
+        (should= :success (:type message))))
     (describe "resulting page"
       (before (publish-one @fs "test.md"))
       (it "publishes-path"
@@ -42,18 +43,20 @@
 
   (describe "with published path"
     (it "outputs error message"
-      (let [messages (publish-one @fs "rewrite.md")]
-        (should-contain "already published" messages)
-      (should-contain "rewrite.md" messages)))
+      (let [message (publish-one @fs "rewrite.md")]
+        (should-contain "already published" (:msg message))
+        (should-contain "rewrite.md" (:msg message))
+        (should= :error (:type message))))
     (it "does not touch file"
       (publish-one @fs "test.md")
       (should= (:content rewrite) (read-file @fs "rewrite.md"))))
 
   (describe "with unknown file"
     (it "outputs error message"
-      (let [messages (publish-one @fs "unknown.md")]
-        (should-contain "not found" messages)
-        (should-contain "unknown.md" messages)))
+      (let [message (publish-one @fs "unknown.md")]
+        (should-contain "not found" (:msg message))
+        (should-contain "unknown.md" (:msg message))
+        (should= :error (:type message))))
     (it "doesn't write file"
       (publish-one @fs "unknown.md")
       (should-not (file-exists? @fs "unknown.md"))))

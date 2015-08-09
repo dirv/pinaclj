@@ -12,4 +12,6 @@
         :help '[[file-path]]}
   publish [projects & args]
   (doall (for [message (task/publish fs args dt/now)]
-           (main/info message))))
+           (case (:type message)
+                 :success (main/info (:msg message))
+                 :error (main/warn (:msg message))))))
