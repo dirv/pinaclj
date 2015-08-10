@@ -1,4 +1,4 @@
-(ns pinaclj.core
+(ns pinaclj.tasks.generate
   (:require [pinaclj.files :as files]
             [pinaclj.read :as rd]
             [pinaclj.nio :as nio]
@@ -24,7 +24,7 @@
 (defn- create-pages [src]
   (map #(create-page src %) (files/all-in src)))
 
-(defn compile-all [fs src-path dest-path theme-path]
+(defn generate [fs src-path dest-path theme-path]
   (let [pages (create-pages (nio/resolve-path fs src-path))
         theme (theme/build-theme fs theme-path)
         dest (nio/resolve-path fs dest-path)]

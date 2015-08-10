@@ -1,5 +1,5 @@
-(ns pinaclj.core-spec
-  (:require [pinaclj.core :refer :all]
+(ns pinaclj.tasks.generate-spec
+  (:require [pinaclj.tasks.generate :refer :all]
             [pinaclj.test-fs :refer :all]
             [pinaclj.test-templates :as test-templates]
             [speclj.core :refer :all]))
@@ -12,12 +12,12 @@
   {:path "pages/post.md"
     :content "title: Test\npublished-at: 2014-10-31T12:05:00Z\n---\ncontent"})
 
-(describe "compile-all"
+(describe "generate"
   (with fs (create-from [nested-page simple-page]))
 
   (before (test-templates/write-to-fs @fs))
 
-  (before (compile-all @fs "pages" "published" "theme"))
+  (before (generate @fs "pages" "published" "theme"))
 
   (it "creates simple post"
     (should (file-exists? @fs "published/post.html")))

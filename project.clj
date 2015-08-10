@@ -1,7 +1,7 @@
 (defproject pinaclj "0.1.0-SNAPSHOT"
   :description "Simple web content system"
   :url "https://github.com/dirv/pinaclj"
-  :min-lein-version "2.0.0"
+  :min-lein-version "2.5.1"
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/java.classpath "0.2.2"]
                  [org.clojure/tools.namespace "0.2.11"]
@@ -13,4 +13,5 @@
   :eval-in-leiningen true
   :plugins [[speclj "3.3.1"]]
   :test-paths ["spec"]
-  :profiles {:dev {:dependencies [[speclj "3.3.1"]]}})
+  :profiles {:dev {:dependencies [[speclj "3.3.1"]
+                                  [leiningen-core "2.5.1"]]}})
