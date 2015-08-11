@@ -3,8 +3,11 @@
             [pinaclj.read :as rd]
             [pinaclj.nio :as nio]
             [pinaclj.site :as site]
+            [pinaclj.tasks.task :as task]
             [pinaclj.page-builder :as pb]
-            [pinaclj.theme :as theme]))
+            [pinaclj.theme :as theme]
+            [taoensso.tower :as tower]
+            [pinaclj.translate :refer :all]))
 
 (def index-page
   "index.html")
@@ -16,7 +19,8 @@
       0)))
 
 (defn- write-page [dest-root [page-path content]]
-  (files/create (nio/resolve-path dest-root page-path) content))
+  (files/create (nio/resolve-path dest-root page-path) content)
+  (task/success (t :en :published-page page-path)))
 
 (defn- create-page [src-root src-file]
   (rd/read-page (pb/create-page src-root src-file)))
@@ -25,7 +29,8 @@
   (map #(create-page src %) (files/all-in src)))
 
 (defn generate [fs src-path dest-path theme-path]
-  (let [pages (create-pages (nio/resolve-path fs src-path))
-        theme (theme/build-theme fs theme-path)
-        dest (nio/resolve-path fs dest-path)]
-    (doall (map (partial write-page dest) (site/build pages theme (dest-last-modified dest))))))
+  (tower/with-tscope :generate
+    (let [pages (create-pages (nio/resolve-path fs src-path))
+          theme (theme/build-theme fs theme-path)
+          dest (nio/resolve-path fs dest-path)]
+      (doall (map (partial write-page dest) (site/build pages theme (dest-last-modified dest)))))))
