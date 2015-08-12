@@ -13,11 +13,9 @@
   (filter #(modified-since-last-publish? % dest-last-modified) pages))
 
 (defn- generate-list [modified-pages pages theme]
-  (let [tags (pb/build-tag-pages pages)
-        attached-pages (pb/attach-tag-pages modified-pages tags)]
-  (concat (map #(vector :post %) attached-pages)
-          (map #(vector :index.html %) (vals tags))
-          (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme)))))
+  (concat (map #(vector :post %) modified-pages)
+          (map #(vector :index.html %) (pb/build-tag-pages pages))
+          (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme))))
 
 (defn- final-page [page template]
   [(page/retrieve-value page :destination {})

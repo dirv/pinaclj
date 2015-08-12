@@ -13,7 +13,7 @@
   (build-list-page pages "index.html"))
 
 (def tag-page
-  (:test (build-tag-pages [page-a page-b page-c])))
+  (first (build-tag-pages [page-a page-b page-c])))
 
 (def template-with-no-max
   nil)
@@ -48,11 +48,8 @@
     (should= ["tags/test/" "tags/test/index-2.html"]
       (map :url (divide tag-page template-with-low-max)))))
 
-(defn- attached-pages []
-  (attach-tag-pages pages (build-tag-pages pages)))
-
-(describe "attach-tag-pages"
-  (it "attaches"
-    (should= 3 (count (attached-pages)))
-    (should= '("a" "b" "c") (map :title (attached-pages)))
-    (should= '(:test) (map key (:tag-pages (first (attached-pages)))))))
+(describe "build-tag-pages"
+  (it "builds"
+    (should= 1 (count (build-tag-pages pages)))
+    (should= [page-a page-b page-c] (:pages (first (build-tag-pages pages))))
+    (should= '("test") (map :title (build-tag-pages pages)))))
