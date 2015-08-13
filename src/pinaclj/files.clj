@@ -42,3 +42,8 @@
 
 (defn change-extension-to-html [path]
   (str (remove-extension path) ".html"))
+
+(defn trim-url [url-str]
+  (if (= \/ (first url-str))
+    (subs url-str 1)
+    url-str))

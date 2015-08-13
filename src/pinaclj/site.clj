@@ -13,7 +13,7 @@
   (filter #(modified-since-last-publish? % dest-last-modified) pages))
 
 (defn- generate-list [modified-pages pages theme]
-  (concat (map #(vector :post %) modified-pages)
+  (concat (map #(vector :post.html %) modified-pages)
           (map #(vector :index.html %) (pb/build-tag-pages pages))
           (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme))))
 
