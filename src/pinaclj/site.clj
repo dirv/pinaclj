@@ -12,9 +12,12 @@
 (defn- modified-pages [pages dest-last-modified]
   (filter #(modified-since-last-publish? % dest-last-modified) pages))
 
+(defn- template-page-pair [theme page]
+  (vector (theme/determine-template theme page) page))
+
 (defn- generate-list [modified-pages pages theme]
-  (concat (map #(vector :post.html %) modified-pages)
-          (map #(vector :index.html %) (pb/build-tag-pages pages))
+  (concat (map #(template-page-pair theme %) modified-pages)
+          (map #(template-page-pair theme %) (pb/build-tag-pages pages))
           (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme))))
 
 (defn- final-page [page template]

@@ -7,11 +7,12 @@
   (apply str (map :title (:pages x))))
 
 (def test-theme
-  {:post {:template-func title-writing-template}
+  {:post.html {:template-func title-writing-template}
    :index.html {:template-func title-writing-template}})
 
 (def base-page
   {:modified 2
+   :path "/test.md"
    :published-at (dt/make 2015 1 1 1 1 1)
    :title "test"})
 

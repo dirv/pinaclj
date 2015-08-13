@@ -25,8 +25,8 @@
     (when (get theme template-key)
       template-key)))
 
-(defn determine-template [theme page-path]
-  (let [template-path (to-template-path page-path)]
+(defn determine-template [theme page]
+  (let [template-path (to-template-path (.toString (:path page)))]
     (or (find-template? theme template-path)
         (find-template? theme (str template-path ".html"))
         :post.html)))

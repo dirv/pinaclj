@@ -10,6 +10,7 @@
 (defn- create-list-page [pages url]
   {:pages pages
    :raw-content ""
+   :path "/index.md"
    :url url
    :modified (System/currentTimeMillis)
    :published-at (dt/now)})
@@ -37,12 +38,12 @@
 (defn- duplicate-page [page start num-pages]
   (let [page-num (/ start num-pages)]
     (assoc page
-         :start start
-         :raw-content ""
-         :url (create-url page page-num)
-         :pages (take num-pages (drop start (:pages page)))
-         :previous (create-url page (dec page-num))
-         :next (create-url page (inc page-num)))))
+           :start start
+           :raw-content ""
+           :url (create-url page page-num)
+           :pages (take num-pages (drop start (:pages page)))
+           :previous (create-url page (dec page-num))
+           :next (create-url page (inc page-num)))))
 
 (defn divide [page {max-pages :max-pages}]
   (if (nil? max-pages)

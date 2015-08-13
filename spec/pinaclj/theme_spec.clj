@@ -10,15 +10,18 @@
    :both.html ""
    :only.xml ""})
 
+(defn- determine [page-path]
+  (determine-template sample-theme {:path page-path}))
+
 (describe "determine-template"
   (it "chooses post if no override page found"
-    (should= :post.html (determine-template sample-theme "/test.md")))
+    (should= :post.html (determine "/test.md")))
   (it "chooses override"
-    (should= :override.html (determine-template sample-theme "/override.md")))
+    (should= :override.html (determine "/override.md")))
   (it "determines nested pages"
-    (should= :nested/page.html (determine-template sample-theme "/nested/page.md")))
+    (should= :nested/page.html (determine "/nested/page.md")))
   (it "prefers html over other extensions"
-    (should= :both.html (determine-template sample-theme "/both.md")))
+    (should= :both.html (determine "/both.md")))
   (it "chooses file without extension if present"
-    (should= :only.xml (determine-template sample-theme "/only.xml.md"))))
+    (should= :only.xml (determine "/only.xml.md"))))
 
