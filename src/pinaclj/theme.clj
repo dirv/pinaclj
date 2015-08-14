@@ -1,9 +1,10 @@
 (ns pinaclj.theme
   (:require [pinaclj.templates :as t]
+            [pinaclj.nio :as nio]
             [pinaclj.files :as f]))
 
-(defn- load-template [fs root page]
-  (t/build-template (f/read-stream fs (str root page))))
+(defn- load-template [fs page-path]
+  (t/build-template (f/read-stream fs page-path)))
 
 (defn get-template [theme n]
   (get theme n))
@@ -11,11 +12,12 @@
 (defn root-pages [theme]
   (keys (dissoc theme :post.html)))
 
+(defn- to-template [fs root-path file-path]
+  {(keyword (.toString (nio/relativize (f/resolve-path fs root-path) file-path)))
+   (load-template fs file-path)})
+
 (defn build-theme [fs path]
-  {:post.html (load-template fs path "/post.html")
-   :index.html (load-template fs path "/index.html")
-   :feed.xml (load-template fs path "/feed.xml")
-  })
+  (apply merge (map #(to-template fs path %) (f/all-in (f/resolve-path fs path)))))
 
 (def to-template-path
   (comp f/remove-extension f/trim-url))

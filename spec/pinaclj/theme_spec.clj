@@ -1,5 +1,6 @@
 (ns pinaclj.theme-spec
   (require [speclj.core :refer :all]
+           [pinaclj.test-fs :as test-fs]
            [pinaclj.theme :refer :all]))
 
 (def sample-theme
@@ -25,3 +26,17 @@
   (it "chooses file without extension if present"
     (should= :only.xml (determine "/only.xml.md"))))
 
+
+(def test-files
+  [{:path "a.html" :content "<html></html>"}
+   {:path "b.html" :content ""}
+   {:path "b.xml" :content ""}])
+
+(describe "build-theme"
+  (with fs (test-fs/create-from test-files))
+
+  (it "reads all files from fs"
+    (should= '(:a.html :b.html :b.xml) (keys (build-theme @fs ""))))
+
+  (it "loads template for each file"
+    (should-contain :template-func (val (first (build-theme @fs ""))))))
