@@ -9,10 +9,15 @@
    :nested/page.html ""
    :both.xml ""
    :both.html ""
-   :only.xml ""})
+   :only.xml ""
+   :cat.html ""})
 
 (defn- determine [page-path]
   (determine-template sample-theme {:path page-path}))
+
+(defn- determine-with-category [page-path category]
+  (determine-template sample-theme {:path page-path
+                                    :category category}))
 
 (describe "determine-template"
   (it "chooses post if no override page found"
@@ -24,7 +29,13 @@
   (it "prefers html over other extensions"
     (should= :both.html (determine "/both.md")))
   (it "chooses file without extension if present"
-    (should= :only.xml (determine "/only.xml.md"))))
+    (should= :only.xml (determine "/only.xml.md")))
+  (it "chooses file based on category before it chooses default"
+    (should= :cat.html (determine-with-category "/test.md" :cat)))
+  (it "chooses override even with category present"
+    (should= :override.html (determine-with-category "/override.md" :cat)))
+  (it "chooses post if no override and no category is found"
+    (should= :post.html (determine-with-category "/test.md" :cat2))))
 
 
 (def test-files

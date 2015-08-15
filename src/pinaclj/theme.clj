@@ -1,7 +1,13 @@
 (ns pinaclj.theme
   (:require [pinaclj.templates :as t]
+            [pinaclj.page :as page]
             [pinaclj.nio :as nio]
             [pinaclj.files :as f]))
+
+(def default-category :post)
+
+(defn- category-template [category]
+  (keyword (str (name category) ".html")))
 
 (defn- load-template [fs page-path]
   (t/build-template (f/read-stream fs page-path)))
@@ -10,7 +16,9 @@
   (get theme n))
 
 (defn root-pages [theme]
-  (keys (dissoc theme :post.html)))
+  (clojure.set/difference
+    (set (keys theme))
+    #{(category-template default-category)}))
 
 (defn- to-template [fs root-path file-path]
   {(keyword (.toString (nio/relativize (f/resolve-path fs root-path) file-path)))
@@ -31,8 +39,13 @@
     (when (get theme template-key)
       template-key)))
 
+(defn- category-template? [theme page]
+  (when-let [category (page/retrieve-value page :category {})]
+    (find-template? theme (str (name category) ".html"))))
+
 (defn determine-template [theme page]
   (let [template-path (to-template-path (.toString (:path page)))]
     (or (find-template? theme template-path)
         (find-template? theme (str template-path ".html"))
-        :post.html)))
+        (category-template? theme page)
+        (category-template default-category))))
