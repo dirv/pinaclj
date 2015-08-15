@@ -30,12 +30,14 @@
 (def test-files
   [{:path "a.html" :content "<html></html>"}
    {:path "b.html" :content ""}
-   {:path "b.xml" :content ""}])
+   {:path "b.xml" :content ""}
+   {:path "c.png" :content "!!!"}
+   {:path "d" :content "!!!"}])
 
 (describe "build-theme"
   (with fs (test-fs/create-from test-files))
 
-  (it "reads all files from fs"
+  (it "reads HTML and XML files from fs"
     (should= '(:a.html :b.html :b.xml) (keys (build-theme @fs ""))))
 
   (it "loads template for each file"

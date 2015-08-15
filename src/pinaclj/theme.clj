@@ -16,8 +16,12 @@
   {(keyword (.toString (nio/relativize (f/resolve-path fs root-path) file-path)))
    (load-template fs file-path)})
 
+(defn- choose-files [fs path]
+  (filter #(contains? #{".html" ".xml"} (f/extension %))
+          (f/all-in (f/resolve-path fs path))))
+
 (defn build-theme [fs path]
-  (apply merge (map #(to-template fs path %) (f/all-in (f/resolve-path fs path)))))
+  (apply merge (map #(to-template fs path %) (choose-files fs path))))
 
 (def to-template-path
   (comp f/remove-extension f/trim-url))

@@ -32,6 +32,13 @@
   (nio/create-parent-directories path)
   (nio/create-file path (.getBytes content)))
 
+(defn extension [path]
+  (let [path-str (str path)
+        last-index (.lastIndexOf path-str ".")]
+    (if (= -1 last-index)
+      ""
+      (subs path-str last-index))))
+
 (defn all-in [path]
   (with-open [files (nio/directory-stream path)]
     (doall (mapcat #(if (directory? %) (all-in %) [%]) files))))
