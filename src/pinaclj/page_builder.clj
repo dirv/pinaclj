@@ -19,7 +19,7 @@
   (transforms/apply-all (create-list-page pages url)))
 
 (defn- build-tag-page [[tag pages]]
-  (assoc (build-list-page pages (str "tags/" (name tag) "/"))
+  (assoc (build-list-page pages (tp/tag-url tag))
          :title (name tag)))
 
 (defn build-tag-pages [pages]

@@ -1,6 +1,9 @@
 (ns pinaclj.tag-page
   (:require [pinaclj.page :as page]))
 
+(defn tag-url [tag]
+  (str "tags/" (name tag) "/"))
+
 (defn- tags [page]
   (page/retrieve-value page :tags {}))
 
