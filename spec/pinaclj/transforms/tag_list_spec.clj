@@ -1,9 +1,9 @@
 (ns pinaclj.transforms.tag-list-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.tag-page :as tp]
-           [pinaclj.transforms.tag-list :refer :all]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.tag-page :as tp]
+            [pinaclj.transforms.tag-list :refer :all]))
 
-(def tag-page
+(def page
   {:tags '(:tagA :tagB)})
 
 (def tag-page-A
@@ -12,7 +12,7 @@
 
 (describe "get-tags"
   (it "returns right number of tag pages"
-    (should= 2 (count (:pages (get-tags tag-page {})))))
+    (should= 2 (count (:pages (get-tags page {})))))
   (it "returns correct page"
-    (should= tag-page-A (first (:pages (get-tags tag-page {}))))))
+    (should= tag-page-A (first (:pages (get-tags page {}))))))
 
