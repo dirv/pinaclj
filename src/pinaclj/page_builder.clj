@@ -2,6 +2,7 @@
   (:require [pinaclj.page :as page]
             [pinaclj.date-time :as dt]
             [pinaclj.transforms.transforms :as transforms]
+            [pinaclj.category-page :as cp]
             [pinaclj.tag-page :as tp]))
 
 (defn create-page [src path]
@@ -22,8 +23,15 @@
   (assoc (build-list-page pages (tp/tag-url tag))
          :title (name tag)))
 
+(defn- build-category-page [[category pages]]
+  (assoc (build-list-page pages (cp/category-url category))
+         :title (name category)))
+
 (defn build-tag-pages [pages]
   (map build-tag-page (tp/pages-by-tag pages)))
+
+(defn build-category-pages [pages]
+  (map build-category-page (cp/pages-by-category pages)))
 
 (defn- split-page-url [page]
   (.split (page/retrieve-value page :destination {}) "\\."))

@@ -53,3 +53,12 @@
     (should= 1 (count (build-tag-pages pages)))
     (should= [page-a page-b page-c] (:pages (first (build-tag-pages pages))))
     (should= '("test") (map :title (build-tag-pages pages)))))
+
+(def cat-page-a {:category :a :title "a"})
+(def cat-page-b {:title "b"})
+(def cat-pages [cat-page-a cat-page-b])
+
+(describe "build-category-pages"
+  (it "builds all pages"
+    (should= 2 (count (build-category-pages cat-pages)))
+    (should= '("a" "uncategorized") (map :title (build-category-pages cat-pages)))))
