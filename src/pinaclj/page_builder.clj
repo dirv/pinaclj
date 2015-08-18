@@ -19,19 +19,18 @@
 (defn build-list-page [pages url]
   (transforms/apply-all (create-list-page pages url)))
 
-(defn- build-tag-page [[tag pages]]
-  (assoc (build-list-page pages (tp/tag-url tag))
-         :title (name tag)))
+(defn- build-group-page [[group pages] url-func]
+  (assoc (build-list-page pages (url-func group))
+         :title (name group)))
 
-(defn- build-category-page [[category pages]]
-  (assoc (build-list-page pages (cp/category-url category))
-         :title (name category)))
+(defn- build-group-pages [pages group-func url-func]
+  (map #(build-group-page % url-func) (group-func pages)))
 
 (defn build-tag-pages [pages]
-  (map build-tag-page (tp/pages-by-tag pages)))
+  (build-group-pages pages tp/pages-by-tag tp/tag-url))
 
 (defn build-category-pages [pages]
-  (map build-category-page (cp/pages-by-category pages)))
+  (build-group-pages pages cp/pages-by-category cp/category-url))
 
 (defn- split-page-url [page]
   (.split (page/retrieve-value page :destination {}) "\\."))
