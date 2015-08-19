@@ -14,5 +14,8 @@
   (it "returns right number of tag pages"
     (should= 2 (count (:pages (get-tags page {})))))
   (it "returns correct page"
-    (should= tag-page-A (first (:pages (get-tags page {}))))))
+    (should= (:title tag-page-A)
+      (:title (first (:pages (get-tags page {}))))))
+  (it "applies transforms"
+    (should-contain :funcs (first (:pages (get-tags page {}))))))
 

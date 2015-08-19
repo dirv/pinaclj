@@ -12,4 +12,6 @@
 
 (describe "get-category"
   (it "returns the category page"
-    (should= cat-link (:page (get-category page {})))))
+    (should= (:title cat-link) (:title (:page (get-category page {})))))
+  (it "applies transforms"
+    (should-contain :funcs (:page (get-category page {})))))
