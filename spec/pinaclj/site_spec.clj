@@ -1,5 +1,6 @@
 (ns pinaclj.site-spec
   (require [speclj.core :refer :all]
+           [pinaclj.transforms.transforms :as transforms]
            [pinaclj.site :refer :all]
            [pinaclj.date-time-helpers :as dt]))
 
@@ -12,6 +13,7 @@
 
 (def base-page
   {:modified 2
+   :category :uncategorized
    :path "/test.md"
    :published-at (dt/make 2015 1 1 1 1 1)
    :title "test"})

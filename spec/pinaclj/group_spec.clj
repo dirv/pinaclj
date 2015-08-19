@@ -1,5 +1,6 @@
 (ns pinaclj.group-spec
   (:require [speclj.core :refer :all]
+            [pinaclj.transforms.category :as category]
             [pinaclj.group :refer :all]))
 
 (def tag-page-a {:tags ["tagA" "tagB" "tagC"]})
@@ -26,7 +27,4 @@
     (should== '(:a :c) (keys (pages-by-category all-category-pages))))
   (it "includes all pages in category value"
     (should-contain category-page-a (:a (pages-by-category all-category-pages)))
-    (should-contain category-page-c (:c (pages-by-category all-category-pages))))
-  (it "creates uncategorized"
-    (def no-category {:title "none"})
-    (should= [uncategorized] (keys (pages-by-category [ no-category ])))))
+    (should-contain category-page-c (:c (pages-by-category all-category-pages)))))

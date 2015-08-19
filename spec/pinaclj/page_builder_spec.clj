@@ -55,7 +55,7 @@
     (should= '("test") (map :title (build-tag-pages pages)))))
 
 (def cat-page-a {:category :a :title "a"})
-(def cat-page-b {:title "b"})
+(def cat-page-b {:category :uncategorized :title "b"})
 (def cat-pages [cat-page-a cat-page-b])
 
 (describe "build-category-pages"

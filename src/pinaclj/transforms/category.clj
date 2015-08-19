@@ -1,7 +1,11 @@
 (ns pinaclj.transforms.category)
 
-(defn- convert-category [page opts]
-  (when-let [category (:category page)]
-    (keyword category)))
+(def uncategorized
+  :uncategorized)
+
+(defn convert-category [page opts]
+  (if-let [category (:category page)]
+    (keyword category)
+    uncategorized))
 
 (def transform [:category convert-category])

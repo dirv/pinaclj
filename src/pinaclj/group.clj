@@ -1,9 +1,6 @@
 (ns pinaclj.group
   (:require [pinaclj.page :as page]))
 
-(def uncategorized
-  :uncategorized)
-
 (defn category-url [category]
   (str "category/" (name category) "/"))
 
@@ -14,9 +11,7 @@
   (page/retrieve-value page :tags {}))
 
 (defn- category-group-fn [page]
-  (if-let [category (page/retrieve-value page :category {})]
-    [category]
-    [uncategorized]))
+  [(page/retrieve-value page :category {})])
 
 (defn- group-page [page groups-fn]
   (let [groups (groups-fn page)]
