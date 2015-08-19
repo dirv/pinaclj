@@ -7,11 +7,9 @@
   {:category :cat})
 
 (def cat-link
-  {:title "cat"
-   :destination (group/category-url :cat) })
+  {:content "cat"
+   :attrs {:href (group/category-url :cat)} })
 
 (describe "get-category"
-  (it "returns the category page"
-    (should= (:title cat-link) (:title (:page (get-category page {})))))
-  (it "applies transforms"
-    (should-contain :funcs (:page (get-category page {})))))
+  (it "returns the category link"
+    (should= cat-link (get-category page {}))))

@@ -3,11 +3,11 @@
             [pinaclj.page :as page]
             [pinaclj.transforms.transforms :as transforms]))
 
-(defn- create-page [category]
-  (transforms/apply-all {:title (name category)
-                         :destination (group/category-url category)}))
+(defn- create-link [category]
+  {:attrs {:href (group/category-url category)}
+   :content (name category)})
 
 (defn get-category [page opts]
-  {:page (create-page (page/retrieve-value page :category {}))})
+  (create-link (page/retrieve-value page :category {})))
 
 (def transform [:category-link get-category])

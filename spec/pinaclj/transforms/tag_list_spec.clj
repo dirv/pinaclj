@@ -8,7 +8,7 @@
 
 (def tag-page-A
   {:title "tagA"
-   :destination (group/tag-url :tagA)})
+   :url (group/tag-url :tagA)})
 
 (describe "get-tags"
   (it "returns right number of tag pages"

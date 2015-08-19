@@ -5,7 +5,7 @@
 
 (defn- to-link-page [tag]
   (transforms/apply-all {:title (name tag)
-                         :destination (group/tag-url tag)}))
+                         :url (group/tag-url tag)}))
 
 (defn get-tags [page opts]
   {:pages (map to-link-page (page/retrieve-value page :tags {}))})
