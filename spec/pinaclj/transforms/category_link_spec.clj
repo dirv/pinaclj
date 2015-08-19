@@ -1,6 +1,6 @@
 (ns pinaclj.transforms.category-link-spec
   (:require [speclj.core :refer :all]
-            [pinaclj.category-page :as cp]
+            [pinaclj.group :as group]
             [pinaclj.transforms.category-link :refer :all]))
 
 (def page
@@ -8,7 +8,7 @@
 
 (def cat-link
   {:title "cat"
-   :destination (cp/category-url :cat) })
+   :destination (group/category-url :cat) })
 
 (describe "get-category"
   (it "returns the category page"

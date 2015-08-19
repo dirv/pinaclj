@@ -1,6 +1,6 @@
 (ns pinaclj.transforms.tag-list-spec
   (:require [speclj.core :refer :all]
-            [pinaclj.tag-page :as tp]
+            [pinaclj.group :as group]
             [pinaclj.transforms.tag-list :refer :all]))
 
 (def page
@@ -8,7 +8,7 @@
 
 (def tag-page-A
   {:title "tagA"
-   :destination (tp/tag-url :tagA)})
+   :destination (group/tag-url :tagA)})
 
 (describe "get-tags"
   (it "returns right number of tag pages"
