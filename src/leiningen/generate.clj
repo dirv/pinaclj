@@ -37,7 +37,7 @@
     (cond
       (:help options) (main/info (usage options-summary))
       :else
-      (doall (for [message (run-generate fs args)]
+      (doall (for [message (run-generate args)]
                (case (:type message)
                  :success (main/info (:msg message))
                  :error (main/warn (:msg message))))))))
