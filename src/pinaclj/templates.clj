@@ -2,17 +2,18 @@
   (:require [net.cgrand.enlive-html :as html]
             [pinaclj.page :as page]))
 
-(def page-list-selector
-  (html/attr= :data-id "page-list"))
+(def nested-fields #{:page-list :tag-list :latest})
 
-(def tag-list-selector
-  (html/attr= :data-id "tag-list"))
-
-(def latest-selector
-  (html/attr= :data-id "latest"))
+(defn- parent-nodes [pred]
+  (html/zip-pred
+    (fn [loc]
+      (some pred (drop 1 (drop-last (take-while identity (iterate clojure.zip/up loc))))))))
 
 (def nested-selector
-  #{page-list-selector tag-list-selector latest-selector})
+  (-> (map #(html/attr= :data-id (name %)) nested-fields)
+      html/union
+      parent-nodes
+      html/but))
 
 (def data-prefix "data-")
 
@@ -31,7 +32,7 @@
           (data-attrs node)))
 
 (defn- build-replacement-selector [field]
-  [#{html/root (html/but nested-selector)} :> (html/attr= :data-id (name field))])
+  [[(html/attr= :data-id (name field)) nested-selector]])
 
 (declare page-replace)
 
@@ -84,7 +85,7 @@
     page))
 
 (defn build-page-list-opts [page]
-  (let [node (html/select page [page-list-selector])]
+  (let [node (html/select page [(html/attr= :data-id "page-list")])]
     (when (seq? node)
       (convert-max-page-str (renamed-data-attrs (first node))))))
 

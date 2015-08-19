@@ -21,6 +21,9 @@
 (def nested-page-template
   "<div data-id=latest > <p data-id=title ></p> </div>")
 
+(def deep-nested-page-template
+  "<div data-id=latest > <div > <p data-id=title ></p> </div> </div>")
+
 (def func-params-template
   "<p data-id=func data-format=123 />")
 
@@ -69,6 +72,11 @@
 
   (it "transforms nested page"
     (let [result (do-replace nested-page-template nested-page)]
+      (should-contain "test-title" result)
+      (should-not-contain "not expected" result)))
+
+  (it "transforms deep nested page"
+    (let [result (do-replace deep-nested-page-template nested-page)]
       (should-contain "test-title" result)
       (should-not-contain "not expected" result)))
 
