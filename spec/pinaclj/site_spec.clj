@@ -66,9 +66,9 @@
 
     (it "creates tag pages"
       (let [pages (files-output [tag-page])]
-        (should-contain "tags/tagA/index.html" pages)
-        (should-contain "tags/tagB/index.html" pages)
-        (should-contain "tags/tagC/index.html" pages))))
+        (should-contain "tag/tagA/index.html" pages)
+        (should-contain "tag/tagB/index.html" pages)
+        (should-contain "tag/tagC/index.html" pages))))
 
   (describe "category page"
     (def category-page (assoc base-page

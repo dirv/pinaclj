@@ -8,7 +8,7 @@
   (str "category/" (name category) "/"))
 
 (defn tag-url [tag]
-  (str "tags/" (name tag) "/"))
+  (str "tag/" (name tag) "/"))
 
 (defn- tag-group-fn [page]
   (page/retrieve-value page :tags {}))

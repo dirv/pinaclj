@@ -45,7 +45,7 @@
   (it "adds next link to first page only"
     (should= ["index-2.html" nil] (map :next (divide-pages))))
   (it "sets url using correct definition"
-    (should= ["tags/test/" "tags/test/index-2.html"]
+    (should= ["tag/test/" "tag/test/index-2.html"]
       (map :url (divide tag-page template-with-low-max)))))
 
 (describe "build-tag-pages"
