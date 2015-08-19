@@ -18,6 +18,7 @@
 (defn- generate-list [modified-pages pages theme]
   (concat (map #(template-page-pair theme %) modified-pages)
           (map #(template-page-pair theme %) (pb/build-tag-pages pages))
+          (map #(template-page-pair theme %) (pb/build-category-pages pages))
           (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme))))
 
 (defn- final-page [page template]

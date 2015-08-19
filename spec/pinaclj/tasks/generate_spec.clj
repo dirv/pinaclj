@@ -34,8 +34,8 @@
     (it "outputs successful pages"
       (let [output (generate @fs "pages" "published" "theme")
             messages (map :msg output)]
-        (should= 4 (count (filter #(= :success (:type %)) output)))
         (should-contain (publish-message-for "index.html") messages)
         (should-contain (publish-message-for "feed.xml") messages)
         (should-contain (publish-message-for "post.html") messages)
+        (should-contain (publish-message-for "category/uncategorized/index.html") messages)
         (should-contain (publish-message-for "nested/another_post.html") messages)))))

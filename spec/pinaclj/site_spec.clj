@@ -70,6 +70,13 @@
         (should-contain "tags/tagB/index.html" pages)
         (should-contain "tags/tagC/index.html" pages))))
 
+  (describe "category page"
+    (def category-page (assoc base-page
+                              :category :a))
+
+    (it "creates category pages"
+      (should-contain "category/a/index.html" (files-output [category-page]))))
+
   (describe "split page list"
     (def theme-with-max-page
       (assoc-in test-theme [:index.html :max-pages] 2))
