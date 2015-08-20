@@ -16,13 +16,13 @@
   "<p data-id=a /><p data-id=b /><p data-id=c />")
 
 (def page-list-template
-  "<ol><li data-id=page-list ><p data-id= test /></li></ol>")
+  "<ol data-id=page-list ><li><p data-id= test /></li></ol>")
 
 (def nested-page-template
   "<div data-id=latest > <p data-id=title ></p> </div>")
 
 (def deep-nested-page-template
-  "<div data-id=latest > <div > <p data-id=title ></p> </div> </div>")
+  "<div data-id=latest > <div> <div> <p data-id=title ></p> </div> </div> </div>")
 
 (def func-params-template
   "<p data-id=func data-format=123 />")
@@ -68,7 +68,8 @@
   (it "contains correct number of child items"
     (let [result (do-replace page-list-template page-with-child-pages)]
       (should-contain "val1" result)
-      (should= 2 (count (re-seq #"data-id=\"page-list\"" result)))))
+      (should= 1 (count (re-seq #"data-id=\"page-list\"" result)))
+      (should= 2 (count (re-seq #"/li" result)))))
 
   (it "transforms nested page"
     (let [result (do-replace nested-page-template nested-page)]

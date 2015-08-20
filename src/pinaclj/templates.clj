@@ -39,9 +39,10 @@
 (defmulti transform (fn [node k value] (key value)))
 
 (defmethod transform :pages [node k child-pages]
-  ((html/clone-for [item (val child-pages)]
-                   [(html/attr= :data-id (name k))]
-                   (page-replace item)) node))
+  (html/at node
+           [html/root :> html/first-child]
+           (html/clone-for [item (val child-pages)]
+                           (page-replace item))))
 
 (defmethod transform :page [node k page]
   ((page-replace (val page)) node))
