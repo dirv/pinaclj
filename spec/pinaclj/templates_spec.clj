@@ -47,6 +47,12 @@
                        :func
                        (fn [page opts] (str "format=" (:format opts)))))
 
+(def delete-page-template
+  "<p data-id=if-exists > bye </p>")
+
+(def delete-page
+  {:if-exists {:delete true}})
+
 (describe "build-page-func"
   (it "transforms string values"
     (let [result (do-replace page-template string-value-page)]
@@ -83,7 +89,10 @@
 
   (it "transforms using page functions with data attributes"
     (let [result (do-replace func-params-template func-page)]
-      (should-contain "format=123" result))))
+      (should-contain "format=123" result)))
+
+  (it "deletes nodes"
+    (should-not-contain "bye" (do-replace delete-page-template delete-page))))
 
 (describe "build-page-list-opts"
   (def page-with-opts

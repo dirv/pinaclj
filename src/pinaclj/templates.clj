@@ -52,6 +52,7 @@
           node
           (val attrs)))
 
+(defmethod transform :delete [node k attrs])
 (defmethod transform :content [node k content]
   ((html/content (val content)) node))
 
