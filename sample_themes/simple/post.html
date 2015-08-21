@@ -2,13 +2,23 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link type="text/css" rel="stylesheet" href="styles.css">
   </head>
   <body>
       <article>
           <header>
-              <h1 data-id="title"></h1>
+              <h1><a data-id="page-link"></a></h1>
+              <p data-id="published-at" data-format="dd MMMM yyyy"></p>
+              <p><a data-id="category-link">category</a></p>
           </header>
           <section data-id="content"></section>
+          <footer>
+              <ol>
+                  <li data-id="tag-list">
+                      <a data-id="page-link" />
+                  </li>
+              </ol>
+          </footer>
       </article>
   </body>
 </html>
