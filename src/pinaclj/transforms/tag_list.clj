@@ -1,11 +1,9 @@
 (ns pinaclj.transforms.tag-list
   (:require [pinaclj.group :as group]
-            [pinaclj.page :as page]
-            [pinaclj.transforms.transforms :as transforms]))
+            [pinaclj.page :as page]))
 
 (defn- to-link-page [tag]
-  (transforms/apply-all {:title (name tag)
-                         :url (group/tag-url tag)}))
+  (group/tag-url tag))
 
 (defn get-tags [page opts]
   {:pages (map to-link-page (page/retrieve-value page :tags {}))})

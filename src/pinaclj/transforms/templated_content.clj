@@ -4,8 +4,9 @@
             [pinaclj.punctuation-transform :as punctuation]))
 
 (defn- build [page opts]
-  (if (contains? opts :template)
-    ((:template-func (:template opts)) page)
+  (if (and (contains? opts :template)
+           (contains? opts :all-pages))
+    (((get-in opts [:template :template-fn]) (:all-pages opts)) page)
     ""))
 
 (defn do-template [page opts]

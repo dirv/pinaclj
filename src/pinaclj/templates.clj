@@ -36,24 +36,25 @@
 
 (declare page-replace)
 
-(defmulti transform (fn [node k value] (key value)))
+(defmulti transform (fn [node k value all-pages] (key value)))
 
-(defmethod transform :pages [node k child-pages]
+(defmethod transform :pages [node k child-pages all-pages]
   (html/at node
            [html/root :> html/first-child]
            (html/clone-for [item (val child-pages)]
-                           (page-replace item))))
+                           (page-replace (get all-pages item) all-pages))))
 
-(defmethod transform :page [node k page]
-  ((page-replace (val page)) node))
+(defmethod transform :page [node k page all-pages]
+  ((page-replace (get all-pages (val page)) all-pages) node))
 
-(defmethod transform :attrs [node k attrs]
+(defmethod transform :attrs [node k attrs all-pages]
   (reduce #((html/set-attr (first %2) (second %2)) %1)
           node
           (val attrs)))
 
-(defmethod transform :delete [node k attrs])
-(defmethod transform :content [node k content]
+(defmethod transform :delete [node k attrs all-pages])
+
+(defmethod transform :content [node k content all-pages]
   ((html/content (val content)) node))
 
 (defn- transform-content [node content]
@@ -61,25 +62,28 @@
     ((html/content content) node)
     ((html/content (.toString content)) node)))
 
-(defn- build-replacement-transform [k page]
+(defn- build-opts [node all-pages]
+  (merge {:all-pages all-pages} (renamed-data-attrs node)))
+
+(defn- build-replacement-transform [k page all-pages]
   (fn [node]
-    (let [value (page/retrieve-value page k (renamed-data-attrs node))]
+    (let [value (page/retrieve-value page k (build-opts node all-pages))]
       (if (map? value)
-        (reduce #(transform %1 k %2) node value)
+        (reduce #(transform %1 k %2 all-pages) node value)
         (transform-content node value)))))
 
-(defn- build-replacement-kv [k page]
+(defn- build-replacement-kv [k page all-pages]
   (doall (list (build-replacement-selector k)
-               (build-replacement-transform k page))))
+               (build-replacement-transform k page all-pages))))
 
-(defn- build-replacement-list [page]
-  (map #(build-replacement-kv % page) (page/all-keys page)))
+(defn- build-replacement-list [page all-pages]
+  (map #(build-replacement-kv % page all-pages) (page/all-keys page)))
 
-(defn- page-replace [page]
-  #(html/at* % (build-replacement-list page)))
+(defn- page-replace [page all-pages]
+  #(html/at* % (build-replacement-list page all-pages)))
 
-(defn build-page-func [page-obj]
-  (html/snippet page-obj [html/root] [page] [html/root] (page-replace page)))
+(defn build-page-func [page-obj all-pages]
+  (html/snippet page-obj [html/root] [page] [html/root] (page-replace page all-pages)))
 
 (defn- convert-max-page-str [page]
   (if (contains? page :max-pages)
@@ -94,7 +98,7 @@
 (defn build-template [page-stream]
   (let [page-resource (html/html-resource page-stream)]
     (assoc (build-page-list-opts page-resource)
-           :template-func (build-page-func page-resource))))
+           :template-fn (partial build-page-func page-resource))))
 
 (defn to-str [nodes]
   (apply str (html/emit* nodes)))

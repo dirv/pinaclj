@@ -4,12 +4,13 @@
            [pinaclj.site :refer :all]
            [pinaclj.date-time-helpers :as dt]))
 
-(defn- title-writing-template [x]
-  (apply str (map :title (:pages x))))
+(defn- title-writing-template [all-pages]
+  (fn [page]
+    (apply str (map #(:title (get all-pages %)) (:pages page)))))
 
 (def test-theme
-  {:post.html {:template-func title-writing-template}
-   :index.html {:template-func title-writing-template}})
+  {:post.html {:template-fn (fn [pages] (title-writing-template pages))}
+   :index.html {:template-fn (fn [pages] (title-writing-template pages))}})
 
 (def base-page
   {:modified 2
@@ -84,7 +85,9 @@
       (assoc-in test-theme [:index.html :max-pages] 2))
 
     (def five-pages
-      (map #(assoc base-page :title %) (range 1 6)))
+      (map #(assoc base-page
+                   :title %
+                   :destination %) (range 1 6)))
 
     (defn- build-split-index []
       (output-with-theme five-pages theme-with-max-page))

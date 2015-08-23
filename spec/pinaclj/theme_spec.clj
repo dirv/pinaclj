@@ -52,4 +52,4 @@
     (should= '(:a.html :b.html :b.xml) (keys (build-theme @fs ""))))
 
   (it "loads template for each file"
-    (should-contain :template-func (val (first (build-theme @fs ""))))))
+    (should-contain :template-fn (val (first (build-theme @fs ""))))))

@@ -8,7 +8,7 @@
   (reverse (sort-by :published-at pages)))
 
 (defn clone-pages [page-set opts]
-  (let [children (chronological-sort (:pages page-set))
+  (let [children (chronological-sort (map #(get (:all-pages opts) %) (:pages page-set)))
         max-pages (max-pages opts)]
     (if (nil? max-pages)
      {:pages children}

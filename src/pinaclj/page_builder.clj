@@ -1,5 +1,6 @@
 (ns pinaclj.page-builder
   (:require [pinaclj.page :as page]
+            [pinaclj.nio :as nio]
             [pinaclj.date-time :as dt]
             [pinaclj.transforms.transforms :as transforms]
             [pinaclj.group :as group]))
@@ -7,16 +8,24 @@
 (defn create-page [src path]
   (transforms/apply-all {:path path :src-root src}))
 
-(defn- create-list-page [pages url]
-  {:pages pages
-   :raw-content ""
-   :path "/index.md"
-   :url url
-   :modified (System/currentTimeMillis)
-   :published-at (dt/now)})
+(defn- to-url [page]
+  (page/retrieve-value page :destination {}))
 
-(defn build-list-page [pages url]
-  (transforms/apply-all (create-list-page pages url)))
+(defn- generate-page []
+  (assoc (create-page nil nil)
+         :modified (System/currentTimeMillis)
+         :generated true
+         :path "index.md"
+         :raw-content ""
+         :published-at (dt/now)))
+
+(defn- create-list-page [pages url]
+  (assoc (generate-page)
+         :pages (map to-url pages)
+         :url url))
+
+(def build-list-page
+  (comp transforms/apply-all create-list-page))
 
 (defn- build-group-page [[group pages] url-func]
   (assoc (build-list-page pages (url-func group))

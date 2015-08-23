@@ -2,9 +2,9 @@
   (require [speclj.core :refer :all]
            [pinaclj.page-builder :refer :all]))
 
-(def page-a {:title "a" :tags ["test"]})
-(def page-b {:title "b" :tags ["test"]})
-(def page-c {:title "c" :tags ["test"]})
+(def page-a {:destination :urlA :title "a" :tags ["test"]})
+(def page-b {:destination :urlB :title "b" :tags ["test"]})
+(def page-c {:destination :urlC :title "c" :tags ["test"]})
 
 (def pages
   [page-a page-b page-c])
@@ -35,7 +35,7 @@
   (it "divides pages with low max-pages"
     (should= 2 (count (divide list-page template-with-low-max))))
   (it "contains pages in order when dividing pages"
-    (should= [[page-a page-b] [page-c]] (map :pages (divide-pages))))
+    (should= [[:urlA :urlB] [:urlC]] (map :pages (divide-pages))))
   (it "sets start page when dividing"
     (should= [0 2] (map :start (divide list-page template-with-low-max))))
   (it "modifies all but first urls"
@@ -51,7 +51,7 @@
 (describe "build-tag-pages"
   (it "builds"
     (should= 1 (count (build-tag-pages pages)))
-    (should= [page-a page-b page-c] (:pages (first (build-tag-pages pages))))
+    (should= [:urlA :urlB :urlC] (:pages (first (build-tag-pages pages))))
     (should= '("test") (map :title (build-tag-pages pages)))))
 
 (def cat-page-a {:category :a :title "a"})

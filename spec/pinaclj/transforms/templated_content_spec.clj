@@ -12,11 +12,14 @@
                          :content (html/html-snippet "<link src=styles.css />")}))
 
 (def template
-  {:template-func (fn [x] (:content x))})
+  {:template-fn (fn [pages] (fn [x] (:content x)))})
+
+(def opts
+  {:template template :all-pages {}})
 
 (describe "do-template"
   (it "transforms quotes"
-    (should= "‘" (do-template quote-page {:template template})))
+    (should= "‘" (do-template quote-page opts)))
 
   (it "transforms relative urls"
-    (should-contain "../styles.css" (do-template nested-page {:template template}))))
+    (should-contain "../styles.css" (do-template nested-page opts))))

@@ -9,9 +9,13 @@
 (def latest
   {:published-at (dt/make 2016 01 01 01 01 01)})
 
+(def all-pages
+  {:earliest earliest
+   :latest latest})
+
 (def parent
-  {:pages [earliest latest]})
+  {:pages [:earliest :latest]})
 
 (describe "get-latest"
   (it "gets latest"
-    (should= latest (:page (get-latest parent {})))))
+    (should= latest (:page (get-latest parent {:all-pages all-pages})))))

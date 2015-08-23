@@ -6,17 +6,17 @@
             [pinaclj.page :as page]
             [net.cgrand.enlive-html :as html]))
 
-(defn- template [body]
-  (build-page-func (html/html-snippet (str "<html><body>" body "</body></html>"))))
+(defn- template [body all-pages]
+  (build-page-func (html/html-snippet (str "<html><body>" body "</body></html>")) all-pages))
 
-(defn- do-replace [template-body-str page]
-  (to-str ((template template-body-str) page)))
+(defn- do-replace [template-body-str page all-pages]
+  (to-str ((template template-body-str all-pages) page)))
 
 (def page-template
   "<p data-id=a /><p data-id=b /><p data-id=c />")
 
 (def page-list-template
-  "<ol data-id=page-list ><li><p data-id= test /></li></ol>")
+  "<ol data-id=page-list ><li><p data-id= title /></li></ol>")
 
 (def nested-page-template
   "<div data-id=latest > <p data-id=title ></p> </div>")
@@ -34,18 +34,26 @@
   {:a {:attrs {:one "a" :two "b"}
        :content "testing" }})
 
+(def all-referenced-pages
+  {:url1 {:title "val1"}
+   :url2 {:title "val2"}})
+
 (def page-with-child-pages
-  {:page-list {:pages [{:test "val1"}
-                       {:test "val2"}]}})
+  {:page-list {:pages [:url1 :url2]}})
 
 (def nested-page
-  {:latest {:page {:title "test-title"}}
+  {:latest {:page :url1}
    :title "not expected"})
 
 (def func-page
   (page/set-lazy-value {}
                        :func
                        (fn [page opts] (str "format=" (:format opts)))))
+
+(def print-page-list-func
+  (page/set-lazy-value {}
+                       :func
+                       (fn [page opts] (apply str (keys (:all-pages opts))))))
 
 (def delete-page-template
   "<p data-id=if-exists > bye </p>")
@@ -55,44 +63,48 @@
 
 (describe "build-page-func"
   (it "transforms string values"
-    (let [result (do-replace page-template string-value-page)]
+    (let [result (do-replace page-template string-value-page {})]
       (should-contain "testA" result)
       (should-contain "testB" result)
       (should-contain "testC" result)))
 
   (it "transforms attributes and content"
-    (let [result (do-replace page-template attribute-page)]
+    (let [result (do-replace page-template attribute-page {})]
       (should-contain "one=\"a\"" result)
       (should-contain "two=\"b\"" result)
       (should-contain ">testing</p>" result)))
 
   (it "includes all child pages"
-    (let [result (do-replace page-list-template page-with-child-pages)]
+    (let [result (do-replace page-list-template page-with-child-pages all-referenced-pages)]
       (should-contain "val1" result)
       (should-contain "val2" result)))
 
   (it "contains correct number of child items"
-    (let [result (do-replace page-list-template page-with-child-pages)]
+    (let [result (do-replace page-list-template page-with-child-pages all-referenced-pages)]
       (should-contain "val1" result)
       (should= 1 (count (re-seq #"data-id=\"page-list\"" result)))
       (should= 2 (count (re-seq #"/li" result)))))
 
   (it "transforms nested page"
-    (let [result (do-replace nested-page-template nested-page)]
-      (should-contain "test-title" result)
+    (let [result (do-replace nested-page-template nested-page all-referenced-pages)]
+      (should-contain "val1" result)
       (should-not-contain "not expected" result)))
 
   (it "transforms deep nested page"
-    (let [result (do-replace deep-nested-page-template nested-page)]
-      (should-contain "test-title" result)
+    (let [result (do-replace deep-nested-page-template nested-page all-referenced-pages)]
+      (should-contain "val1" result)
       (should-not-contain "not expected" result)))
 
   (it "transforms using page functions with data attributes"
-    (let [result (do-replace func-params-template func-page)]
+    (let [result (do-replace func-params-template func-page {})]
       (should-contain "format=123" result)))
 
+  (it "sends all-pages context to page funcs"
+    (let [result (do-replace func-params-template print-page-list-func all-referenced-pages)]
+      (should-contain ":url1:url2" result)))
+
   (it "deletes nodes"
-    (should-not-contain "bye" (do-replace delete-page-template delete-page))))
+    (should-not-contain "bye" (do-replace delete-page-template delete-page {}))))
 
 (describe "build-page-list-opts"
   (def page-with-opts
@@ -103,7 +115,7 @@
 
 (describe "build-template"
   (def test-split-page
-    {:page-list {:pages [{:title "hello world"}]}})
+    {:page-list {:pages [:url1]}})
 
   (defn- build-split-list-template []
     (build-template (samples/stream "split_list.html")))
@@ -111,5 +123,5 @@
   (it "parses max pages"
     (should= 3 (:max-pages (build-split-list-template))))
   (it "sets template func"
-    (let [template-func (:template-func (build-split-list-template))]
-      (should-contain "hello world" (to-str (template-func test-split-page))))))
+    (let [template-func ((:template-fn (build-split-list-template)) all-referenced-pages)]
+      (should-contain "val1" (to-str (template-func test-split-page))))))
