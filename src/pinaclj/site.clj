@@ -16,11 +16,16 @@
 (defn- template-page-pair [theme page]
   (vector (theme/determine-template theme page) page))
 
+(defn- not-found-pages [theme pages]
+  (clojure.set/difference
+    (theme/root-pages theme)
+    (set (map #(keyword (page/retrieve-value % :destination {})) pages))))
+
 (defn- generate-page-pairs [pages theme]
   (concat (map #(template-page-pair theme %) pages)
           (map #(template-page-pair theme %) (pb/build-tag-pages pages))
           (map #(template-page-pair theme %) (pb/build-category-pages pages))
-          (map #(vector % (pb/build-list-page pages (name %))) (theme/root-pages theme))))
+          (map #(vector % (pb/build-list-page pages (name %))) (not-found-pages theme pages))))
 
 (defn- final-page [page template]
   [(page/retrieve-value page :destination {}) template page])
