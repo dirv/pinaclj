@@ -40,3 +40,13 @@
 
 (defn to-page-urls [pages]
   (map #(retrieve-value % :destination {}) pages))
+
+(defn- chronological-sort [pages]
+  (reverse (sort-by #(:published-at (val %)) pages)))
+
+(defn- without-generated [pages]
+  (filter #(not (:generated (val %))) pages))
+
+(defn children [page-set all-pages]
+  (or (:pages page-set)
+      (keys (chronological-sort (without-generated all-pages)))))

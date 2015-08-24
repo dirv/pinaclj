@@ -1,7 +1,6 @@
 (ns pinaclj.page-builder
   (:require [pinaclj.page :as page]
             [pinaclj.date-time :as dt]
-            [pinaclj.transforms.page-list :as page-list]
             [pinaclj.transforms.transforms :as transforms]
             [pinaclj.group :as group]))
 
@@ -55,7 +54,7 @@
 (defn divide [page {max-pages :max-pages} all-pages]
   (if (nil? max-pages)
     [page]
-    (let [child-pages (page-list/children page all-pages)
+    (let [child-pages (page/children page all-pages)
           starts (range 0 (count child-pages) max-pages)
           url-fn (build-url-fn page (count child-pages))]
       (map #(duplicate-page page % max-pages child-pages url-fn) starts))))
