@@ -13,9 +13,11 @@
 (defn- modified-pages [pages opts dest-last-modified]
   (filter #(modified-since-last-publish? % opts dest-last-modified) pages))
 
-(defn- to-pair [theme page]
-  {(page/retrieve-value page :destination {})
-   (assoc page :template (theme/determine-template theme page))})
+(defn- to-pair [page]
+  {(page/retrieve-value page :destination {}) page})
+
+(defn- associate-template [theme page]
+  (assoc page :template (theme/determine-template theme page)))
 
 (defn- not-found-pages [theme pages]
   (clojure.set/difference
@@ -23,7 +25,7 @@
     (set (map keyword (page/to-page-urls pages)))))
 
 (defn- generate-page-map [pages theme]
-  (apply merge (map (partial to-pair theme)
+  (apply merge (map (comp to-pair (partial associate-template theme))
                     (concat pages
                             (pb/build-tag-pages pages)
                             (pb/build-category-pages pages)
