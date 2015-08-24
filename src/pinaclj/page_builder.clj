@@ -34,27 +34,28 @@
 (defn- split-page-url [page]
   (.split (page/retrieve-value page :destination {}) "\\."))
 
-(defn- create-url [page num page-count]
-  (cond
-    (= num 0) (:url page)
-    (and (> num 0) (< num (dec page-count)))
-    (let [[start ext] (split-page-url page)]
-      (str start "-" (inc num) "." ext))))
+(defn- build-url-fn [page page-count]
+  (let [[start ext] (split-page-url page)]
+    (fn [page-num]
+      (cond
+        (= page-num 0) (:url page)
+        (and (> page-num 0) (< page-num (dec page-count)))
+        (str start "-" (inc page-num) "." ext)))))
 
-(defn- duplicate-page [page start num-pages child-pages]
-  (let [page-num (/ start num-pages)
-        page-count (count child-pages)]
+(defn- duplicate-page [page start num-pages child-pages url-fn]
+  (let [page-num (/ start num-pages)]
     (assoc page
            :start start
            :raw-content ""
-           :url (create-url page page-num page-count)
+           :url (url-fn page-num)
            :pages (take num-pages (drop start child-pages))
-           :previous (create-url page (dec page-num) page-count)
-           :next (create-url page (inc page-num) page-count))))
+           :previous (url-fn (dec page-num))
+           :next (url-fn (inc page-num)))))
 
 (defn divide [page {max-pages :max-pages} all-pages]
   (if (nil? max-pages)
     [page]
     (let [child-pages (page-list/children page all-pages)
-          starts (range 0 (count child-pages) max-pages)]
-      (map #(duplicate-page page % max-pages child-pages) starts))))
+          starts (range 0 (count child-pages) max-pages)
+          url-fn (build-url-fn page (count child-pages))]
+      (map #(duplicate-page page % max-pages child-pages url-fn) starts))))
