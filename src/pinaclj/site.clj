@@ -6,57 +6,49 @@
 (defn- published? [page]
   (some? (:published-at page)))
 
-(defn- modified-since-last-publish? [[destination template page] opts dest-last-modified]
+(defn- modified-since-last-publish? [page opts dest-last-modified]
   (or (:generated page)
     (> (page/retrieve-value page :modified opts) dest-last-modified)))
 
 (defn- modified-pages [pages opts dest-last-modified]
   (filter #(modified-since-last-publish? % opts dest-last-modified) pages))
 
-(defn- template-page-pair [theme page]
-  (vector (theme/determine-template theme page) page))
+(defn- to-pair [theme page]
+  {(page/retrieve-value page :destination {})
+   (assoc page :template (theme/determine-template theme page))})
 
 (defn- not-found-pages [theme pages]
   (clojure.set/difference
     (theme/root-pages theme)
-    (set (map #(keyword (page/retrieve-value % :destination {})) pages))))
+    (set (map keyword (page/to-page-urls pages)))))
 
-(defn- generate-page-pairs [pages theme]
-  (concat (map #(template-page-pair theme %) pages)
-          (map #(template-page-pair theme %) (pb/build-tag-pages pages))
-          (map #(template-page-pair theme %) (pb/build-category-pages pages))
-          (map #(vector % (pb/build-list-page pages (name %))) (not-found-pages theme pages))))
+(defn- generate-page-map [pages theme]
+  (apply merge (map (partial to-pair theme)
+                    (concat pages
+                            (pb/build-tag-pages pages)
+                            (pb/build-category-pages pages)
+                            (map (comp pb/generate-page name) (not-found-pages theme pages))))))
 
-(defn- final-page [page template]
-  [(page/retrieve-value page :destination {}) template page])
+(defn- divide-page [page-map [destination page]]
+  (pb/divide page (:template page) page-map))
 
-(defn- divide-page [theme [template-name page]]
-  (let [page-template (theme/get-template theme template-name)]
-    (map #(final-page % page-template) (pb/divide page page-template))))
-
-(defn- divide-pages [pages theme]
-  (mapcat #(divide-page theme %) pages))
+(defn- divide-pages [page-map]
+  (mapcat #(divide-page page-map %) page-map))
 
 (defn- published-only [pages]
   (filter published? pages))
 
-(defn- render-page [[destination template page] all-pages]
-  [destination
-   (page/retrieve-value page :templated-content {:template template :all-pages all-pages})])
+(defn- render-page [page all-pages]
+  [(page/retrieve-value page :destination {})
+   (page/retrieve-value page :templated-content {:template (:template page)
+                                                 :all-pages all-pages})])
 
-(defn- page-map [pages]
-  (apply merge (map #(hash-map (first %) (nth % 2)) pages)))
-
-(defn render-all [pages dest-last-modified]
-  (let [page-map (page-map pages)]
-    (map #(render-page % page-map)
-         (modified-pages pages {:all-pages page-map} dest-last-modified))))
-
-(defn- build-published [published-pages theme dest-last-modified]
-  (-> published-pages
-      (generate-page-pairs theme)
-      (divide-pages theme)
-      (render-all dest-last-modified)))
+(defn render-all [page-map dest-last-modified]
+  (map #(render-page % page-map)
+       (modified-pages (divide-pages page-map) {:all-pages page-map} dest-last-modified)))
 
 (defn build [input-pages theme dest-last-modified]
-  (build-published (published-only input-pages) theme dest-last-modified))
+  (-> input-pages
+      (published-only)
+      (generate-page-map theme)
+      (render-all dest-last-modified)))

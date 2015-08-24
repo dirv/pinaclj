@@ -1,6 +1,5 @@
 (ns pinaclj.page
-  (:require [pinaclj.date-time :as date]
-            [pinaclj.nio :as nio]
+  (:require [pinaclj.nio :as nio]
             [pinaclj.files :as files]))
 
 (defn set-lazy-value [page fk fv]
@@ -38,3 +37,6 @@
 (defn write-page [page fs]
   (files/create (nio/resolve-path fs (:path page))
                 (str (to-headers page) "---\n"  (:raw-content page) "\n")))
+
+(defn to-page-urls [pages]
+  (map #(retrieve-value % :destination {}) pages))

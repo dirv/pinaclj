@@ -4,13 +4,13 @@
            [pinaclj.theme :refer :all]))
 
 (def sample-theme
-  {:post.html ""
-   :override.html ""
-   :nested/page.html ""
-   :both.xml ""
-   :both.html ""
-   :only.xml ""
-   :cat.html ""})
+  {:post.html :post-fn
+   :override.html :override-fn
+   :nested/page.html :nested/page-fn
+   :both.xml :both-xml-fn
+   :both.html :both-html-fn
+   :only.xml :only-fn
+   :cat.html :cat-fn})
 
 (defn- determine [page-path]
   (determine-template sample-theme {:path page-path}))
@@ -21,22 +21,21 @@
 
 (describe "determine-template"
   (it "chooses post if no override page found"
-    (should= :post.html (determine "/test.md")))
+    (should= :post-fn (determine "/test.md")))
   (it "chooses override"
-    (should= :override.html (determine "/override.md")))
+    (should= :override-fn (determine "/override.md")))
   (it "determines nested pages"
-    (should= :nested/page.html (determine "/nested/page.md")))
+    (should= :nested/page-fn (determine "/nested/page.md")))
   (it "prefers html over other extensions"
-    (should= :both.html (determine "/both.md")))
+    (should= :both-html-fn (determine "/both.md")))
   (it "chooses file without extension if present"
-    (should= :only.xml (determine "/only.xml.md")))
+    (should= :only-fn (determine "/only.xml.md")))
   (it "chooses file based on category before it chooses default"
-    (should= :cat.html (determine-with-category "/test.md" :cat)))
+    (should= :cat-fn (determine-with-category "/test.md" :cat)))
   (it "chooses override even with category present"
-    (should= :override.html (determine-with-category "/override.md" :cat)))
+    (should= :override-fn (determine-with-category "/override.md" :cat)))
   (it "chooses post if no override and no category is found"
-    (should= :post.html (determine-with-category "/test.md" :cat2))))
-
+    (should= :post-fn (determine-with-category "/test.md" :cat2))))
 
 (def test-files
   [{:path "a.html" :content "<html></html>"}

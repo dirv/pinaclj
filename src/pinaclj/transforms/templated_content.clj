@@ -3,7 +3,7 @@
             [pinaclj.link-transform :as link]
             [pinaclj.punctuation-transform :as punctuation]))
 
-(defn- build [page opts]
+(defn build [page opts]
   (if (and (contains? opts :template)
            (contains? opts :all-pages))
     (((get-in opts [:template :template-fn]) (:all-pages opts)) page)

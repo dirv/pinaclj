@@ -5,10 +5,17 @@
     (Integer/parseInt max-pages)))
 
 (defn- chronological-sort [pages]
-  (reverse (sort-by :published-at pages)))
+  (reverse (sort-by #(:published-at (val %)) pages)))
+
+(defn- without-generated [pages]
+  (filter #(not (:generated (val %))) pages))
+
+(defn children [page-set all-pages]
+  (or (:pages page-set)
+      (keys (chronological-sort (without-generated all-pages)))))
 
 (defn clone-pages [page-set opts]
-  (let [children (chronological-sort (map #(get (:all-pages opts) %) (:pages page-set)))
+  (let [children (children page-set (:all-pages opts))
         max-pages (max-pages opts)]
     (if (nil? max-pages)
      {:pages children}

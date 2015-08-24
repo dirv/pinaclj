@@ -35,9 +35,7 @@
   (comp f/remove-extension f/trim-url))
 
 (defn- find-template? [theme path-str]
-  (let [template-key (keyword path-str)]
-    (when (get theme template-key)
-      template-key)))
+  (get theme (keyword path-str)))
 
 (defn- category-template? [theme page]
   (when-let [category (page/retrieve-value page :category {})]
@@ -48,4 +46,4 @@
     (or (find-template? theme template-path)
         (find-template? theme (str template-path ".html"))
         (category-template? theme page)
-        (category-template default-category))))
+        (get theme (category-template default-category)))))

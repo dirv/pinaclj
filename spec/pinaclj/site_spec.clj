@@ -1,23 +1,32 @@
 (ns pinaclj.site-spec
   (require [speclj.core :refer :all]
+           [pinaclj.page :as page]
            [pinaclj.transforms.transforms :as transforms]
+           [pinaclj.transforms.templated-content :as content]
            [pinaclj.site :refer :all]
            [pinaclj.date-time-helpers :as dt]))
 
 (defn- title-writing-template [all-pages]
   (fn [page]
-    (apply str (map #(:title (get all-pages %)) (:pages page)))))
+    (:title page)))
+
+(defn- child-writing-template [all-pages]
+  (fn [page]
+    (let [children (:pages (page/retrieve-value page :page-list {:all-pages all-pages}))
+          titles (map #(:title (get all-pages %)) children)]
+      (apply str titles))))
 
 (def test-theme
   {:post.html {:template-fn (fn [pages] (title-writing-template pages))}
-   :index.html {:template-fn (fn [pages] (title-writing-template pages))}})
+   :index.html {:template-fn (fn [pages] (child-writing-template pages))}})
 
 (def base-page
   {:modified 2
    :category :uncategorized
    :path "/test.md"
    :published-at (dt/make 2015 1 1 1 1 1)
-   :title "test"})
+   :title "test"
+   :funcs {:templated-content content/build}})
 
 (defn- output-with-theme [pages theme]
   (build pages theme 1))
@@ -35,8 +44,11 @@
                        :title "new-page"))
 
   (it "writes page"
-    (should-contain "new.html" (files-output [new-page])))
-  (it "writes to index"
+    (should-contain "new.html" (files-output [new-page]))
+    (should-contain "new-page" (in "new.html" (output-with-theme [new-page] test-theme))))
+
+  (it "writes index"
+    (should-contain "index.html" (files-output [new-page]))
     (should-contain "new-page" (in "index.html"
                                    (output-with-theme [new-page] test-theme)))))
 
@@ -48,7 +60,8 @@
 
   (it "does not write page"
     (should-not-contain "old.html" (files-output [old-page])))
-  (it "writes to index"
+  (it "writes index"
+    (should-contain "index.html" (files-output [old-page]))
     (should-contain "old-page" (in "index.html"
                                    (output-with-theme [old-page] test-theme)))))
 
@@ -56,10 +69,7 @@
   (def draft-page {:destination "draft.html" :title "draft"})
 
   (it "does not write page"
-    (should-not-contain "draft.html" (files-output [draft-page])))
-  (it "does not write to index"
-    (should-not-contain "draft" (in "index.html"
-                                    (output-with-theme [draft-page] test-theme)))))
+    (should-not-contain "draft.html" (files-output [draft-page]))))
 
 (describe "tag page"
   (def tag-page (assoc base-page
@@ -95,10 +105,10 @@
     (should-contain "index.html" (map first (build-split-index)))
     (should-contain "index-2.html" (map first (build-split-index))))
 
-  (it "outputs correct pages in split"
-    (should= "12" (in "index.html" (build-split-index)))
-    (should= "34" (in "index-2.html" (build-split-index)))
-    (should= "5" (in "index-3.html" (build-split-index)))))
+  (it "outputs ordered pages in split"
+    (should= "54" (in "index.html" (build-split-index)))
+    (should= "32" (in "index-2.html" (build-split-index)))
+    (should= "1" (in "index-3.html" (build-split-index)))))
 
 (describe "source and theme matching"
   (defn- this-page-template [all-pages]
@@ -109,7 +119,8 @@
      :index.html {:template-fn (fn [pages] (this-page-template pages))}})
 
   (def index-page
-    (transforms/apply-all (assoc base-page :title "test-title"
+    (transforms/apply-all (assoc base-page
+                                 :title "test-title"
                                  :generated true
                                  :path "index.md"
                                  :url "index.html")))

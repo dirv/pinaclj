@@ -2,15 +2,19 @@
   (require [speclj.core :refer :all]
            [pinaclj.page-builder :refer :all]))
 
-(def page-a {:destination :urlA :title "a" :tags ["test"]})
-(def page-b {:destination :urlB :title "b" :tags ["test"]})
-(def page-c {:destination :urlC :title "c" :tags ["test"]})
+(def page-a {:destination :urlA :title "a" :tags ["test"] :published-at 3})
+(def page-b {:destination :urlB :title "b" :tags ["test"] :published-at 2})
+(def page-c {:destination :urlC :title "c" :tags ["test"] :published-at 1})
 
-(def pages
-  [page-a page-b page-c])
+(def tag-pages [page-a page-b page-c])
+
+(def all-pages
+  {:urlA page-a
+   :urlB page-b
+   :urlC page-c})
 
 (def list-page
-  (build-list-page pages "index.html"))
+  (generate-page "index.html"))
 
 (def tag-page
   (first (build-tag-pages [page-a page-b page-c])))
@@ -25,19 +29,19 @@
   {:max-pages 3})
 
 (defn- divide-pages []
-  (divide list-page template-with-low-max))
+  (divide list-page template-with-low-max all-pages))
 
 (describe "divide"
   (it "does not divide pages without max-pages set"
-    (should= [list-page] (divide list-page template-with-no-max)))
+    (should= [list-page] (divide list-page template-with-no-max all-pages)))
   (it "does not divide pages which does not hit max-pages"
-    (should= 1 (count (divide list-page template-with-high-max))))
+    (should= 1 (count (divide list-page template-with-high-max all-pages))))
   (it "divides pages with low max-pages"
-    (should= 2 (count (divide list-page template-with-low-max))))
+    (should= 2 (count (divide list-page template-with-low-max all-pages))))
   (it "contains pages in order when dividing pages"
     (should= [[:urlA :urlB] [:urlC]] (map :pages (divide-pages))))
   (it "sets start page when dividing"
-    (should= [0 2] (map :start (divide list-page template-with-low-max))))
+    (should= [0 2] (map :start (divide list-page template-with-low-max all-pages))))
   (it "modifies all but first urls"
     (should= ["index.html" "index-2.html"] (map :url (divide-pages))))
   (it "adds previous link to second page only"
@@ -46,13 +50,13 @@
     (should= ["index-2.html" nil] (map :next (divide-pages))))
   (it "sets url using correct definition"
     (should= ["tag/test/" "tag/test/index-2.html"]
-      (map :url (divide tag-page template-with-low-max)))))
+      (map :url (divide tag-page template-with-low-max all-pages)))))
 
 (describe "build-tag-pages"
   (it "builds"
-    (should= 1 (count (build-tag-pages pages)))
-    (should= [:urlA :urlB :urlC] (:pages (first (build-tag-pages pages))))
-    (should= '("test") (map :title (build-tag-pages pages)))))
+    (should= 1 (count (build-tag-pages tag-pages)))
+    (should= [:urlA :urlB :urlC] (:pages (first (build-tag-pages tag-pages))))
+    (should= '("test") (map :title (build-tag-pages tag-pages)))))
 
 (def cat-page-a {:category :a :title "a"})
 (def cat-page-b {:category :uncategorized :title "b"})
