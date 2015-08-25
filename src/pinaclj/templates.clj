@@ -67,20 +67,24 @@
 
 (defn- build-replacement-transform [k page all-pages]
   (fn [node]
-    (let [value (page/retrieve-value page k (build-opts node all-pages))]
+    (if-let [value (page/retrieve-value page k (build-opts node all-pages))]
       (if (map? value)
         (reduce #(transform %1 k %2 all-pages) node value)
-        (transform-content node value)))))
+        (transform-content node value))
+      node)))
+
+(defn- find-all-functions [template]
+  (map #(keyword (get-in % [:attrs :data-id])) (html/select template [(html/attr? :data-id)])))
 
 (defn- build-replacement-kv [k page all-pages]
   (doall (list (build-replacement-selector k)
                (build-replacement-transform k page all-pages))))
 
-(defn- build-replacement-list [page all-pages]
-  (map #(build-replacement-kv % page all-pages) (page/all-keys page)))
+(defn- build-replacement-list [page all-pages all-keys]
+  (map #(build-replacement-kv % page all-pages) all-keys))
 
 (defn- page-replace [page all-pages]
-  #(html/at* % (build-replacement-list page all-pages)))
+  #(html/at* % (build-replacement-list page all-pages (find-all-functions %))))
 
 (defn build-page-func [page-obj all-pages]
   (html/snippet page-obj [html/root] [page] [html/root] (page-replace page all-pages)))

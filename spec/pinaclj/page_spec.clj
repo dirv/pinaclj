@@ -50,10 +50,6 @@
     (binding [counter 1]
       (should= 0 (retrieve-value page-with-differing-func-vals :x {})))))
 
-(describe "all-keys"
-  (it "gets keys of both static and computed values"
-    (should= '(:x :y) (all-keys page-with-both))))
-
 (defn- read-file [fs path]
   (clojure.string/join "\n" (files/read-lines (nio/resolve-path fs path))))
 
