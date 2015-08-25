@@ -32,29 +32,29 @@
           (data-attrs node)))
 
 (defn- build-replacement-selector [field]
-  [[(html/attr= :data-id (name field)) nested-selector]])
+  [[(html/attr= :data-id field) nested-selector]])
 
 (declare page-replace)
 
-(defmulti transform (fn [node k value all-pages template-keys] (key value)))
+(defmulti transform (fn [node value all-pages selector-transforms] (key value)))
 
-(defmethod transform :pages [node k child-pages all-pages template-keys]
+(defmethod transform :pages [node child-pages all-pages selector-transforms]
   (html/at node
            [html/root :> html/first-child]
            (html/clone-for [item (val child-pages)]
-                           (page-replace (get all-pages item) all-pages template-keys))))
+                           (page-replace (get all-pages item) selector-transforms))))
 
-(defmethod transform :page [node k page all-pages template-keys]
-  ((page-replace (get all-pages (val page)) all-pages template-keys) node))
+(defmethod transform :page [node page all-pages selector-transforms]
+  ((page-replace (get all-pages (val page)) selector-transforms) node))
 
-(defmethod transform :attrs [node k attrs all-pages template-keys]
+(defmethod transform :attrs [node attrs all-pages selector-transforms]
   (reduce #((html/set-attr (first %2) (second %2)) %1)
           node
           (val attrs)))
 
-(defmethod transform :delete [node k attrs all-pages template-keys])
+(defmethod transform :delete [node attrs all-pages selector-transforms])
 
-(defmethod transform :content [node k content all-pages template-keys]
+(defmethod transform :content [node content all-pages selector-transforms]
   ((html/content (val content)) node))
 
 (defn- transform-content [node content]
@@ -65,33 +65,34 @@
 (defn- build-opts [node all-pages]
   (merge {:all-pages all-pages} (renamed-data-attrs node)))
 
-(defn- build-replacement-transform [k page all-pages template-keys]
-  (fn [node]
-    (if-let [value (page/retrieve-value page k (build-opts node all-pages))]
-      (if (map? value)
-        (reduce #(transform %1 k %2 all-pages template-keys) node value)
-        (transform-content node value))
-      node)))
+(defn- build-replacement-transform [field all-pages]
+  (fn [page selector-transforms]
+    (fn [node]
+      (if-let [value (page/retrieve-value page field (build-opts node all-pages))]
+        (if (map? value)
+          (reduce #(transform %1 %2 all-pages selector-transforms) node value)
+          (transform-content node value))
+        node))))
 
 (defn- find-all-functions [template]
-  (map #(keyword (get-in % [:attrs :data-id])) (html/select template [(html/attr? :data-id)])))
+  (map #(get-in % [:attrs :data-id]) (html/select template [(html/attr? :data-id)])))
 
-(defn- build-replacement-kv [k page all-pages template-keys]
-  (doall (list (build-replacement-selector k)
-               (build-replacement-transform k page all-pages template-keys))))
+(defn- build-selector-transforms [template all-pages]
+  (map #(vector (build-replacement-selector %)
+                (build-replacement-transform (keyword %) all-pages)) (find-all-functions template)))
 
-(defn- build-replacement-list [page all-pages template-keys]
-  (map #(build-replacement-kv % page all-pages template-keys) template-keys))
+(defn- fix-page [page selector-transforms [selector transform-fn]]
+  [selector (transform-fn page selector-transforms)])
 
-(defn- page-replace [page all-pages template-keys]
-  #(html/at* % (build-replacement-list page all-pages template-keys)))
+(defn- page-replace [page selector-transforms]
+  #(html/at* % (map (partial fix-page page selector-transforms) selector-transforms)))
 
 (defn build-page-func [template all-pages]
   (html/snippet template
                 [html/root]
                 [page]
                 [html/root]
-                (page-replace page all-pages (find-all-functions template))))
+                (page-replace page (build-selector-transforms template all-pages))))
 
 (defn- convert-max-page-str [page]
   (if (contains? page :max-pages)
