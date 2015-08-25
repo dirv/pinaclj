@@ -5,11 +5,25 @@
 (defn set-lazy-value [page fk fv]
   (assoc-in page [:funcs fk] (memoize fv)))
 
+(defn- contains-in? [page ks]
+  (get-in page ks))
+
+(defn- has-link-to? [page opts k]
+  (and (contains? opts :all-pages) (contains? page k)))
+
+(defn- linked-page [page opts k]
+  (get (:all-pages opts) (name (get page k))))
+
 (defn retrieve-value [page k opts]
-  (if (and (contains? page :funcs)
-           (contains? (:funcs page) k))
-    ((get (:funcs page) k) page opts)
-    (get page k)))
+  (cond
+    (contains-in? page [:funcs k])
+    ((get-in page [:funcs k]) page opts)
+    (contains? page k)
+    (get page k)
+    (has-link-to? page opts :parent)
+    (retrieve-value (linked-page page opts :parent) k opts)
+    (has-link-to? page opts :category)
+    (retrieve-value (linked-page page opts :category) k opts)))
 
 (defn all-keys [page]
   (distinct (concat (remove #(= :funcs %) (keys page)) (keys (:funcs page)))))

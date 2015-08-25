@@ -56,7 +56,9 @@
   (it "builds"
     (should= 1 (count (build-tag-pages tag-pages)))
     (should= [:urlA :urlB :urlC] (:pages (first (build-tag-pages tag-pages))))
-    (should= '("test") (map :title (build-tag-pages tag-pages)))))
+    (should= '("test") (map :title (build-tag-pages tag-pages))))
+  (it "sets parent page as index"
+    (should= :index.html (:parent (first (build-tag-pages tag-pages))))))
 
 (def cat-page-a {:category :a :title "a"})
 (def cat-page-b {:category :uncategorized :title "b"})
@@ -65,4 +67,6 @@
 (describe "build-category-pages"
   (it "builds all pages"
     (should= 2 (count (build-category-pages cat-pages)))
-    (should= '("a" "uncategorized") (map :title (build-category-pages cat-pages)))))
+    (should= '("a" "uncategorized") (map :title (build-category-pages cat-pages))))
+  (it "sets parent page as index"
+    (should= :index.html (:parent (first (build-category-pages cat-pages))))))

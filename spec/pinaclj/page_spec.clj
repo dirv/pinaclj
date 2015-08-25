@@ -92,3 +92,24 @@
 
   (it "writes previously written headers first and in order"
     (should (re-find #"(?m)b:.*\na:.*\nc:" (read-file @fs "pages/previous.md")))))
+
+(describe "parents"
+  (def parent {:val "test-val" :url :parent.html})
+  (def category {:parent :parent.html :url :category.html})
+  (def page-with-parent {:parent :parent.html :url :child.html})
+  (def child-with-category {:category :category.html :url :child.html})
+  (def child-with-override {:parent :parent.html :val "override-val" :url :override.html})
+
+  (defn- opts [ps]
+    {:all-pages (apply merge (map #(hash-map (name (:url %)) %) ps))})
+
+  (describe "retrieve-value"
+    (it "retrieves parent value when :parent set"
+      (should= "test-val" (retrieve-value page-with-parent :val
+                                          (opts [parent]))))
+    (it "retrieves value when :category set"
+      (should= "test-val" (retrieve-value child-with-category :val
+                                          (opts [parent category]))))
+    (it "retrieves override value when one is set"
+      (should= "override-val" (retrieve-value child-with-override :val
+                                              (opts [parent page-with-parent]))))))
