@@ -26,7 +26,7 @@ Pinaclj's aims are to be:
 
  * **beautifully minimal**: this is reflected in the choice of language (Clojure) and the choice of templating engine (Enlive).
  * **simple to design**: you can create themes with just basic HTML. No programming knowledge is required.
- * **simple to use**: features that support and aid productive and creative writing
+ * **simple to use**: features that support and aid productive and creative writing.
 
 ## Upcoming features
 
@@ -69,13 +69,13 @@ Right now you'll need to run from source.
 
  4. Change to the `pinaclj` directory and run the following command.
  
-        lein publish <posts folder>\first.md
+        lein publish <posts directory>\first.md
     
     Take a look at the contents of the file. You'll see that a `published-at` header has been written. This is the cue to Pinaclj that the post is ready for publication. Without this header, Pinaclj will not generate your page.
 
  5. Run the following command.
 
-        lein generate -s <posts folder> -d <target folder> -t sample_themes/simple
+        lein generate -s <posts directory> -d <target directory> -t sample_themes/simple
 
  6. Change to the `gen` directory. You'll find the following files:
 
@@ -101,7 +101,7 @@ There are example pages here: https://github.com/dirv/pinaclj/tree/master/sample
 Posts are written in Markdown. Each post begins with a header section. The following are valid headers:
 
  * `title` (mandatory)
- * `published-at` (optional, but the presence of this field determines if the page is published or not. Example: `2015-04-05T12:00:00.000Z`)
+ * `published-at` (optional; but the presence of this field determines if the page is published or not. Example: `2015-04-05T12:00:00.000Z`)
  * `url` (optional; if not provided the filename will be used. See below)
  * `tags` (optional; comma-separated)
  * `category` (optional; default is 'uncategorized')
