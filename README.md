@@ -113,3 +113,23 @@ You can use the `url` header to generate posts as `index.html` files within thei
     url: my-site/
 
 Will generate the file www.example.com/my-site/index.html.
+
+### Understanding themes and posts
+
+If the name of your post file matches the name of a theme template file, then that post will be rendered with that template. The upshot of this is that you can use your post files to provide data to your templates.
+
+So for example, if you have an `index.md` file with a header of
+
+    blog-title: My Amazing Blog
+
+Then your `index.html` theme template can reference `blog-title` within a `data-id` attribute to retrieve the values.
+
+What's more, each page has an implicit parent and templates can access headers set on parent pages. The default parent hierwachy is that each post's parent is its category page, and each category page has a parent of `index.html`.
+
+The upshot of this is that headers set in your `index.md` post will be accessible to _all_ template files. The same is true for posts belonging to particular categories.
+
+Overriding page values works as you might expect, so a post can override `blog-title` if desired.
+
+You can also explicitly set a page parent by setting the `parent` header. Thr value should be set to the destination page name and not the post file name. So for example:
+
+    parent: index.html
