@@ -8,8 +8,13 @@
 (defn- contains-in? [page ks]
   (get-in page ks))
 
+(defn- is-root-page? [page]
+  (= "index.html" (:url page)))
+
 (defn- has-link-to? [page opts k]
-  (and (contains? opts :all-pages) (contains? page k)))
+  (and (contains? opts :all-pages)
+       (contains? page k)
+       (not (is-root-page? page))))
 
 (defn- linked-page [page opts k]
   (get (:all-pages opts) (name (get page k))))
