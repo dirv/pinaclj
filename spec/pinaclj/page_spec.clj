@@ -3,6 +3,7 @@
            [pinaclj.page :refer :all]
            [pinaclj.files :as files]
            [pinaclj.nio :as nio]
+           [pinaclj.transforms.transforms :as transforms]
            [pinaclj.test-fs :as test-fs]))
 
 (def ^:dynamic counter 0)
@@ -90,26 +91,27 @@
     (should (re-find #"(?m)b:.*\na:.*\nc:" (read-file @fs "pages/previous.md")))))
 
 (describe "parents"
-  (def parent {:val "test-val" :url :parent.html})
-  (def category {:parent :parent.html :url :category.html})
-  (def page-with-parent {:parent :parent.html :url :child.html})
-  (def child-with-category {:category :category.html :url :child.html})
-  (def child-with-override {:parent :parent.html :val "override-val" :url :override.html})
-  (def index {:parent "index.html" :url "index.html"})
+  (def parent {:val "test-val" :url "parent.html"})
+  (def category {:url "category/a/index.html" :val "category-val"})
+  (def page-with-parent {:parent "parent.html" :url "child.html"})
+  (def child-with-category {:category :a :url "child.html"})
+  (def child-with-override {:parent "parent.html" :val "override-val" :url "override.html"})
+  (def index {:url "index.html"})
 
   (defn- opts [ps]
-    {:all-pages (apply merge (map #(hash-map (name (:url %)) %) ps))})
+    {:all-pages (apply merge (map #(hash-map (:url %) %) ps))})
+
+  (defn- retrieve-val [page pages]
+    (retrieve-value (transforms/apply-all page)
+                    :val
+                    (opts (map transforms/apply-all pages))))
 
   (describe "retrieve-value"
     (it "retrieves parent value when :parent set"
-      (should= "test-val" (retrieve-value page-with-parent :val
-                                          (opts [parent]))))
+      (should= "test-val" (retrieve-val page-with-parent [parent])))
     (it "retrieves value when :category set"
-      (should= "test-val" (retrieve-value child-with-category :val
-                                          (opts [parent category]))))
+      (should= "category-val" (retrieve-val child-with-category [parent category])))
     (it "retrieves override value when one is set"
-      (should= "override-val" (retrieve-value child-with-override :val
-                                              (opts [parent page-with-parent]))))
-
+      (should= "override-val" (retrieve-val child-with-override [parent page-with-parent])))
     (it "stops at index root page"
-      (should= nil (retrieve-value index :val (opts [index]))))))
+      (should= nil (retrieve-val index [index])))))

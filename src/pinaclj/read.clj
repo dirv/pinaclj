@@ -27,8 +27,8 @@
 (defn- merge-page [page [header content]]
   (let [headers (to-headers header)]
     (assoc (merge page headers)
-         :read-headers (vec (keys headers))
-         :raw-content content)))
+           :read-headers (vec (keys headers))
+           :raw-content content)))
 
 (defn read-page [page]
   (merge-page page (split-header-content (files/read-lines (:path page)))))

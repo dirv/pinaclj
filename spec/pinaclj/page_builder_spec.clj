@@ -1,6 +1,6 @@
 (ns pinaclj.page-builder-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.page-builder :refer :all]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.page-builder :refer :all]))
 
 (def page-a {:destination :urlA :title "a" :tags ["test"] :published-at 3})
 (def page-b {:destination :urlB :title "b" :tags ["test"] :published-at 2})
@@ -49,7 +49,7 @@
   (it "adds next link to first page only"
     (should= ["index-2.html" nil] (map :next (divide-pages))))
   (it "sets url using correct definition"
-    (should= ["tag/test/" "tag/test/index-2.html"]
+    (should= ["tag/test/index.html" "tag/test/index-2.html"]
       (map :url (divide tag-page template-with-low-max all-pages)))))
 
 (describe "build-tag-pages"
@@ -58,7 +58,7 @@
     (should= [:urlA :urlB :urlC] (:pages (first (build-tag-pages tag-pages))))
     (should= '("test") (map :title (build-tag-pages tag-pages))))
   (it "sets parent page as index"
-    (should= :index.html (:parent (first (build-tag-pages tag-pages))))))
+    (should= "index.html" (:parent (first (build-tag-pages tag-pages))))))
 
 (def cat-page-a {:category :a :title "a"})
 (def cat-page-b {:category :uncategorized :title "b"})
@@ -69,4 +69,4 @@
     (should= 2 (count (build-category-pages cat-pages)))
     (should= '("a" "uncategorized") (map :title (build-category-pages cat-pages))))
   (it "sets parent page as index"
-    (should= :index.html (:parent (first (build-category-pages cat-pages))))))
+    (should= "index.html" (:parent (first (build-category-pages cat-pages))))))

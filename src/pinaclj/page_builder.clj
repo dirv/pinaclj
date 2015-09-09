@@ -10,7 +10,7 @@
 (defn generate-page [url]
   (assoc (create-page nil nil)
          :modified (System/currentTimeMillis)
-         :parent :index.html
+         :parent "index.html"
          :generated true
          :path "index.md"
          :url url

@@ -8,16 +8,14 @@
 (defn- contains-in? [page ks]
   (get-in page ks))
 
-(defn- is-root-page? [page]
-  (= "index.html" (:url page)))
+(defn- is-index? [page opts]
+  (= page (get (:all-pages opts) "index.html")))
 
-(defn- has-link-to? [page opts k]
-  (and (contains? opts :all-pages)
-       (contains? page k)
-       (not (is-root-page? page))))
+(declare retrieve-value)
 
 (defn- linked-page [page opts k]
-  (get (:all-pages opts) (name (get page k))))
+  (when-let [url (retrieve-value page k {})]
+    (get (:all-pages opts) url)))
 
 (defn retrieve-value [page k opts]
   (cond
@@ -25,10 +23,13 @@
     ((get-in page [:funcs k]) page opts)
     (contains? page k)
     (get page k)
-    (has-link-to? page opts :parent)
+    (contains? page :parent)
     (retrieve-value (linked-page page opts :parent) k opts)
-    (has-link-to? page opts :category)
-    (retrieve-value (linked-page page opts :category) k opts)))
+    (and (contains? opts :all-pages)
+         (not (is-index? page opts))
+         (contains? page :category))
+    (retrieve-value (linked-page page opts :category-url) k opts)
+    ))
 
 (defn print-page [page]
   (print "{")
