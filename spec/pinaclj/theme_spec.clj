@@ -19,6 +19,9 @@
   (determine-template sample-theme {:path page-path
                                     :category category}))
 
+(defn- determine-with-root [page-path src-root]
+  (determine-template sample-theme {:path page-path
+                                    :src-root src-root}))
 (describe "determine-template"
   (it "chooses post if no override page found"
     (should= :post-fn (determine "/test.md")))
@@ -35,7 +38,9 @@
   (it "chooses override even with category present"
     (should= :override-fn (determine-with-category "/override.md" :cat)))
   (it "chooses post if no override and no category is found"
-    (should= :post-fn (determine-with-category "/test.md" :cat2))))
+    (should= :post-fn (determine-with-category "/test.md" :cat2)))
+  (it "removes source root from path"
+    (should= :override-fn (determine-with-root "/a/b/override.md" "/a/b"))))
 
 (def test-files
   [{:path "a.html" :content "<html></html>"}

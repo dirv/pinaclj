@@ -41,8 +41,12 @@
   (when-let [category (page/retrieve-value page :category {})]
     (find-template? theme (str (name category) ".html"))))
 
+(defn- relativize-template [page]
+  (subs (.toString (:path page))
+        (count (.toString (or (:src-root page) "")))))
+
 (defn determine-template [theme page]
-  (let [template-path (to-template-path (.toString (:path page)))]
+  (let [template-path (to-template-path (relativize-template page))]
     (or (find-template? theme template-path)
         (find-template? theme (str template-path ".html"))
         (category-template? theme page)
