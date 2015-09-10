@@ -39,9 +39,13 @@
       ""
       (subs path-str last-index))))
 
+(defn- not-hidden [files]
+  (filter (complement nio/hidden?) files))
+
 (defn all-in [path]
   (with-open [files (nio/directory-stream path)]
-    (doall (mapcat #(if (directory? %) (all-in %) [%]) files))))
+    (doall (mapcat #(if (directory? %) (all-in %) [%])
+                   (not-hidden files)))))
 
 (defn remove-extension [path]
   (let [path-str (str path)]

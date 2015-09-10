@@ -34,6 +34,9 @@
 (defn directory? [path]
   (Files/isDirectory path (into-array LinkOption [])))
 
+(defn hidden? [path]
+  (Files/isHidden path))
+
 (defn create-parent-directories [path]
   (let [parent (.getParent path)]
     (Files/createDirectories parent (into-array FileAttribute []))))

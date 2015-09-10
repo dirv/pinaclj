@@ -11,7 +11,7 @@
   (let [fs  (files/init (test-fs) "/test")]
     (doseq [file files]
       (let [path (files/resolve-path fs (:path file))]
-        (files/create path (:content file))
+        (files/create path (or (:content file) ""))
         (when (contains? file :modified)
           (nio/set-last-modified path (:modified file)))))
     fs))
