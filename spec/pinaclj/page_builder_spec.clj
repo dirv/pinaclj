@@ -19,6 +19,9 @@
 (def tag-page
   (first (build-tag-pages [page-a page-b page-c])))
 
+(def path-only-page
+  (create-page nil "path.md"))
+
 (def template-with-no-max
   nil)
 
@@ -50,7 +53,10 @@
     (should= ["index-2.html" nil] (map :next (divide-pages))))
   (it "sets url using correct definition"
     (should= ["tag/test/index.html" "tag/test/index-2.html"]
-      (map :url (divide tag-page template-with-low-max all-pages)))))
+      (map :url (divide tag-page template-with-low-max all-pages))))
+  (it "can use file path as base url"
+    (should= ["path.html" "path-2.html"]
+      (map :url (divide path-only-page template-with-low-max all-pages)))))
 
 (describe "build-tag-pages"
   (it "builds"

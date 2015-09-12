@@ -38,7 +38,7 @@
   (let [[start ext] (split-page-url page)]
     (fn [page-num]
       (cond
-        (= page-num 0) (:url page)
+        (= page-num 0) (page/retrieve-value page :destination {})
         (and (> page-num 0) (< page-num (dec page-count)))
         (str start "-" (inc page-num) "." ext)))))
 

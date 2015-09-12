@@ -15,11 +15,15 @@
    :path "b"
    :content ""})
 
+(def opts
+  {:all-pages {"a" page-one
+               "b" page-two}})
+
 (defn do-read [fs path-str]
   (pb/create-page fs (files/resolve-path fs path-str)))
 
 (defn- multi-page [fs]
-  {:pages [(do-read fs "a") (do-read fs "b")]})
+  {:pages ["a" "b"]})
 
 (def test-pages
   [page-one page-two])
@@ -28,8 +32,8 @@
   (with fs (test-fs/create-from test-pages))
 
   (it "uses modified date for simple page"
-    (should= 1 (find-modified (do-read @fs "a") {})))
+    (should= 1 (find-modified (do-read @fs "a") opts)))
 
   (it "uses latest modified date for page list"
-    (should= 2 (find-modified (multi-page @fs) {}))))
+    (should= 2 (find-modified (multi-page @fs) opts))))
 

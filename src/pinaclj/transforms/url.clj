@@ -2,12 +2,16 @@
   (:require [pinaclj.files :as files]
             [pinaclj.nio :as nio]))
 
+(defn- relativized-path [{src-root :src-root path :path}]
+  (if (nil? src-root)
+    path
+    (nio/relativize src-root path)))
+
 (def build-destination
-  (comp files/change-extension-to-html nio/relativize))
+  (comp files/change-extension-to-html relativized-path))
 
 (defn add-url [page opts]
-  (if (contains? page :url)
-    (:url page)
-    (str "/" (build-destination (:src-root page) (:path page)))))
+  (or (:url page)
+      (str "/" (build-destination page))))
 
 (def transform [:url add-url])
