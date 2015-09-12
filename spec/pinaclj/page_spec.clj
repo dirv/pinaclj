@@ -115,3 +115,11 @@
       (should= "override-val" (retrieve-val child-with-override [parent page-with-parent])))
     (it "stops at index root page"
       (should= nil (retrieve-val index [index])))))
+
+(def page-set (transforms/apply-all {:path "index.md"}))
+
+(def just-page-set-page {"index.html" page-set})
+
+(describe "children"
+  (it "does not include page-set page"
+    (should= [] (children page-set just-page-set-page))))

@@ -28,8 +28,7 @@
     (and (contains? opts :all-pages)
          (not (is-index? page opts))
          (contains? page :category))
-    (retrieve-value (linked-page page opts :category-url) k opts)
-    ))
+    (retrieve-value (linked-page page opts :category-url) k opts)))
 
 (defn print-page [page]
   (print "{")
@@ -61,9 +60,19 @@
 (defn- chronological-sort [pages]
   (reverse (sort-by #(:published-at (val %)) pages)))
 
-(defn- without-generated [pages]
-  (filter #(not (:generated (val %))) pages))
+(defn- except-page [page all-pages]
+  (dissoc all-pages (retrieve-value page :destination {})))
+
+(def without-generated
+  (partial remove #(:generated (val %))))
+
+(defn- all-page-urls [all-pages]
+  (map key all-pages))
 
 (defn children [page-set all-pages]
   (or (:pages page-set)
-      (keys (chronological-sort (without-generated all-pages)))))
+      (-> page-set
+          (except-page all-pages)
+          (without-generated)
+          (chronological-sort)
+          (all-page-urls))))
