@@ -1,10 +1,9 @@
 (ns pinaclj.transforms.category-link
-  (:require [pinaclj.group :as group]
-            [pinaclj.page :as page]
+  (:require [pinaclj.page :as page]
             [pinaclj.transforms.transforms :as transforms]))
 
 (defn- create-link [category]
-  {:attrs {:href (group/category-url category)}
+  {:attrs {:href (page/category-url category)}
    :content (name category)})
 
 (defn get-category [page opts]

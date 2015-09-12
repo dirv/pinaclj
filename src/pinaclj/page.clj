@@ -2,6 +2,12 @@
   (:require [pinaclj.nio :as nio]
             [pinaclj.files :as files]))
 
+(defn category-url [category]
+  (str "category/" (name category) "/index.html"))
+
+(defn tag-url [tag]
+  (str "tag/" (name tag) "/index.html"))
+
 (defn set-lazy-value [page fk fv]
   (assoc-in page [:funcs fk] (memoize fv)))
 
@@ -11,11 +17,16 @@
 (defn- is-index? [page opts]
   (= page (get (:all-pages opts) "index.html")))
 
+(defn- without-page [opts url]
+  (assoc opts
+         :all-pages
+         (dissoc (:all-pages opts) url)))
+
 (declare retrieve-value)
 
-(defn- linked-page [page opts k]
-  (when-let [url (retrieve-value page k {})]
-    (get (:all-pages opts) url)))
+(defn- retrieve-linked-value [page opts linked-url k]
+  (when-let [linked-page (get (:all-pages opts) linked-url)]
+    (retrieve-value linked-page k (without-page opts linked-url))))
 
 (defn retrieve-value [page k opts]
   (cond
@@ -24,11 +35,9 @@
     (contains? page k)
     (get page k)
     (contains? page :parent)
-    (retrieve-value (linked-page page opts :parent) k opts)
-    (and (contains? opts :all-pages)
-         (not (is-index? page opts))
-         (contains? page :category))
-    (retrieve-value (linked-page page opts :category-url) k opts)))
+    (retrieve-linked-value page opts (:parent page) k)
+    (contains? page :category)
+    (retrieve-linked-value page opts (category-url (:category page)) k)))
 
 (defn print-page [page]
   (print "{")

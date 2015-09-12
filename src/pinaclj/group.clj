@@ -1,12 +1,6 @@
 (ns pinaclj.group
   (:require [pinaclj.page :as page]))
 
-(defn category-url [category]
-  (str "category/" (name category) "/index.html"))
-
-(defn tag-url [tag]
-  (str "tag/" (name tag) "/index.html"))
-
 (defn- tag-group-fn [page]
   (page/retrieve-value page :tags {}))
 

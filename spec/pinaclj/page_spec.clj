@@ -97,6 +97,7 @@
   (def child-with-category {:category :a :url "child.html"})
   (def child-with-override {:parent "parent.html" :val "override-val" :url "override.html"})
   (def index {:url "index.html"})
+  (def child-as-parent {:parent "child.html" :url "parent.html"})
 
   (defn- opts [ps]
     {:all-pages (apply merge (map #(hash-map (:url %) %) ps))})
@@ -114,7 +115,9 @@
     (it "retrieves override value when one is set"
       (should= "override-val" (retrieve-val child-with-override [parent page-with-parent])))
     (it "stops at index root page"
-      (should= nil (retrieve-val index [index])))))
+      (should= nil (retrieve-val index [index])))
+    (it "handles cycles"
+      (should= nil (retrieve-val child-as-parent [page-with-parent child-as-parent])))))
 
 (def page-set (transforms/apply-all {:path "index.md"}))
 

@@ -26,10 +26,10 @@
   (map #(build-group-page % url-func) pages))
 
 (defn build-tag-pages [pages]
-  (build-group-pages (group/pages-by-tag pages) group/tag-url))
+  (build-group-pages (group/pages-by-tag pages) page/tag-url))
 
 (defn build-category-pages [pages]
-  (build-group-pages (group/pages-by-category pages) group/category-url))
+  (build-group-pages (group/pages-by-category pages) page/category-url))
 
 (defn- split-page-url [page]
   (.split (page/retrieve-value page :destination {}) "\\."))
