@@ -24,9 +24,10 @@
 
 (declare retrieve-value)
 
-(defn- retrieve-linked-value [page opts linked-url k]
-  (when-let [linked-page (get (:all-pages opts) linked-url)]
-    (retrieve-value linked-page k (without-page opts linked-url))))
+(defn- retrieve-parent-value [page opts k]
+  (when-let [linked-url (retrieve-value page :parent {})]
+    (when-let [linked-page (get (:all-pages opts) linked-url)]
+      (retrieve-value linked-page k (without-page opts linked-url)))))
 
 (defn retrieve-value [page k opts]
   (cond
@@ -34,10 +35,8 @@
     ((get-in page [:funcs k]) page opts)
     (contains? page k)
     (get page k)
-    (contains? page :parent)
-    (retrieve-linked-value page opts (:parent page) k)
-    (contains? page :category)
-    (retrieve-linked-value page opts (category-url (:category page)) k)))
+    (not= :parent k)
+    (retrieve-parent-value page opts k)))
 
 (defn print-page [page]
   (print "{")

@@ -1,17 +1,19 @@
 (ns pinaclj.transforms.modified
-  (:require [pinaclj.page :as page]
-            [pinaclj.nio :as nio]))
+  (:require [pinaclj.page :as page]))
 
-(defn- get-last-modified-time [page]
-  (nio/get-last-modified-time (:path page)))
+(defn- page-lineage [page all-pages]
+  (if-let [parent (page/retrieve-value page :parent {})]
+    (conj (page-lineage (get all-pages parent) all-pages) page)
+    [page]))
 
 (defn- get-pages [{pages :pages} {all-pages :all-pages}]
   (map (partial get all-pages) pages))
 
 (defn find-modified [page opts]
   (if (contains? page :pages)
-    (apply max (map #(page/retrieve-value % :modified {})
+    (apply max (map #(page/retrieve-value % :modified opts)
                     (get-pages page opts)))
-    (get-last-modified-time page)))
+    (apply max (map #(page/retrieve-value % :src-modified {})
+                    (page-lineage page (:all-pages opts))))))
 
 (def transform [:modified find-modified])
