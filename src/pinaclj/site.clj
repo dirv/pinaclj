@@ -10,8 +10,12 @@
   (or (:generated page)
     (> (page/retrieve-value page :modified opts) dest-last-modified)))
 
+(defn- template-modified [page dest-last-modified]
+  (> (:modified-at (:template page)) dest-last-modified))
+
 (defn- modified-pages [pages opts dest-last-modified]
-  (filter #(modified-since-last-publish? % opts dest-last-modified) pages))
+  (filter #(or (modified-since-last-publish? % opts dest-last-modified)
+               (template-modified % dest-last-modified)) pages))
 
 (defn- to-pair [page]
   {(page/retrieve-value page :destination {}) page})
@@ -45,7 +49,7 @@
    (page/retrieve-value page :templated-content {:template (:template page)
                                                  :all-pages all-pages})])
 
-(defn render-all [page-map dest-last-modified]
+(defn render-all [page-map theme dest-last-modified]
   (map #(render-page % page-map)
        (modified-pages (divide-pages page-map) {:all-pages page-map} dest-last-modified)))
 
@@ -53,4 +57,4 @@
   (-> input-pages
       (published-only)
       (generate-page-map theme)
-      (render-all dest-last-modified)))
+      (render-all theme dest-last-modified)))

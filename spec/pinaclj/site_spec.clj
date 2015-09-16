@@ -17,8 +17,10 @@
       (apply str titles))))
 
 (def test-theme
-  {:post.html {:template-fn (fn [pages] (title-writing-template pages))}
-   :index.html {:template-fn (fn [pages] (child-writing-template pages))}})
+  {:post.html {:template-fn (fn [pages] (title-writing-template pages))
+               :modified-at 0}
+   :index.html {:template-fn (fn [pages] (child-writing-template pages))
+                :modified-at 0}})
 
 (def base-page
   {:modified 2
@@ -36,7 +38,6 @@
 
 (defn- in [page-name pages]
   (second (first (filter #(= page-name (first %)) pages))))
-
 
 (describe "new page"
   (def new-page (assoc base-page
@@ -127,3 +128,17 @@
 
   (it "matches source file with theme file"
     (should= "test-title" (in "index.html" (output-with-theme [index-page] match-theme)))))
+
+(def updated-template-theme
+  {:post.html {:template-fn (fn [pages] (title-writing-template pages))
+               :modified-at 3}})
+
+(def unmodified-page
+  (assoc base-page
+         :modified 0
+         :destination "page.html"
+         :title "old-title"))
+
+(describe "updated template file"
+  (it "causes page to be rebuilt even when it hasn't changed"
+    (should= "old-title" (in "page.html" (output-with-theme [unmodified-page] updated-template-theme)))))

@@ -10,7 +10,8 @@
   (keyword (str (name category) ".html")))
 
 (defn- load-template [fs page-path]
-  (t/build-template (f/read-stream fs page-path)))
+  (assoc (t/build-template (f/read-stream fs page-path))
+         :modified-at (nio/get-last-modified-time page-path)))
 
 (defn get-template [theme n]
   (get theme n))

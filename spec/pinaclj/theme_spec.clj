@@ -43,7 +43,7 @@
     (should= :override-fn (determine-with-root "/a/b/override.md" "/a/b"))))
 
 (def test-files
-  [{:path "a.html" :content "<html></html>"}
+  [{:path "a.html" :content "<html></html>" :modified 2}
    {:path "b.html" :content ""}
    {:path "b.xml" :content ""}
    {:path "c.png" :content "!!!"}
@@ -56,4 +56,8 @@
     (should= '(:a.html :b.html :b.xml) (keys (build-theme @fs ""))))
 
   (it "loads template for each file"
-    (should-contain :template-fn (val (first (build-theme @fs ""))))))
+    (should-contain :template-fn (val (first (build-theme @fs "")))))
+
+  (it "loads modified time for each file"
+    (should-contain :modified-at (val (first (build-theme @fs ""))))
+    (should= 2 (:modified-at (:a.html (build-theme @fs ""))))))
