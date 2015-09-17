@@ -74,8 +74,8 @@
           (transform-content node value))
         node))))
 
-(defn- find-all-functions [template]
-  (map #(get-in % [:attrs :data-id]) (html/select template [(html/attr? :data-id)])))
+(defn find-all-functions [template]
+  (distinct (map #(get-in % [:attrs :data-id]) (html/select template [(html/attr? :data-id)]))))
 
 (defn- build-selector-transforms [template all-pages]
   (map #(vector (build-replacement-selector %)

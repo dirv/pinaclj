@@ -6,8 +6,11 @@
             [pinaclj.page :as page]
             [net.cgrand.enlive-html :as html]))
 
+(defn- to-snippet [body]
+  (html/html-snippet (str "<html><body>" body "</body></html>")))
+
 (defn- template [body all-pages]
-  (build-page-func (html/html-snippet (str "<html><body>" body "</body></html>")) all-pages))
+  (build-page-func (to-snippet body) all-pages))
 
 (defn- do-replace [template-body-str page all-pages]
   (to-str ((template template-body-str all-pages) page)))
@@ -125,3 +128,10 @@
   (it "sets template func"
     (let [template-func ((:template-fn (build-split-list-template)) all-referenced-pages)]
       (should-contain "val1" (to-str (template-func test-split-page))))))
+
+(def multiple-selector-template
+  "<p data-id=func /> <p data-id=func />")
+
+(describe "page with multiple occurrences of func"
+  (it "lists selector only once"
+    (should= ["func"] (find-all-functions (to-snippet multiple-selector-template)))))
