@@ -2,16 +2,20 @@
   (:require [speclj.core :refer :all]
             [pinaclj.page-builder :refer :all]))
 
-(def page-a {:destination :urlA :title "a" :tags ["test"] :published-at 3})
-(def page-b {:destination :urlB :title "b" :tags ["test"] :published-at 2})
-(def page-c {:destination :urlC :title "c" :tags ["test"] :published-at 1})
+(def page-a {:destination :urlA :title "a" :tags ["test"] :published-at 5})
+(def page-b {:destination :urlB :title "b" :tags ["test"] :published-at 4})
+(def page-c {:destination :urlC :title "c" :tags ["test"] :published-at 3})
+(def page-d {:destination :urlC :title "d" :tags ["test"] :published-at 2})
+(def page-e {:destination :urlC :title "e" :tags ["test"] :published-at 1})
 
 (def tag-pages [page-a page-b page-c])
 
 (def all-pages
   {:urlA page-a
    :urlB page-b
-   :urlC page-c})
+   :urlC page-c
+   :urlD page-d
+   :urlE page-e})
 
 (def list-page
   (generate-page "index.html"))
@@ -29,7 +33,7 @@
   {:max-pages 2})
 
 (def template-with-high-max
-  {:max-pages 3})
+  {:max-pages 5})
 
 (defn- divide-pages []
   (divide list-page template-with-low-max all-pages))
@@ -40,22 +44,23 @@
   (it "does not divide pages which does not hit max-pages"
     (should= 1 (count (divide list-page template-with-high-max all-pages))))
   (it "divides pages with low max-pages"
-    (should= 2 (count (divide list-page template-with-low-max all-pages))))
+    (should= 3 (count (divide-pages))))
+
   (it "contains pages in order when dividing pages"
-    (should= [[:urlA :urlB] [:urlC]] (map :pages (divide-pages))))
+    (should= [[:urlA :urlB] [:urlC :urlD] [:urlE]] (map :pages (divide-pages))))
   (it "sets start page when dividing"
-    (should= [0 2] (map :start (divide list-page template-with-low-max all-pages))))
+    (should= [0 2 4] (map :start (divide-pages))))
   (it "modifies all but first urls"
-    (should= ["index.html" "index-2.html"] (map :url (divide-pages))))
-  (it "adds previous link to second page only"
-    (should= [nil "index.html"] (map :previous (divide-pages))))
-  (it "adds next link to first page only"
-    (should= ["index-2.html" nil] (map :next (divide-pages))))
+    (should= ["index.html" "index-2.html" "index-3.html"] (map :url (divide-pages))))
+  (it "does not add previous link to first page"
+    (should= [nil "index.html" "index-2.html"] (map :previous (divide-pages))))
+  (it "does not add next link to last page"
+    (should= ["index-2.html" "index-3.html" nil] (map :next (divide-pages))))
   (it "sets url using correct definition"
     (should= ["tag/test/index.html" "tag/test/index-2.html"]
       (map :url (divide tag-page template-with-low-max all-pages))))
   (it "can use file path as base url"
-    (should= ["path.html" "path-2.html"]
+    (should= ["path.html" "path-2.html" "path-3.html"]
       (map :url (divide path-only-page template-with-low-max all-pages)))))
 
 (describe "build-tag-pages"

@@ -39,7 +39,7 @@
     (fn [page-num]
       (cond
         (= page-num 0) (page/retrieve-value page :destination {})
-        (and (> page-num 0) (< page-num (dec page-count)))
+        (and (> page-num 0) (< page-num page-count))
         (str start "-" (inc page-num) "." ext)))))
 
 (defn- duplicate-page [page start num-pages child-pages url-fn]
@@ -57,5 +57,5 @@
     [page]
     (let [child-pages (page/children page all-pages)
           starts (range 0 (count child-pages) max-pages)
-          url-fn (build-url-fn page (count child-pages))]
+          url-fn (build-url-fn page (count starts))]
       (map #(duplicate-page page % max-pages child-pages url-fn) starts))))
