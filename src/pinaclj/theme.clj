@@ -38,17 +38,20 @@
 (defn- find-template? [theme path-str]
   (get theme (keyword path-str)))
 
-(defn- category-template? [theme page]
-  (when-let [category (page/retrieve-value page :category {})]
-    (find-template? theme (str (name category) ".html"))))
-
 (defn- relativize-template [page]
   (subs (.toString (:path page))
         (count (.toString (or (:src-root page) "")))))
 
-(defn determine-template [theme page]
+(defn- matching-template? [theme page]
   (let [template-path (to-template-path (relativize-template page))]
     (or (find-template? theme template-path)
-        (find-template? theme (str template-path ".html"))
-        (category-template? theme page)
-        (get theme (category-template default-category)))))
+        (find-template? theme (str template-path ".html")))))
+
+(defn- category-template? [theme page]
+  (when-let [category (page/retrieve-value page :category {})]
+    (find-template? theme (str (name category) ".html"))))
+
+(defn determine-template [theme page]
+  (or (matching-template? theme page)
+      (category-template? theme page)
+      (get theme (category-template default-category))))
