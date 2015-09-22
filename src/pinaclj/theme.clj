@@ -30,18 +30,20 @@
 (defn- template-or-other [file]
   (if (contains? template-files (f/extension file))
     :template-files
-    :files))
+    :static-files))
 
 (defn- group-files [root]
   (group-by template-or-other (f/all-in root)))
 
-(defn- convert-templates [{template-files :template-files :as theme} fs root]
-  (assoc theme
-         :templates
-         (apply merge (map #(to-template fs root %) template-files))))
+(defn- convert-templates [template-files fs root]
+  (apply merge (map #(to-template fs root %) template-files)))
+
+(defn- convert-intermediate [fs path {:keys [template-files static-files]}]
+  {:templates (convert-templates template-files fs path)
+   :static-files static-files})
 
 (defn build-theme [fs path]
-  (convert-templates (group-files path) fs path))
+  (convert-intermediate fs path (group-files path)))
 
 (def to-template-path
   (comp f/remove-extension f/trim-url))

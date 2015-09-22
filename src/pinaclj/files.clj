@@ -58,3 +58,14 @@
   (if (= \/ (first url-str))
     (subs url-str 1)
     url-str))
+
+(defn timestamp [file]
+  (if (nio/exists? file)
+    (nio/get-last-modified-time file)
+    0))
+
+(defn duplicate-if-newer [src-root dest-root src-file]
+  (let [relative-path (nio/relativize src-root src-file)
+        new-path (nio/resolve-path dest-root relative-path)]
+    (when (< (timestamp new-path) (timestamp src-file))
+      (nio/copy-file src-file new-path))))

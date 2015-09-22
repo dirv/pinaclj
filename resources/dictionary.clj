@@ -5,6 +5,8 @@
         }
        :generate
        {:published-page "Published: %s"
+        :copy-file "Copied from theme: %s"
+        :did-not-copy-file "Did not copy file as it has not been modified: %s"
         }
        }
  }

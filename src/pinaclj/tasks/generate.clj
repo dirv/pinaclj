@@ -12,13 +12,8 @@
 (def index-page
   "index.html")
 
-(defn- timestamp [file]
-  (if (nio/exists? file)
-    (nio/get-last-modified-time file)
-    0))
-
 (defn- dest-last-modified [dest]
-  (timestamp (nio/resolve-path dest index-page)))
+  (files/timestamp (nio/resolve-path dest index-page)))
 
 (defn- write-page [dest-root [page-path content]]
   (files/create (nio/resolve-path dest-root page-path) content)
@@ -30,21 +25,26 @@
 (defn- create-pages [src]
   (map #(create-page src %) (files/all-in src)))
 
-(defn- copy-file [src dest-root page-path]
-  (let [new-path (nio/resolve-path dest-root (nio/relativize src page-path))]
-    (when (< (timestamp new-path) (timestamp page-path))
-      (nio/copy-file page-path new-path))))
+(defn- relative-file-name [src-root src-file]
+  (.toString (nio/relativize src-root src-file)))
+
+(defn- write-static-file [src-root dest-root src-file]
+  (if (files/duplicate-if-newer src-root dest-root src-file)
+    (task/success (t :en :copy-file (relative-file-name src-root src-file)))
+    (task/info (t :en :did-not-copy-file (relative-file-name src-root src-file)))))
 
 (defn- write-static-files [theme src dest]
-  (map #(copy-file src dest %) (:files theme)))
+  (map (partial write-static-file src dest) (:static-files theme)))
+
+(defn- write-generated-files [theme src dest]
+  (map (partial write-page dest) (site/build (create-pages src) theme (dest-last-modified dest))))
 
 (defn generate [fs src-path-str dest-path-str theme-path-str]
   (tower/with-tscope :generate
     (let [src (nio/resolve-path fs src-path-str)
           dest (nio/resolve-path fs dest-path-str)
           theme-path (nio/resolve-path fs theme-path-str)
-          theme (theme/build-theme fs theme-path)
-          pages (create-pages src)]
+          theme (theme/build-theme fs theme-path)]
       (doall
-        (concat (map (partial write-page dest) (site/build pages theme (dest-last-modified dest)))
+        (concat (write-generated-files theme src dest)
                 (write-static-files theme theme-path dest))))))

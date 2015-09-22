@@ -64,4 +64,4 @@
     (should= 2 (:modified-at (:a.html (:templates (build-theme @fs @fs))))))
 
   (it "adds non-template file paths to theme"
-    (should= ["c.png" "d"] (map nio/file-name (:files (build-theme @fs @fs))))))
+    (should= ["c.png" "d"] (map nio/file-name (:static-files (build-theme @fs @fs))))))

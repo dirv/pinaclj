@@ -19,6 +19,12 @@
 (defn publish-message-for [page]
   (t :en :generate/published-page page))
 
+(defn copy-message-for [file]
+  (t :en :generate/copy-file file))
+
+(defn did-not-copy-message-for [file]
+  (t :en :generate/did-not-copy-file file))
+
 (describe "generate"
   (with fs (create-from [nested-page simple-page]))
 
@@ -54,4 +60,14 @@
         (should-contain (publish-message-for "feed.xml") messages)
         (should-contain (publish-message-for "post.html") messages)
         (should-contain (publish-message-for "category/uncategorized/index.html") messages)
-        (should-contain (publish-message-for "nested/another_post.html") messages)))))
+        (should-contain (publish-message-for "nested/another_post.html") messages)))
+    (it "outputs copied files"
+      (let [output (generate @fs "pages" "published" "theme")
+            messages (map :msg output)]
+        (should-contain (copy-message-for "styles.css") messages)))
+
+    (it "outputs uncopied files"
+      (create-file @fs new-style-page)
+      (let [output (generate @fs "pages" "published" "theme")
+            messages (map :msg output)]
+        (should-contain (did-not-copy-message-for "styles.css") messages)))))
