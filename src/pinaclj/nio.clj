@@ -46,7 +46,7 @@
   (Files/write path content (into-array OpenOption [])))
 
 (defn copy-file [path dest]
-  (Files/copy path dest (into-array CopyOption [])))
+  (Files/copy path dest (into-array CopyOption [StandardCopyOption/REPLACE_EXISTING])))
 
 (defn file-name [path]
   (.toString (.getFileName path)))

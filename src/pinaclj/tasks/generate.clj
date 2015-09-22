@@ -12,11 +12,13 @@
 (def index-page
   "index.html")
 
+(defn- timestamp [file]
+  (if (nio/exists? file)
+    (nio/get-last-modified-time file)
+    0))
+
 (defn- dest-last-modified [dest]
-  (let [index-file (nio/resolve-path dest index-page)]
-    (if (nio/exists? index-file)
-      (nio/get-last-modified-time index-file)
-      0)))
+  (timestamp (nio/resolve-path dest index-page)))
 
 (defn- write-page [dest-root [page-path content]]
   (files/create (nio/resolve-path dest-root page-path) content)
@@ -30,7 +32,8 @@
 
 (defn- copy-file [src dest-root page-path]
   (let [new-path (nio/resolve-path dest-root (nio/relativize src page-path))]
-    (nio/copy-file page-path new-path)))
+    (when (< (timestamp new-path) (timestamp page-path))
+      (nio/copy-file page-path new-path))))
 
 (defn- write-static-files [theme src dest]
   (map #(copy-file src dest %) (:files theme)))

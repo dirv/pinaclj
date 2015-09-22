@@ -13,6 +13,9 @@
   {:path "pages/post.md"
    :content "title: Test\npublished-at: 2014-10-31T12:05:00Z\n---\ncontent"})
 
+(def old-style-page {:path "published/styles.css" :content "old" :modified -2})
+(def new-style-page {:path "published/styles.css" :content "new" :modified 5})
+
 (defn publish-message-for [page]
   (t :en :generate/published-page page))
 
@@ -32,6 +35,16 @@
 
     (it "copies static files"
       (should (file-exists? @fs "published/styles.css"))))
+
+  (it "overwrites old static pages"
+    (create-file @fs old-style-page)
+    (generate @fs "pages" "published" "theme")
+    (should-not= "old" (read-file @fs "published/styles.css")))
+
+  (it "does not overwrite unchanged static files"
+    (create-file @fs new-style-page)
+    (generate @fs "pages" "published" "theme")
+    (should= "new" (read-file @fs "published/styles.css")))
 
   (describe "task output"
     (it "outputs successful pages"
