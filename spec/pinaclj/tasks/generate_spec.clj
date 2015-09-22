@@ -11,7 +11,7 @@
 
 (def simple-page
   {:path "pages/post.md"
-    :content "title: Test\npublished-at: 2014-10-31T12:05:00Z\n---\ncontent"})
+   :content "title: Test\npublished-at: 2014-10-31T12:05:00Z\n---\ncontent"})
 
 (defn publish-message-for [page]
   (t :en :generate/published-page page))
@@ -28,7 +28,10 @@
       (should (file-exists? @fs "published/post.html")))
 
     (it "compiles files in subdirectories"
-      (should (file-exists? @fs "published/nested/another_post.html"))))
+      (should (file-exists? @fs "published/nested/another_post.html")))
+
+    (it "copies static files"
+      (should (file-exists? @fs "published/styles.css"))))
 
   (describe "task output"
     (it "outputs successful pages"

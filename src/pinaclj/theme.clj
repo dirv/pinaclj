@@ -6,6 +6,8 @@
 
 (def default-category :post)
 
+(def template-files #{".html" ".xml"})
+
 (defn- category-template [category]
   (keyword (str (name category) ".html")))
 
@@ -18,25 +20,34 @@
 
 (defn root-pages [theme]
   (clojure.set/difference
-    (set (keys theme))
+    (set (keys (:templates theme)))
     #{(category-template default-category)}))
 
-(defn- to-template [fs root-path file-path]
-  {(keyword (.toString (nio/relativize (f/resolve-path fs root-path) file-path)))
+(defn- to-template [fs root file-path]
+  {(keyword (.toString (nio/relativize root file-path)))
    (load-template fs file-path)})
 
-(defn- choose-files [fs path]
-  (filter #(contains? #{".html" ".xml"} (f/extension %))
-          (f/all-in (f/resolve-path fs path))))
+(defn- template-or-other [file]
+  (if (contains? template-files (f/extension file))
+    :template-files
+    :files))
+
+(defn- group-files [root]
+  (group-by template-or-other (f/all-in root)))
+
+(defn- convert-templates [{template-files :template-files :as theme} fs root]
+  (assoc theme
+         :templates
+         (apply merge (map #(to-template fs root %) template-files))))
 
 (defn build-theme [fs path]
-  (apply merge (map #(to-template fs path %) (choose-files fs path))))
+  (convert-templates (group-files path) fs path))
 
 (def to-template-path
   (comp f/remove-extension f/trim-url))
 
-(defn- find-template? [theme path-str]
-  (get theme (keyword path-str)))
+(defn- find-template? [{templates :templates} path-str]
+  (get templates (keyword path-str)))
 
 (defn- relativize-template [page]
   (subs (.toString (:path page))
@@ -54,4 +65,4 @@
 (defn determine-template [theme page]
   (or (matching-template? theme page)
       (category-template? theme page)
-      (get theme (category-template default-category))))
+      (get (:templates theme) (category-template default-category))))

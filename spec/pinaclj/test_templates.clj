@@ -11,7 +11,8 @@
 (defn write-to-fs [fs]
   (doall (map (partial write-file fs) [["post.html" "post.html"]
                                        ["index.html" "index.html"]
-                                       ["feed.xml" "feed.xml"]])))
+                                       ["feed.xml" "feed.xml"]
+                                       ["styles.css" "styles.css"]])))
 
 (defn write-split-to-fs [fs]
   (doall (map (partial write-file fs) [["post.html" "post.html"]

@@ -1,16 +1,17 @@
 (ns pinaclj.theme-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.test-fs :as test-fs]
-           [pinaclj.theme :refer :all]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.test-fs :as test-fs]
+            [pinaclj.nio :as nio]
+            [pinaclj.theme :refer :all]))
 
 (def sample-theme
-  {:post.html :post-fn
-   :override.html :override-fn
-   :nested/page.html :nested/page-fn
-   :both.xml :both-xml-fn
-   :both.html :both-html-fn
-   :only.xml :only-fn
-   :cat.html :cat-fn})
+  {:templates {:post.html :post-fn
+               :override.html :override-fn
+               :nested/page.html :nested/page-fn
+               :both.xml :both-xml-fn
+               :both.html :both-html-fn
+               :only.xml :only-fn
+               :cat.html :cat-fn}})
 
 (defn- determine [page-path]
   (determine-template sample-theme {:path page-path}))
@@ -53,11 +54,14 @@
   (with fs (test-fs/create-from test-files))
 
   (it "reads HTML and XML files from fs"
-    (should= '(:a.html :b.html :b.xml) (keys (build-theme @fs ""))))
+    (should= '(:a.html :b.html :b.xml) (keys (:templates (build-theme @fs @fs)))))
 
   (it "loads template for each file"
-    (should-contain :template-fn (val (first (build-theme @fs "")))))
+    (should-contain :template-fn (val (first (:templates (build-theme @fs @fs))))))
 
   (it "loads modified time for each file"
-    (should-contain :modified-at (val (first (build-theme @fs ""))))
-    (should= 2 (:modified-at (:a.html (build-theme @fs ""))))))
+    (should-contain :modified-at (val (first (:templates (build-theme @fs @fs)))))
+    (should= 2 (:modified-at (:a.html (:templates (build-theme @fs @fs))))))
+
+  (it "adds non-template file paths to theme"
+    (should= ["c.png" "d"] (map nio/file-name (:files (build-theme @fs @fs))))))

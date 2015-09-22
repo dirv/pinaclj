@@ -28,9 +28,20 @@
 (defn- create-pages [src]
   (map #(create-page src %) (files/all-in src)))
 
-(defn generate [fs src-path dest-path theme-path]
+(defn- copy-file [src dest-root page-path]
+  (let [new-path (nio/resolve-path dest-root (nio/relativize src page-path))]
+    (nio/copy-file page-path new-path)))
+
+(defn- write-static-files [theme src dest]
+  (map #(copy-file src dest %) (:files theme)))
+
+(defn generate [fs src-path-str dest-path-str theme-path-str]
   (tower/with-tscope :generate
-    (let [pages (create-pages (nio/resolve-path fs src-path))
+    (let [src (nio/resolve-path fs src-path-str)
+          dest (nio/resolve-path fs dest-path-str)
+          theme-path (nio/resolve-path fs theme-path-str)
           theme (theme/build-theme fs theme-path)
-          dest (nio/resolve-path fs dest-path)]
-      (doall (map (partial write-page dest) (site/build pages theme (dest-last-modified dest)))))))
+          pages (create-pages src)]
+      (doall
+        (concat (map (partial write-page dest) (site/build pages theme (dest-last-modified dest)))
+                (write-static-files theme theme-path dest))))))

@@ -17,10 +17,10 @@
       (apply str titles))))
 
 (def test-theme
-  {:post.html {:template-fn (fn [pages] (title-writing-template pages))
-               :modified-at 0}
-   :index.html {:template-fn (fn [pages] (child-writing-template pages))
-                :modified-at 0}})
+  {:templates {:post.html {:template-fn (fn [pages] (title-writing-template pages))
+                           :modified-at 0}
+               :index.html {:template-fn (fn [pages] (child-writing-template pages))
+                            :modified-at 0}}})
 
 (def base-page
   {:modified 2
@@ -92,7 +92,7 @@
 
 (describe "split page list"
   (def theme-with-max-page
-    (assoc-in test-theme [:index.html :max-pages] 2))
+    (assoc-in test-theme [:templates :index.html :max-pages] 2))
 
   (def five-pages
     (map #(assoc base-page
@@ -116,8 +116,8 @@
     (fn [page] (:title page)))
 
   (def match-theme
-    {:post.html {:template-fn (fn [pages] (this-page-template pages))}
-     :index.html {:template-fn (fn [pages] (this-page-template pages))}})
+    {:templates {:post.html {:template-fn (fn [pages] (this-page-template pages))}
+                 :index.html {:template-fn (fn [pages] (this-page-template pages))}}})
 
   (def index-page
     (transforms/apply-all (assoc base-page
@@ -130,8 +130,8 @@
     (should= "test-title" (in "index.html" (output-with-theme [index-page] match-theme)))))
 
 (def updated-template-theme
-  {:post.html {:template-fn (fn [pages] (title-writing-template pages))
-               :modified-at 3}})
+  {:templates {:post.html {:template-fn (fn [pages] (title-writing-template pages))
+                           :modified-at 3}}})
 
 (def unmodified-page
   (assoc base-page

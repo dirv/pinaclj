@@ -1,6 +1,7 @@
 (ns pinaclj.nio
   (:import (java.nio.file FileSystems Files LinkOption)
            (java.nio.file.attribute FileTime FileAttribute)
+           (java.nio.file Files StandardCopyOption CopyOption)
            (java.nio.file Files StandardOpenOption OpenOption)
            (java.nio.charset StandardCharsets)))
 
@@ -43,6 +44,12 @@
 
 (defn create-file [path content]
   (Files/write path content (into-array OpenOption [])))
+
+(defn copy-file [path dest]
+  (Files/copy path dest (into-array CopyOption [])))
+
+(defn file-name [path]
+  (.toString (.getFileName path)))
 
 (defn default-file-system []
   (FileSystems/getDefault))
