@@ -40,4 +40,5 @@
       (doall (for [message (run-generate options)]
                (case (:type message)
                  :success (main/info (:msg message))
+                 :info (main/info (:msg message))
                  :error (main/warn (:msg message))))))))
