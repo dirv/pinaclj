@@ -55,7 +55,7 @@
   (subs (.toString (:path page))
         (count (.toString (or (:src-root page) "")))))
 
-(defn- matching-template? [theme page]
+(defn matching-template? [theme page]
   (let [template-path (to-template-path (relativize-template page))]
     (or (find-template? theme template-path)
         (find-template? theme (str template-path ".html")))))

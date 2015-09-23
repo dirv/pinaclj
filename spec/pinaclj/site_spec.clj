@@ -1,10 +1,10 @@
 (ns pinaclj.site-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.page :as page]
-           [pinaclj.transforms.transforms :as transforms]
-           [pinaclj.transforms.templated-content :as content]
-           [pinaclj.site :refer :all]
-           [pinaclj.date-time-helpers :as dt]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.page :as page]
+            [pinaclj.transforms.transforms :as transforms]
+            [pinaclj.transforms.templated-content :as content]
+            [pinaclj.site :refer :all]
+            [pinaclj.date-time-helpers :as dt]))
 
 (defn- title-writing-template [all-pages]
   (fn [page]
@@ -87,8 +87,28 @@
   (def category-page (assoc base-page
                             :category :a))
 
+  (def uncategorized-index-page (assoc base-page
+                                       :category nil
+                                       :path "index.md"
+                                       :title "uncat-index"))
+
+  (def categorized-index-page (assoc base-page
+                                     :category :a
+                                     :path "index.md"
+                                     :title "cat-index"))
+
   (it "creates category pages"
-    (should-contain "category/a/index.html" (files-output [category-page]))))
+    (should-contain "category/a/index.html" (files-output [category-page])))
+
+  (it "does not include index page in uncategorised list"
+    (should-not-contain "uncat-index"
+      (in "category/uncategorized/index.html"
+          (output-with-theme [uncategorized-index-page] test-theme))))
+
+  (it "includes index page if it has a category"
+    (should-contain "cat-index"
+      (in "category/a/index.html"
+          (output-with-theme [categorized-index-page] test-theme)))))
 
 (describe "split page list"
   (def theme-with-max-page

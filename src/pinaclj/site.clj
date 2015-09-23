@@ -28,11 +28,15 @@
     (theme/root-pages theme)
     (set (map keyword (page/to-page-urls pages)))))
 
+(defn- post-pages-only [theme pages]
+  (remove #(and (theme/matching-template? theme %)
+                (nil? (:category %))) pages))
+
 (defn- generate-page-map [pages theme]
   (apply merge (map (comp to-pair (partial associate-template theme))
                     (concat pages
                             (pb/build-tag-pages pages)
-                            (pb/build-category-pages pages)
+                            (pb/build-category-pages (post-pages-only theme pages))
                             (map (comp pb/generate-page name) (not-found-pages theme pages))))))
 
 (defn- divide-page [page-map [destination page]]
