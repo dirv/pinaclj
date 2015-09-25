@@ -24,7 +24,8 @@
   (pb/create-page fs (files/resolve-path fs path-str)))
 
 (def multi-page
-  {:pages ["a" "b"]})
+  {:pages ["a" "b"]
+   :has-page-list? true})
 
 (def test-pages
   [page-one page-two])

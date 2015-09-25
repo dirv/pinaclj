@@ -20,7 +20,8 @@
   {:templates {:post.html {:template-fn (fn [pages] (title-writing-template pages))
                            :modified-at 0}
                :index.html {:template-fn (fn [pages] (child-writing-template pages))
-                            :modified-at 0}}})
+                            :modified-at 0
+                            :has-page-list? true}}})
 
 (def base-page
   {:modified 2
@@ -61,10 +62,8 @@
 
   (it "does not write page"
     (should-not-contain "old.html" (files-output [old-page])))
-  (it "writes index"
-    (should-contain "index.html" (files-output [old-page]))
-    (should-contain "old-page" (in "index.html"
-                                   (output-with-theme [old-page] test-theme)))))
+  (it "does not write index"
+    (should-not-contain "index.html" (files-output [old-page]))))
 
 (describe "draft page"
   (def draft-page {:destination "draft.html" :title "draft"})
@@ -140,11 +139,11 @@
                  :index.html {:template-fn (fn [pages] (this-page-template pages))}}})
 
   (def index-page
-    (transforms/apply-all (assoc base-page
-                                 :title "test-title"
-                                 :generated true
-                                 :path "index.md"
-                                 :url "index.html")))
+    (assoc base-page
+           :src-modified 0
+           :title "test-title"
+           :path "index.md"
+           :destination "index.html"))
 
   (it "matches source file with theme file"
     (should= "test-title" (in "index.html" (output-with-theme [index-page] match-theme)))))

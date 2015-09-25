@@ -22,10 +22,6 @@
 (describe "clone-pages"
   (it "does not order provided page list"
     (should= pages (clone-pages pages all-pages-opts)))
-  (it "lists all pages if no page specification is given"
-    (should= 3 (count (:pages (clone-pages {} all-pages-opts)))))
-  (it "orders all pages if no page specification is given"
-    (should= [:url3 :url2 :url1] (:pages (clone-pages {} all-pages-opts))))
   (it "lists only subset if page specificiations is given"
     (should= some-pages (clone-pages some-pages all-pages-opts)))
   (it "does not include generated pages"

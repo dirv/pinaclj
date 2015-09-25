@@ -7,8 +7,7 @@
   (some? (:published-at page)))
 
 (defn- modified-since-last-publish? [page opts dest-last-modified]
-  (or (:generated page)
-    (> (page/retrieve-value page :modified opts) dest-last-modified)))
+  (> (page/retrieve-value page :modified opts) dest-last-modified))
 
 (defn- template-modified [page dest-last-modified]
   (> (:modified-at (:template page)) dest-last-modified))
@@ -57,8 +56,19 @@
   (map #(render-page % page-map)
        (modified-pages (divide-pages page-map) {:all-pages page-map} dest-last-modified)))
 
+(defn- add-has-page-list [theme page-map page]
+  (if (and (not (contains? page :pages))
+           (:has-page-list? (theme/determine-template theme page)))
+    (assoc page :pages (page/children page page-map))
+    page))
+
+(defn- add-template-properties [page-map theme]
+  (zipmap (keys page-map)
+          (map (partial add-has-page-list theme page-map) (vals page-map))))
+
 (defn build [input-pages theme dest-last-modified]
   (-> input-pages
       (published-only)
       (generate-page-map theme)
+      (add-template-properties theme)
       (render-all theme dest-last-modified)))

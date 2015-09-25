@@ -55,7 +55,7 @@
 (defn divide [page {max-pages :max-pages} all-pages]
   (if (nil? max-pages)
     [page]
-    (let [child-pages (page/children page all-pages)
+    (let [child-pages (:pages page)
           starts (range 0 (count child-pages) max-pages)
           url-fn (build-url-fn page (count starts))]
       (map #(duplicate-page page % max-pages child-pages url-fn) starts))))

@@ -18,13 +18,15 @@
    :urlE page-e})
 
 (def list-page
-  (generate-page "index.html"))
+  (assoc (generate-page "index.html")
+         :pages [:urlA :urlB :urlC :urlD :urlE]))
 
 (def tag-page
   (first (build-tag-pages [page-a page-b page-c])))
 
 (def path-only-page
-  (create-page nil "path.md"))
+  (assoc (create-page nil "path.md")
+         :pages [:urlA :urlB :urlC :urlD :urlE]))
 
 (def template-with-no-max
   nil)

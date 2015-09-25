@@ -78,9 +78,8 @@
   (map key all-pages))
 
 (defn children [page-set all-pages]
-  (or (:pages page-set)
-      (-> page-set
-          (except-page all-pages)
-          (without-generated)
-          (chronological-sort)
-          (all-page-urls))))
+  (-> page-set
+      (except-page all-pages)
+      (without-generated)
+      (chronological-sort)
+      (all-page-urls)))

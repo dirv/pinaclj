@@ -11,9 +11,9 @@
 
 (defn find-modified [page opts]
   (if (contains? page :pages)
-    (apply max (map #(page/retrieve-value % :modified opts)
-                    (get-pages page opts)))
-    (apply max (map #(page/retrieve-value % :src-modified {})
-                    (page-lineage page (:all-pages opts))))))
+    (apply max 0 (map #(page/retrieve-value % :modified opts)
+                      (get-pages page opts)))
+    (apply max 0 (map #(page/retrieve-value % :src-modified {})
+                      (page-lineage page (:all-pages opts))))))
 
 (def transform [:modified find-modified])

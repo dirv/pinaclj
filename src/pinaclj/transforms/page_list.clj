@@ -6,7 +6,7 @@
     (Integer/parseInt max-pages)))
 
 (defn clone-pages [page-set opts]
-  (let [children (page/children page-set (:all-pages opts))
+  (let [children (:pages page-set)
         max-pages (max-pages opts)]
     (if (nil? max-pages)
      {:pages children}
