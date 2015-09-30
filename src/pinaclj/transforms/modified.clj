@@ -10,10 +10,9 @@
   (map (partial get all-pages) pages))
 
 (defn find-modified [page opts]
-  (if (contains? page :pages)
-    (apply max 0 (map #(page/retrieve-value % :modified opts)
-                      (get-pages page opts)))
-    (apply max 0 (map #(page/retrieve-value % :src-modified {})
-                      (page-lineage page (:all-pages opts))))))
+  (apply max 0 (concat (map #(page/retrieve-value % :modified opts)
+                            (get-pages page opts))
+                       (map #(page/retrieve-value % :src-modified {})
+                            (page-lineage page (:all-pages opts))))))
 
 (def transform [:modified find-modified])
