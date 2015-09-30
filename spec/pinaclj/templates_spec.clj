@@ -135,3 +135,23 @@
 (describe "page with multiple occurrences of func"
   (it "lists selector only once"
     (should= ["func"] (find-all-functions (to-snippet multiple-selector-template)))))
+
+(def set-only-attr-template
+  "<p data-id=a data-set=attrs />")
+
+(def set-only-content-template
+  "<p data-id=a data-set=content />")
+
+(def attr-page
+  {:a {:attrs {:one "a"}
+       :content "testing" }})
+
+(describe "template with specific include"
+  (it "sets attrs when attrs specified"
+    (let [result (do-replace set-only-attr-template attribute-page {})]
+      (should-contain "one=\"a\"" result)
+      (should-not-contain ">testing</p>" result)))
+  (it "sets content when content specified"
+    (let [result (do-replace set-only-content-template attribute-page {})]
+      (should-not-contain "one=\"a\"" result)
+      (should-contain ">testing</p>" result))))

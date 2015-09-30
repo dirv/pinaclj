@@ -65,14 +65,23 @@
 (defn- build-opts [node all-pages]
   (merge {:all-pages all-pages} (renamed-data-attrs node)))
 
+(defn- specific-attribute? [[k v] {only-key :set}]
+  (or (= nil only-key) (= (keyword only-key) k)))
+
+(defn- transform-map [node kv all-pages selector-transforms opts]
+  (if (specific-attribute? kv opts)
+    (transform node kv all-pages selector-transforms)
+    node))
+
 (defn- build-replacement-transform [field all-pages]
   (fn [page selector-transforms]
     (fn [node]
-      (if-let [value (page/retrieve-value page field (build-opts node all-pages))]
-        (if (map? value)
-          (reduce #(transform %1 %2 all-pages selector-transforms) node value)
-          (transform-content node value))
-        node))))
+      (let [opts (build-opts node all-pages)]
+        (if-let [value (page/retrieve-value page field opts)]
+          (if (map? value)
+            (reduce #(transform-map %1 %2 all-pages selector-transforms opts) node value)
+            (transform-content node value))
+          node)))))
 
 (defn find-all-functions [template]
   (distinct (map #(get-in % [:attrs :data-id]) (html/select template [(html/attr? :data-id)]))))
