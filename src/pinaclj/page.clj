@@ -62,6 +62,9 @@
   (files/create (nio/resolve-path fs (:path page))
                 (str (to-headers page) "---\n"  (:raw-content page) "\n")))
 
+(defn to-page [page-url opts]
+  (get (:all-pages opts) page-url))
+
 (defn to-page-urls [pages]
   (map #(retrieve-value % :destination {}) pages))
 

@@ -10,6 +10,7 @@
 
 (defn choose-prev [page opts]
   (when-let [prev-url (prev-url page opts)]
-    {:attrs {:href prev-url}}))
+    {:attrs {:href prev-url}
+     :content (:title (page/to-page prev-url opts))}))
 
 (def transform [:prev choose-prev])

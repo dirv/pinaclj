@@ -2,8 +2,8 @@
   (:require [speclj.core :refer :all]
             [pinaclj.transforms.prev :refer :all]))
 
-(def a {:destination "a" :parent "parent"})
-(def b {:destination "b" :parent "parent"})
+(def a {:destination "a" :parent "parent" :title "title A"})
+(def b {:destination "b" :parent "parent" :title "title B"})
 
 (def parent-page
   {:destination "parent"
@@ -18,5 +18,7 @@
 (describe "choose-prev"
   (it "is nil when first page"
     (should= nil (choose-prev a page-map)))
-  (it "chooses previous page"
-    (should= {:attrs {:href "a"}} (choose-prev b page-map))))
+  (it "sets href of prev page"
+    (should= "a" (:href (:attrs (choose-prev b page-map)))))
+  (it "sets content to title of prev page"
+    (should= "title A" (:content (choose-prev b page-map)))))

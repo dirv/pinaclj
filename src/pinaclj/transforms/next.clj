@@ -10,6 +10,7 @@
 
 (defn choose-next [page opts]
   (when-let [next-url (next-url page opts)]
-    {:attrs {:href next-url}}))
+    {:attrs {:href next-url}
+     :content (:title (page/to-page next-url opts))}))
 
 (def transform [:next choose-next])
