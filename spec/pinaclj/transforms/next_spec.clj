@@ -19,4 +19,4 @@
   (it "is nil when last page"
     (should= nil (choose-next b page-map)))
   (it "chooses next page"
-    (should= b (choose-next a page-map))))
+    (should= {:attrs {:href "b"}} (choose-next a page-map))))
