@@ -3,12 +3,13 @@
             [pinaclj.transforms.prev :refer :all]))
 
 (def a {:destination "a" :parent "parent" :title "title A"})
-(def b {:destination "b" :parent "parent" :title "title B"})
-(def c {:destination "c" :parent "parent" :title "title B" :prev "a"})
+(def b {:destination "b" :parent "parent" })
+(def c {:destination "c" :parent "parent" :prev "a"})
+(def d {:destination "d" :parent "parent" :prev nil})
 
 (def parent-page
   {:destination "parent"
-   :pages ["a" "b" "c"]})
+   :pages ["a" "b" "c" "d"]})
 
 (defn- build-page-map [pages]
   (apply merge (map #(hash-map (:destination %) %) pages)))
@@ -24,4 +25,6 @@
   (it "sets content to title of prev page"
     (should= "title A" (:content (choose-prev b page-map))))
   (it "uses :prev key value if set"
-    (should= "a" (:href (:attrs (choose-prev c page-map))))))
+    (should= "a" (:href (:attrs (choose-prev c page-map)))))
+  (it "uses :prev value of nil if explicitly set"
+    (should= nil (choose-prev d page-map))))

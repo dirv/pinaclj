@@ -5,9 +5,10 @@
   (second (drop-while #(not= % item) items)))
 
 (defn- next-url [page opts]
-  (or (:next page)
-      (next-in-list (page/retrieve-value page :pages opts)
-                    (page/retrieve-value page :destination opts))))
+  (if (contains? page :next)
+    (:next page)
+    (next-in-list (page/retrieve-value page :pages opts)
+                  (page/retrieve-value page :destination opts))))
 
 (defn choose-next [page opts]
   (when-let [next-url (next-url page opts)]
