@@ -6,7 +6,7 @@
 
 (defn- next-url [page opts]
   (or (:next page)
-      (next-in-list (page/retrieve-value page :page-list opts)
+      (next-in-list (page/retrieve-value page :pages opts)
                     (page/retrieve-value page :destination opts))))
 
 (defn choose-next [page opts]

@@ -6,7 +6,7 @@
 
 (defn prev-url [page opts]
   (or (:prev page)
-      (prev-in-list (page/retrieve-value page :page-list opts)
+      (prev-in-list (page/retrieve-value page :pages opts)
                     (page/retrieve-value page :destination opts))))
 
 (defn choose-prev [page opts]

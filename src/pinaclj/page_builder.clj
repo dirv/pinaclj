@@ -49,8 +49,8 @@
            :raw-content ""
            :url (url-fn page-num)
            :pages (take num-pages (drop start child-pages))
-           :previous (url-fn (dec page-num))
-           :next (url-fn (inc page-num)))))
+           :next (url-fn (dec page-num))
+           :prev (url-fn (inc page-num)))))
 
 (defn divide [page {max-pages :max-pages} all-pages]
   (if (nil? max-pages)

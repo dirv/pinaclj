@@ -8,7 +8,7 @@
 
 (def parent-page
   {:destination "parent"
-   :page-list ["a" "b" "c"]})
+   :pages ["a" "b" "c"]})
 
 (defn- build-page-map [pages]
   (apply merge (map #(hash-map (:destination %) %) pages)))

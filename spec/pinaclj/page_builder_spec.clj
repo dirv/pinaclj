@@ -54,10 +54,10 @@
     (should= [0 2 4] (map :start (divide-pages))))
   (it "modifies all but first urls"
     (should= ["index.html" "index-2.html" "index-3.html"] (map :url (divide-pages))))
-  (it "does not add previous link to first page"
-    (should= [nil "index.html" "index-2.html"] (map :previous (divide-pages))))
-  (it "does not add next link to last page"
-    (should= ["index-2.html" "index-3.html" nil] (map :next (divide-pages))))
+  (it "does not add next link to first page"
+    (should= [nil "index.html" "index-2.html"] (map :next (divide-pages))))
+  (it "does not add prev link to last page"
+    (should= ["index-2.html" "index-3.html" nil] (map :prev (divide-pages))))
   (it "sets url using correct definition"
     (should= ["tag/test/index.html" "tag/test/index-2.html"]
       (map :url (divide tag-page template-with-low-max all-pages))))
