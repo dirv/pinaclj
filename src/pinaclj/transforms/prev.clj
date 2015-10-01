@@ -5,8 +5,9 @@
   (last (take-while #(not= % item) items)))
 
 (defn prev-url [page opts]
-  (prev-in-list (page/retrieve-value page :page-list opts)
-                (page/retrieve-value page :destination opts)))
+  (or (:prev page)
+      (prev-in-list (page/retrieve-value page :page-list opts)
+                    (page/retrieve-value page :destination opts))))
 
 (defn choose-prev [page opts]
   (when-let [prev-url (prev-url page opts)]

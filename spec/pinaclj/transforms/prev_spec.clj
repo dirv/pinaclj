@@ -4,10 +4,11 @@
 
 (def a {:destination "a" :parent "parent" :title "title A"})
 (def b {:destination "b" :parent "parent" :title "title B"})
+(def c {:destination "c" :parent "parent" :title "title B" :prev "a"})
 
 (def parent-page
   {:destination "parent"
-   :page-list ["a" "b"]})
+   :page-list ["a" "b" "c"]})
 
 (defn- build-page-map [pages]
   (apply merge (map #(hash-map (:destination %) %) pages)))
@@ -21,4 +22,6 @@
   (it "sets href of prev page"
     (should= "a" (:href (:attrs (choose-prev b page-map)))))
   (it "sets content to title of prev page"
-    (should= "title A" (:content (choose-prev b page-map)))))
+    (should= "title A" (:content (choose-prev b page-map))))
+  (it "uses :prev key value if set"
+    (should= "a" (:href (:attrs (choose-prev c page-map))))))
