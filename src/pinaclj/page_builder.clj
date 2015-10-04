@@ -17,9 +17,12 @@
          :raw-content ""
          :published-at (dt/now)))
 
+(defn- chronological-sort [pages]
+  (sort-by #(:published-at %) pages))
+
 (defn- build-group-page [[group pages] url-func]
   (assoc (generate-page (url-func group))
-         :pages (page/to-page-urls pages)
+         :pages (page/to-page-urls (chronological-sort pages))
          :title (name group)))
 
 (defn- build-group-pages [pages url-func]
