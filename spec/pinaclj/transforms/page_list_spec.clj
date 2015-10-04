@@ -38,6 +38,8 @@
 (def ordered-opts {:all-pages (build-page-map ordered-pages)
                    :order-by "order"})
 
+(def reverse-ordered-opts (assoc ordered-opts :reverse "true"))
+
 (def ordered-parent {:pages (keys (:all-pages ordered-opts))})
 
 (describe "clone-pages"
@@ -55,6 +57,10 @@
 
   (describe "with :order-by opt"
     (it "orders according to the specified attribute"
-      (should= ["b" "c" "a"] (:pages (clone-pages ordered-parent ordered-opts))))))
+      (should= ["b" "c" "a"]
+        (:pages (clone-pages ordered-parent ordered-opts))))
+    (it "orders in reverse when reverse specified"
+      (should= ["a" "c" "b"]
+        (:pages (clone-pages ordered-parent reverse-ordered-opts))))))
 
 

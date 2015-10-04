@@ -19,14 +19,17 @@
     (take max-pages pages)
     pages))
 
-(defn- sort-pages [page-urls order-key all-pages]
+(defn- sort-pages [page-urls order-key all-pages reverse?]
   (page/to-page-urls
-    (sort-by order-key (map #(get all-pages %) page-urls))))
+    (let [ordered (sort-by order-key (map #(get all-pages %) page-urls))]
+      (if reverse?
+        (reverse ordered)
+        ordered))))
 
-(defn- apply-order [pages {order-by :order-by all-pages :all-pages}]
+(defn- apply-order [pages {order-by :order-by all-pages :all-pages reverse? :reverse}]
   (if (nil? order-by)
     pages
-    (sort-pages pages (keyword order-by) all-pages)))
+    (sort-pages pages (keyword order-by) all-pages reverse?)))
 
 (defn- find-pages [page-set opts]
   (-> page-set
