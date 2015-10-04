@@ -19,10 +19,24 @@
 (def generated-opts
   {:all-pages {:url1 {:published-at 4 :title "gen" :generated true}}})
 
+(def category-pages
+  {"a" {:category "cat" :destination "a"}
+   "b" {:category "cat" :destination "b"}
+   "c" {:destination "c"}})
+
+(def category-opts
+  {:all-pages category-pages
+   :category "cat"})
+
+(def index-page
+  {:pages ["a" "b" "c"]})
+
 (describe "clone-pages"
   (it "does not order provided page list"
     (should= pages (clone-pages pages all-pages-opts)))
   (it "lists only subset if page specificiations is given"
     (should= some-pages (clone-pages some-pages all-pages-opts)))
   (it "does not include generated pages"
-    (should= 0 (count (:pages (clone-pages {} generated-opts))))))
+    (should= 0 (count (:pages (clone-pages {} generated-opts)))))
+  (it "filters all-pages when category opt is included"
+    (should= ["a" "b"] (:pages (clone-pages index-page category-opts)))))

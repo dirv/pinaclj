@@ -80,9 +80,20 @@
 (defn- all-page-urls [all-pages]
   (map key all-pages))
 
+(defn- matches? [k v page]
+  (= v (retrieve-value page k {})))
+
+(defn- filter-to-category [pages parent]
+  (let [category (keyword (retrieve-value parent :category {}))
+        title (retrieve-value parent :title {})]
+    (if (= :uncategorized category)
+      pages
+      (filter #(matches? category title (val %)) pages))))
+
 (defn children [page-set all-pages]
   (-> page-set
       (except-page all-pages)
       (without-generated)
       (chronological-sort)
+      (filter-to-category page-set)
       (all-page-urls)))
