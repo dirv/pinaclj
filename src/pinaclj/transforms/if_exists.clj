@@ -5,7 +5,7 @@
   (or (= nil v) (= "" v)))
 
 (defn if-exists [page opts]
-  (if (is-null-or-empty (page/retrieve-value page (keyword (:key opts)) {}))
+  (if (is-null-or-empty (page/retrieve-value page (keyword (:key opts)) opts))
     {:delete nil}
     {}))
 
