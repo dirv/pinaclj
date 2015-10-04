@@ -14,12 +14,25 @@
     (filter-all opts)
     (:pages page-set)))
 
+(defn- apply-max-pages [pages opts]
+  (if-let [max-pages (max-pages opts)]
+    (take max-pages pages)
+    pages))
+
+(defn- sort-pages [page-urls order-key all-pages]
+  (page/to-page-urls
+    (sort-by order-key (map #(get all-pages %) page-urls))))
+
+(defn- apply-order [pages {order-by :order-by all-pages :all-pages}]
+  (if (nil? order-by)
+    pages
+    (sort-pages pages (keyword order-by) all-pages)))
+
 (defn- find-pages [page-set opts]
-  (let [pages (filter-pages page-set opts)
-        max-pages (max-pages opts)]
-    (if (nil? max-pages)
-      pages
-      (take max-pages pages))))
+  (-> page-set
+      (filter-pages opts)
+      (apply-order opts)
+      (apply-max-pages opts)))
 
 (defn clone-pages [page-set opts]
   {:pages (find-pages page-set opts)})

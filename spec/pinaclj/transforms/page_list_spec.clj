@@ -2,41 +2,59 @@
   (require [speclj.core :refer :all]
            [pinaclj.transforms.page-list :refer :all]))
 
+(defn- build-page-map [pages]
+  (apply merge (map #(hash-map (:destination %) %) pages)))
+
 (def all-pages
-  {:url1 {:published-at 1 :title "c"}
-   :url2 {:published-at 2 :title "b"}
-   :url3 {:published-at 3 :title "a"}})
+  [{:published-at 1 :title "c" :destination "url1"}
+   {:published-at 2 :title "b" :destination "url2"}
+   {:published-at 3 :title "a" :destination "url3"}])
 
-(def all-pages-opts
-  {:all-pages all-pages})
+(def all-pages-opts {:all-pages (build-page-map all-pages)})
 
-(def pages
-  {:pages [:url1 :url2 :url3]})
+(def pages {:pages ["url1" "url2" "url3"]})
 
-(def some-pages
-  {:pages [:url2 :url3]})
+(def some-pages {:pages ["url2" "url3"]})
 
 (def generated-opts
-  {:all-pages {:url1 {:published-at 4 :title "gen" :generated true}}})
+  {:all-pages {"url1" {:published-at 4 :title "gen" :generated true}}})
 
 (def category-pages
-  {"a" {:category "cat" :destination "a"}
-   "b" {:category "cat" :destination "b"}
-   "c" {:destination "c"}})
+  [{:category "cat" :destination "a"}
+   {:category "cat" :destination "b"}
+   {:destination "c"}])
 
 (def category-opts
-  {:all-pages category-pages
+  {:all-pages (build-page-map category-pages)
    :category "cat"})
 
-(def index-page
-  {:pages ["a" "b" "c"]})
+(def category-parent {:pages (keys (:all-pages category-opts))})
+
+(def ordered-pages
+  [{:destination "a" :order 3}
+   {:destination "b" :order 1}
+   {:destination "c" :order 2}])
+
+(def ordered-opts {:all-pages (build-page-map ordered-pages)
+                   :order-by "order"})
+
+(def ordered-parent {:pages (keys (:all-pages ordered-opts))})
 
 (describe "clone-pages"
-  (it "does not order provided page list"
-    (should= pages (clone-pages pages all-pages-opts)))
-  (it "lists only subset if page specificiations is given"
-    (should= some-pages (clone-pages some-pages all-pages-opts)))
-  (it "does not include generated pages"
-    (should= 0 (count (:pages (clone-pages {} generated-opts)))))
-  (it "filters all-pages when category opt is included"
-    (should= ["a" "b"] (:pages (clone-pages index-page category-opts)))))
+  (describe "with :pages set"
+    (it "does not order provided page list"
+      (should= pages (clone-pages pages all-pages-opts)))
+    (it "lists only subset if page specificiations is given"
+      (should= some-pages (clone-pages some-pages all-pages-opts)))
+    (it "does not include generated pages"
+      (should= 0 (count (:pages (clone-pages {} generated-opts))))))
+
+  (describe "with :category opt"
+    (it "filters all-pages when category opt is included"
+      (should= ["a" "b"] (:pages (clone-pages category-parent category-opts)))))
+
+  (describe "with :order-by opt"
+    (it "orders according to the specified attribute"
+      (should= ["b" "c" "a"] (:pages (clone-pages ordered-parent ordered-opts))))))
+
+
