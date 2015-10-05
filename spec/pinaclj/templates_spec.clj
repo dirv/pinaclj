@@ -123,7 +123,7 @@
     (should= true (:owns-child-pages? (build-page-list-opts (html/html-snippet page-list-opts)))))
 
   (it "does not set :owns-child-pages? when :category is set"
-    (should= nil (:owns-child-pages? (build-page-list-opts (html/html-snippet page-list-opts-with-category))))))
+    (should= false (:owns-child-pages? (build-page-list-opts (html/html-snippet page-list-opts-with-category))))))
 
 (describe "build-template"
   (def test-split-page

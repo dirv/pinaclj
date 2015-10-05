@@ -109,9 +109,7 @@
     page))
 
 (defn- add-page-list [page]
-  (if (contains? page :category)
-    page
-    (assoc page :owns-child-pages? true)))
+  (assoc page :owns-child-pages? (not (contains? page :category))))
 
 (defn build-page-list-opts [page]
   (when-first [node (html/select page [(html/attr= :data-id "page-list")])]
