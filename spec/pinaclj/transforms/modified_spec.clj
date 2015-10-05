@@ -26,7 +26,7 @@
 (def multi-page
   {:pages ["a" "b"]
    :src-modified 0
-   :has-page-list? true})
+   :owns-child-pages? true})
 
 (def test-pages
   [page-one page-two])

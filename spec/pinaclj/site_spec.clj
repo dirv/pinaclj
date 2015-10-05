@@ -21,7 +21,7 @@
                            :modified-at 0}
                :index.html {:template-fn (fn [pages] (child-writing-template pages))
                             :modified-at 0
-                            :has-page-list? true}}})
+                            :owns-child-pages? true}}})
 
 (def base-page
   {:modified 2

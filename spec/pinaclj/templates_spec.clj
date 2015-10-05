@@ -119,11 +119,11 @@
   (it "extracts max pages from page list"
     (should= 3 (:max-pages (build-page-list-opts (html/html-snippet page-list-opts)))))
 
-  (it "sets :has-page-list"
-    (should= true (:has-page-list? (build-page-list-opts (html/html-snippet page-list-opts)))))
+  (it "sets :owns-child-pages"
+    (should= true (:owns-child-pages? (build-page-list-opts (html/html-snippet page-list-opts)))))
 
-  (it "does not set :has-page-list? when :category is set"
-    (should= nil (:has-page-list? (build-page-list-opts (html/html-snippet page-list-opts-with-category))))))
+  (it "does not set :owns-child-pages? when :category is set"
+    (should= nil (:owns-child-pages? (build-page-list-opts (html/html-snippet page-list-opts-with-category))))))
 
 (describe "build-template"
   (def test-split-page

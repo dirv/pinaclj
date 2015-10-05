@@ -56,15 +56,15 @@
   (map #(render-page % page-map)
        (modified-pages (divide-pages page-map) {:all-pages page-map} dest-last-modified)))
 
-(defn- add-has-page-list [theme page-map page]
+(defn- add-owns-child-pages [theme page-map page]
   (if (and (not (contains? page :pages))
-           (:has-page-list? (theme/determine-template theme page)))
+           (:owns-child-pages? (theme/determine-template theme page)))
     (assoc page :pages (page/children page page-map))
     page))
 
 (defn- add-template-properties [page-map theme]
   (zipmap (keys page-map)
-          (map (partial add-has-page-list theme page-map) (vals page-map))))
+          (map (partial add-owns-child-pages theme page-map) (vals page-map))))
 
 (defn build [input-pages theme dest-last-modified]
   (-> input-pages
