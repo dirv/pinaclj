@@ -21,7 +21,8 @@
 
 (defn- sort-pages [page-urls order-key all-pages reverse?]
   (page/to-page-urls
-    (let [ordered (sort-by order-key (map #(get all-pages %) page-urls))]
+    (let [pages (map #(get all-pages %) page-urls)
+          ordered (sort-by #(page/retrieve-value % order-key {}) pages)]
       (if reverse?
         (reverse ordered)
         ordered))))

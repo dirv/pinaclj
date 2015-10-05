@@ -110,11 +110,20 @@
     (should-not-contain "bye" (do-replace delete-page-template delete-page {}))))
 
 (describe "build-page-list-opts"
-  (def page-with-opts
+  (def page-list-opts
     "<ol data-id=page-list data-max-pages=3 />")
 
+  (def page-list-opts-with-category
+    "<ol data-id=page-list data-category=test />")
+
   (it "extracts max pages from page list"
-    (should= 3 (:max-pages (build-page-list-opts (html/html-snippet page-with-opts))))))
+    (should= 3 (:max-pages (build-page-list-opts (html/html-snippet page-list-opts)))))
+
+  (it "sets :has-page-list"
+    (should= true (:has-page-list? (build-page-list-opts (html/html-snippet page-list-opts)))))
+
+  (it "does not set :has-page-list? when :category is set"
+    (should= nil (:has-page-list? (build-page-list-opts (html/html-snippet page-list-opts-with-category))))))
 
 (describe "build-template"
   (def test-split-page
