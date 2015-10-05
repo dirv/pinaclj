@@ -5,6 +5,6 @@
 (def no-category {:title "none"})
 
 (describe "convert-category"
-  (it "creates uncategorized"
-    (should= uncategorized (convert-category [ no-category ] {}))))
+  (it "creates default category"
+    (should= default-category (convert-category [ no-category ] {}))))
 

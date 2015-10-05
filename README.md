@@ -68,9 +68,9 @@ Right now you'll need to run from source.
         Hello, world!
 
  4. Change to the `pinaclj` directory and run the following command.
- 
+
         lein publish <posts directory>\first.md
-    
+
     Take a look at the contents of the file. You'll see that a `published-at` header has been written. This is the cue to Pinaclj that the post is ready for publication. Without this header, Pinaclj will not generate your page.
 
  5. Run the following command.
@@ -81,7 +81,7 @@ Right now you'll need to run from source.
 
         index.html
         first.html
-        category/uncategorized/index.html
+        category/post/index.html
 
  7. Explore the content of the files and compare to how it matches up with the theme located in `sample_themes/simple`.
 
@@ -104,7 +104,7 @@ Posts are written in Markdown. Each post begins with a header section. The follo
  * `published-at` (optional; but the presence of this field determines if the page is published or not. Example: `2015-04-05T12:00:00.000Z`)
  * `url` (optional; if not provided the filename will be used. See below)
  * `tags` (optional; comma-separated)
- * `category` (optional; default is 'uncategorized')
+ * `category` (optional; default is 'post')
 
 You can add any other headers you wish. Headers can be accessed from within your theme's template files.
 

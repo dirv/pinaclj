@@ -25,7 +25,7 @@
 
 (def base-page
   {:modified 2
-   :category :uncategorized
+   :category :post
    :path "/test.md"
    :published-at (dt/make 2015 1 1 1 1 1)
    :title "test"
@@ -86,7 +86,7 @@
   (def category-page (assoc base-page
                             :category :a))
 
-  (def uncategorized-index-page (assoc base-page
+  (def post-index-page (assoc base-page
                                        :category nil
                                        :path "index.md"
                                        :title "uncat-index"))
@@ -99,10 +99,10 @@
   (it "creates category pages"
     (should-contain "category/a/index.html" (files-output [category-page])))
 
-  (it "does not include index page in uncategorised list"
+  (it "does not include index page in post list"
     (should-not-contain "uncat-index"
-      (in "category/uncategorized/index.html"
-          (output-with-theme [uncategorized-index-page] test-theme))))
+      (in "category/post/index.html"
+          (output-with-theme [post-index-page] test-theme))))
 
   (it "includes index page if it has a category"
     (should-contain "cat-index"

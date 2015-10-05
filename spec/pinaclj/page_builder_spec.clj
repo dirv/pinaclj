@@ -74,14 +74,14 @@
     (should= "index.html" (:parent (first (build-tag-pages tag-pages))))))
 
 (def cat-page-a {:category :a :title "a" :published-at 2 :destination "a"})
-(def cat-page-b {:category :uncategorized :title "b" :destination "b"})
+(def cat-page-b {:category :post :title "b" :destination "b"})
 (def cat-page-c {:category :a :title "c" :published-at 1 :destination "c"})
 (def cat-pages [cat-page-a cat-page-b cat-page-c])
 
 (describe "build-category-pages"
   (it "builds all pages"
     (should= 2 (count (build-category-pages cat-pages)))
-    (should= '("a" "uncategorized") (map :title (build-category-pages cat-pages))))
+    (should= '("a" "post") (map :title (build-category-pages cat-pages))))
   (it "sets parent page as index"
     (should= "index.html" (:parent (first (build-category-pages cat-pages)))))
   (it "orders category pages in chronological order"

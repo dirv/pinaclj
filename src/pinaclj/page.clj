@@ -86,7 +86,7 @@
 (defn- filter-to-category [pages parent]
   (let [category (keyword (retrieve-value parent :category {}))
         title (retrieve-value parent :title {})]
-    (if (= :uncategorized category)
+    (if (= :post category)
       pages
       (filter #(matches? category title (val %)) pages))))
 
