@@ -5,9 +5,12 @@
   (when-not (nil? max-pages)
     (Integer/parseInt max-pages)))
 
+(defn- page-in-category? [category page-kv]
+  (= category (page/retrieve-value (val page-kv) :category {})))
+
 (defn- filter-all [{all-pages :all-pages category :category}]
-  (keys (filter #(= category (page/retrieve-value (val %) :category {}))
-          all-pages)))
+  (keys (filter (partial page-in-category? (keyword category))
+                all-pages)))
 
 (defn- filter-pages [page-set opts]
   (if (contains? opts :category)

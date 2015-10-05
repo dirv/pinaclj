@@ -20,8 +20,8 @@
   {:all-pages {"url1" {:published-at 4 :title "gen" :generated true}}})
 
 (def category-pages
-  [{:category "cat" :destination "a"}
-   {:category "cat" :destination "b"}
+  [{:category :cat :destination "a"}
+   {:category :cat :destination "b"}
    {:destination "c"}])
 
 (def category-opts
