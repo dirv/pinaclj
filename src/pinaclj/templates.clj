@@ -104,15 +104,13 @@
                 (page-replace page (build-selector-transforms template all-pages))))
 
 (defn- convert-max-page-str [page]
-  (if (contains? page :max-pages)
-    (assoc page :max-pages (Integer/parseInt (:max-pages page)))
-    page))
+  (assoc page :max-pages (Integer/parseInt (:max-pages page))))
 
 (defn- add-page-list [page]
-  (assoc page :owns-child-pages? (not (contains? page :category))))
+  (assoc page :requires-split? true))
 
 (defn build-page-list-opts [page]
-  (when-first [node (html/select page [(html/attr= :data-id "page-list")])]
+  (when-first [node (html/select page [[(html/attr= :data-id "page-list") (html/attr? :data-max-pages)]])]
     (convert-max-page-str (add-page-list (renamed-data-attrs node)))))
 
 (defn build-template [page-stream]

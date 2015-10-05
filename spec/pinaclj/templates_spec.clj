@@ -113,17 +113,24 @@
   (def page-list-opts
     "<ol data-id=page-list data-max-pages=3 />")
 
-  (def page-list-opts-with-category
-    "<ol data-id=page-list data-category=test />")
+  (def page-list-opts-without-max-pages
+    "<ol data-id=page-list />")
+
+  (def mixed-page-list-opts
+    "<ol data-id=page-list />
+    <ol data-id=page-list data-max-pages=3 />")
 
   (it "extracts max pages from page list"
     (should= 3 (:max-pages (build-page-list-opts (html/html-snippet page-list-opts)))))
 
-  (it "sets :owns-child-pages"
-    (should= true (:owns-child-pages? (build-page-list-opts (html/html-snippet page-list-opts)))))
+  (it "sets :requires-split?"
+    (should= true (:requires-split? (build-page-list-opts (html/html-snippet page-list-opts)))))
 
-  (it "does not set :owns-child-pages? when :category is set"
-    (should= false (:owns-child-pages? (build-page-list-opts (html/html-snippet page-list-opts-with-category))))))
+  (it "does not set :requires-split? when :max-pages is not set"
+    (should= nil (:requires-split? (build-page-list-opts (html/html-snippet page-list-opts-without-max-pages)))))
+
+  (it "sets :requires-split? when if at least one list has max-pages sets"
+    (should= true (:requires-split? (build-page-list-opts (html/html-snippet mixed-page-list-opts))))))
 
 (describe "build-template"
   (def test-split-page

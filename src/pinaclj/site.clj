@@ -58,7 +58,7 @@
 
 (defn- add-owns-child-pages [theme page-map page]
   (if (and (not (contains? page :pages))
-           (:owns-child-pages? (theme/determine-template theme page)))
+           (:requires-split? (theme/determine-template theme page)))
     (assoc page :pages (page/children page page-map))
     page))
 

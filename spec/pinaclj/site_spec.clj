@@ -21,7 +21,7 @@
                            :modified-at 0}
                :index.html {:template-fn (fn [pages] (child-writing-template pages))
                             :modified-at 0
-                            :owns-child-pages? true}}})
+                            :requires-split? true}}})
 
 (def base-page
   {:modified 2

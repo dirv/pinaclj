@@ -26,7 +26,7 @@
 (def multi-page
   {:pages ["a" "b"]
    :src-modified 0
-   :owns-child-pages? true})
+   :requires-split? true})
 
 (def test-pages
   [page-one page-two])
