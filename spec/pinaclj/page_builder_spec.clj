@@ -28,6 +28,10 @@
   (assoc (create-page nil "path.md")
          :pages [:urlA :urlB :urlC :urlD :urlE]))
 
+(def no-children-page
+  (assoc (generate-page "index.html")
+         :pages []))
+
 (def template-with-no-max
   nil)
 
@@ -63,7 +67,9 @@
       (map :url (divide tag-page template-with-low-max all-pages))))
   (it "can use file path as base url"
     (should= ["path.html" "path-2.html" "path-3.html"]
-      (map :url (divide path-only-page template-with-low-max all-pages)))))
+      (map :url (divide path-only-page template-with-low-max all-pages))))
+  (it "dividing a page with no children returns existing page"
+    (should= [no-children-page] (divide no-children-page template-with-low-max all-pages))))
 
 (describe "build-tag-pages"
   (it "builds"

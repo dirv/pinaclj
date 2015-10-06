@@ -57,7 +57,7 @@
            :prev (url-fn (inc page-num)))))
 
 (defn divide [page {max-pages :max-pages} all-pages]
-  (if (nil? max-pages)
+  (if (or (nil? max-pages) (empty? (:pages page)))
     [page]
     (let [child-pages (:pages page)
           starts (range 0 (count child-pages) max-pages)
