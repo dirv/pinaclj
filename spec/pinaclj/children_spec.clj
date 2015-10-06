@@ -54,6 +54,8 @@
   (describe "with parent category"
     (it "returns contacts with that header set"
       (should== ["a" "c"] (children filter-parent {} (build-opts filter-pages))))
+    (it "does not filter if category is set"
+      (should= ["d"] (children filter-parent {:category "non-default"} (build-opts all-pages))))
     (it "does not filter if category is default-category"
       (should== ["a" "b" "c"] (children default-category-filter {} (build-opts filter-pages)))))
   (describe "with order by"
