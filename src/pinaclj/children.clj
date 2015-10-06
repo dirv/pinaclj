@@ -2,9 +2,6 @@
   (:require [pinaclj.page :as page]
             [pinaclj.transforms.category :as category]))
 
-(defn- except-page [page all-pages]
-  (dissoc all-pages (page/retrieve-value page :destination {})))
-
 (defn- filter-to-category [all-pages category]
   (filter #(= (keyword category) (page/retrieve-value (val %) :category {})) all-pages))
 
@@ -40,8 +37,7 @@
   (map key pages))
 
 (defn children [page list-node-attrs all-pages]
-  (-> page
-      (except-page all-pages)
+  (-> all-pages
       (remove-generated)
       (filter-to-parent-or-category page list-node-attrs)
       (sort-pages (order-key list-node-attrs) (reverse? list-node-attrs))

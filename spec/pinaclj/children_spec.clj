@@ -44,8 +44,6 @@
       (should== ["a" "b" "c" "d"] (children {} {} (build-opts all-pages))))
     (it "returns pages in reverse chronological order"
       (should= ["b" "a" "c" "d"] (children {} {} (build-opts all-pages))))
-    (it "removes parent page from results"
-      (should== ["b" "c" "d"] (children (first all-pages) {} (build-opts all-pages))))
     (it "removes generated pages"
       (should= [] (children {} {} (build-opts [generated-page])))))
   (describe "with category"
