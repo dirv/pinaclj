@@ -12,7 +12,7 @@
 
 (defn- child-writing-template [all-pages]
   (fn [page]
-    (let [children (:pages (page/retrieve-value page :page-list {:all-pages all-pages}))
+    (let [children (:pages page)
           titles (map #(:title (get all-pages %)) children)]
       (apply str titles))))
 
@@ -25,6 +25,7 @@
 
 (def base-page
   {:modified 2
+   :src-modified 2
    :category :post
    :path "/test.md"
    :published-at (dt/make 2015 1 1 1 1 1)
@@ -88,21 +89,21 @@
 
   (def post-index-page (assoc base-page
                                        :category nil
-                                       :path "index.md"
+                                       :destination "index.html"
                                        :title "uncat-index"))
 
   (def categorized-index-page (assoc base-page
-                                     :category :a
-                                     :path "index.md"
+                                     :category "a"
+                                     :destination "index.html"
                                      :title "cat-index"))
 
   (it "creates category pages"
     (should-contain "category/a/index.html" (files-output [category-page])))
 
-  (it "does not include index page in post list"
-    (should-not-contain "uncat-index"
+  (it "does not include index page in default category list"
+    (should-not-contain "cat-index"
       (in "category/post/index.html"
-          (output-with-theme [post-index-page] test-theme))))
+          (output-with-theme [categorized-index-page] test-theme))))
 
   (it "includes index page if it has a category"
     (should-contain "cat-index"
@@ -123,7 +124,8 @@
 
   (it "splits index page"
     (should-contain "index.html" (map first (build-split-index)))
-    (should-contain "index-2.html" (map first (build-split-index))))
+    (should-contain "index-2.html" (map first (build-split-index)))
+    (should-contain "index-3.html" (map first (build-split-index))))
 
   (it "outputs ordered pages in split"
     (should= "54" (in "index.html" (build-split-index)))

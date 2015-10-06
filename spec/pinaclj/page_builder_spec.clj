@@ -71,7 +71,9 @@
     (should== [:urlA :urlB :urlC] (:pages (first (build-tag-pages tag-pages))))
     (should= '("test") (map :title (build-tag-pages tag-pages))))
   (it "sets parent page as index"
-    (should= "index.html" (:parent (first (build-tag-pages tag-pages))))))
+    (should= ["index.html"] (distinct (map :parent (build-tag-pages tag-pages)))))
+  (it "sets the category to tags"
+    (should= ["tags"] (distinct (map :category (build-tag-pages tag-pages))))))
 
 (def cat-page-a {:category :a :title "a" :published-at 2 :destination "a"})
 (def cat-page-b {:category :post :title "b" :destination "b"})
@@ -83,6 +85,8 @@
     (should= 2 (count (build-category-pages cat-pages)))
     (should= '("a" "post") (map :title (build-category-pages cat-pages))))
   (it "sets parent page as index"
-    (should= "index.html" (:parent (first (build-category-pages cat-pages)))))
+    (should= ["index.html"] (distinct (map :parent (build-category-pages cat-pages)))))
   (it "orders category pages in chronological order"
-    (should= ["c" "a"] (:pages (first (build-category-pages cat-pages))))))
+    (should= ["c" "a"] (:pages (first (build-category-pages cat-pages)))))
+  (it "sets the category to category"
+    (should= ["category"] (distinct (map :category (build-category-pages cat-pages))))))

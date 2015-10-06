@@ -129,9 +129,3 @@
 (def author-page-set {"wayne.html" author-page
                       "child1.html" this-author-child-page
                       "child2.html" other-author-child-page})
-
-(describe "children"
-  (it "does not include page-set page"
-    (should= [] (children page-set just-page-set-page)))
-  (it "uses category if set"
-    (should== ["child1.html"] (children author-page author-page-set))))

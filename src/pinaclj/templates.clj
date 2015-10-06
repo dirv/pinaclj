@@ -107,7 +107,10 @@
   (assoc page :max-pages (Integer/parseInt (:max-pages page))))
 
 (defn- add-page-list [page]
-  (assoc page :requires-split? true))
+  (assoc page
+         :requires-split? true
+         :split-list {:max-pages (:max-pages page)
+                      :category (:category page)}))
 
 (defn build-page-list-opts [page]
   (when-first [node (html/select page [[(html/attr= :data-id "page-list") (html/attr? :data-max-pages)]])]

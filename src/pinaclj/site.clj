@@ -1,5 +1,6 @@
 (ns pinaclj.site
   (:require [pinaclj.page :as page]
+            [pinaclj.children :as children]
             [pinaclj.page-builder :as pb]
             [pinaclj.theme :as theme]))
 
@@ -59,7 +60,7 @@
 (defn- add-owns-child-pages [theme page-map page]
   (if (and (not (contains? page :pages))
            (:requires-split? (theme/determine-template theme page)))
-    (assoc page :pages (page/children page page-map))
+    (assoc page :pages (children/children page (theme/determine-template theme page) page-map))
     page))
 
 (defn- add-template-properties [page-map theme]

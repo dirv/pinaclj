@@ -20,19 +20,20 @@
 (defn- chronological-sort [pages]
   (sort-by #(:published-at %) pages))
 
-(defn- build-group-page [[group pages] url-func]
+(defn- build-group-page [[group pages] url-func category]
   (assoc (generate-page (url-func group))
+         :category category
          :pages (page/to-page-urls (chronological-sort pages))
          :title (name group)))
 
-(defn- build-group-pages [pages url-func]
-  (map #(build-group-page % url-func) pages))
+(defn- build-group-pages [pages url-func category]
+  (map #(build-group-page % url-func category) pages))
 
 (defn build-tag-pages [pages]
-  (build-group-pages (group/pages-by-tag pages) page/tag-url))
+  (build-group-pages (group/pages-by-tag pages) page/tag-url "tags"))
 
 (defn build-category-pages [pages]
-  (build-group-pages (group/pages-by-category pages) page/category-url))
+  (build-group-pages (group/pages-by-category pages) page/category-url "category"))
 
 (defn- split-page-url [page]
   (.split (page/retrieve-value page :destination {}) "\\."))

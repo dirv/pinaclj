@@ -67,33 +67,3 @@
 
 (defn to-page-urls [pages]
   (map #(retrieve-value % :destination {}) pages))
-
-(defn- chronological-sort [pages]
-  (reverse (sort-by #(:published-at (val %)) pages)))
-
-(defn- except-page [page all-pages]
-  (dissoc all-pages (retrieve-value page :destination {})))
-
-(def without-generated
-  (partial remove #(:generated (val %))))
-
-(defn- all-page-urls [all-pages]
-  (map key all-pages))
-
-(defn- matches? [k v page]
-  (= v (retrieve-value page k {})))
-
-(defn- filter-to-category [pages parent]
-  (let [category (keyword (retrieve-value parent :category {}))
-        title (retrieve-value parent :title {})]
-    (if (= :post category)
-      pages
-      (filter #(matches? category title (val %)) pages))))
-
-(defn children [page-set all-pages]
-  (-> page-set
-      (except-page all-pages)
-      (without-generated)
-      (chronological-sort)
-      (filter-to-category page-set)
-      (all-page-urls)))
