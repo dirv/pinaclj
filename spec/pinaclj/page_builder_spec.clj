@@ -51,7 +51,6 @@
     (should= 1 (count (divide list-page template-with-high-max all-pages))))
   (it "divides pages with low max-pages"
     (should= 3 (count (divide-pages))))
-
   (it "contains pages in order when dividing pages"
     (should= [[:urlA :urlB] [:urlC :urlD] [:urlE]] (map :pages (divide-pages))))
   (it "sets start page when dividing"
@@ -69,7 +68,11 @@
     (should= ["path.html" "path-2.html" "path-3.html"]
       (map :url (divide path-only-page template-with-low-max all-pages))))
   (it "dividing a page with no children returns existing page"
-    (should= [no-children-page] (divide no-children-page template-with-low-max all-pages))))
+    (should= [no-children-page] (divide no-children-page template-with-low-max all-pages)))
+  (it "sets page sequence number"
+    (should= [1 2 3] (map :page-sequence-number (divide-pages))))
+  (it "sets total pages"
+    (should= [3 3 3] (map :total-pages (divide-pages)))))
 
 (describe "build-tag-pages"
   (it "builds"

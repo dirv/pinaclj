@@ -46,20 +46,23 @@
         (and (> page-num 0) (< page-num page-count))
         (str start "-" (inc page-num) "." ext)))))
 
-(defn- duplicate-page [page start num-pages child-pages url-fn]
-  (let [page-num (/ start num-pages)]
+(defn- duplicate-page [page start num-children child-pages url-fn total-pages]
+  (let [page-num (/ start num-children)]
     (assoc page
            :start start
            :raw-content ""
            :url (url-fn page-num)
-           :pages (take num-pages (drop start child-pages))
+           :pages (take num-children (drop start child-pages))
            :next (url-fn (dec page-num))
-           :prev (url-fn (inc page-num)))))
+           :prev (url-fn (inc page-num))
+           :page-sequence-number (inc page-num)
+           :total-pages total-pages)))
 
 (defn divide [page {max-pages :max-pages} all-pages]
   (if (or (nil? max-pages) (empty? (:pages page)))
     [page]
     (let [child-pages (:pages page)
           starts (range 0 (count child-pages) max-pages)
-          url-fn (build-url-fn page (count starts))]
-      (map #(duplicate-page page % max-pages child-pages url-fn) starts))))
+          total-pages (count starts)
+          url-fn (build-url-fn page total-pages)]
+      (map #(duplicate-page page % max-pages child-pages url-fn total-pages) starts))))
