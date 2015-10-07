@@ -163,3 +163,26 @@
 (describe "updated template file"
   (it "causes page to be rebuilt even when it hasn't changed"
     (should= "old-title" (in "page.html" (output-with-theme [unmodified-page] updated-template-theme)))))
+
+(def file-only-template
+  {:template-fn (fn [pages] (title-writing-template pages))})
+
+(def file-only-theme
+  {:templates {:post.html file-only-template
+               :index.html file-only-template
+               :author.html file-only-template
+               :random.html file-only-template}})
+
+(def file-only-pages
+  [(assoc base-page :category "author" :destination "wayne.html")
+   (assoc base-page :destination "index.html")
+   (assoc base-page :destination "standard.html")])
+
+(describe "template"
+  (it "writes ununsed template files"
+    (let [pages (output-with-theme file-only-pages file-only-theme)]
+      (should-contain "random.html" (map first pages))))
+  (it "does not write used template files"
+    (let [pages (output-with-theme file-only-pages file-only-theme)]
+      (should-not-contain "post.html" (map first pages))
+      (should-not-contain "author.html" (map first pages)))))

@@ -21,23 +21,38 @@
   {(page/retrieve-value page :destination {}) page})
 
 (defn- associate-template [theme page]
-  (assoc page :template (theme/determine-template theme page)))
+  (assoc page :template-key (theme/determine-template theme page)))
+
+(defn- unused-template-pages [theme pages]
+  (map name (clojure.set/difference (theme/root-pages theme)
+                                    (set (map :template-key pages)))))
+
+(defn- not-found-index-page [pages]
+  (if (some #{"index.html"} (map #(page/retrieve-value % :destination {}) pages))
+    []
+    ["index.html"]))
 
 (defn- not-found-pages [theme pages]
-  (clojure.set/difference
-    (theme/root-pages theme)
-    (set (map keyword (page/to-page-urls pages)))))
+  (concat (unused-template-pages theme pages)
+          (not-found-index-page pages)))
 
 (defn- post-pages-only [theme pages]
   (remove #(and (theme/matching-template? theme %)
                 (nil? (:category %))) pages))
 
+(defn- build-all-pages [pages theme]
+  (map (partial associate-template theme)
+       (concat pages
+               (pb/build-tag-pages pages)
+               (pb/build-category-pages (post-pages-only theme pages)))))
+
+(defn- add-unused-template-files [pages theme]
+  (concat pages
+          (map (comp (partial associate-template theme) pb/generate-page)
+               (not-found-pages theme pages))))
+
 (defn- generate-page-map [pages theme]
-  (apply merge (map (comp to-pair (partial associate-template theme))
-                    (concat pages
-                            (pb/build-tag-pages pages)
-                            (pb/build-category-pages (post-pages-only theme pages))
-                            (map (comp pb/generate-page name) (not-found-pages theme pages))))))
+  (apply merge (map to-pair pages)))
 
 (defn- divide-page [page-map [destination page]]
   (pb/divide page (:template page) page-map))
@@ -57,19 +72,25 @@
   (map #(render-page % page-map)
        (modified-pages (divide-pages page-map) {:all-pages page-map} dest-last-modified)))
 
-(defn- add-owns-child-pages [theme page-map page]
+(defn- add-split-pages [theme page-map page]
   (if (and (not (contains? page :pages))
-           (:requires-split? (theme/determine-template theme page)))
-    (assoc page :pages (children/children page (theme/determine-template theme page) page-map))
+           (:requires-split? (:template page)))
+    (assoc page :pages (children/children page (:template page) page-map))
     page))
+
+(defn- add-template [pages theme]
+  (map #(assoc % :template (get-in theme [:templates (:template-key %)])) pages))
 
 (defn- add-template-properties [page-map theme]
   (zipmap (keys page-map)
-          (map (partial add-owns-child-pages theme page-map) (vals page-map))))
+          (map (partial add-split-pages theme page-map) (vals page-map))))
 
 (defn build [input-pages theme dest-last-modified]
   (-> input-pages
       (published-only)
+      (build-all-pages theme)
+      (add-unused-template-files theme)
+      (add-template theme)
       (generate-page-map theme)
       (add-template-properties theme)
       (render-all theme dest-last-modified)))

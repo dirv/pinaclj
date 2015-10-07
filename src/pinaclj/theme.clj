@@ -19,9 +19,7 @@
   (get theme n))
 
 (defn root-pages [theme]
-  (clojure.set/difference
-    (set (keys (:templates theme)))
-    #{(category-template default-category)}))
+  (set (keys (:templates theme))))
 
 (defn- to-template [fs root file-path]
   {(keyword (.toString (nio/relativize root file-path)))
@@ -49,7 +47,7 @@
   (comp f/remove-extension f/trim-url))
 
 (defn- find-template? [{templates :templates} path-str]
-  (get templates (keyword path-str)))
+  (some #{(keyword path-str)} (keys templates)))
 
 (defn- relativize-template [page]
   (subs (.toString (:path page))
@@ -67,4 +65,4 @@
 (defn determine-template [theme page]
   (or (matching-template? theme page)
       (category-template? theme page)
-      (get (:templates theme) (category-template default-category))))
+      (category-template default-category)))
