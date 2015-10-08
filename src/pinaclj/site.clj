@@ -72,10 +72,14 @@
   (map #(render-page % page-map)
        (modified-pages (divide-pages page-map) {:all-pages page-map} dest-last-modified)))
 
+(defn- children-without-this-page [page page-map]
+  (remove #(= % (page/retrieve-value page :destination {}))
+          (children/children page (:template page) page-map)))
+
 (defn- add-split-pages [theme page-map page]
   (if (and (not (contains? page :pages))
            (:requires-split? (:template page)))
-    (assoc page :pages (children/children page (:template page) page-map))
+    (assoc page :pages (children-without-this-page page page-map))
     page))
 
 (defn- add-template [pages theme]

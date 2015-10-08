@@ -6,8 +6,11 @@
     (conj (page-lineage (get all-pages parent) all-pages) page)
     [page]))
 
-(defn- get-pages [{pages :pages} {all-pages :all-pages}]
-  (map (partial get all-pages) pages))
+(defn- remove-this-page [pages page]
+  (remove #(= page %) pages))
+
+(defn- get-pages [{pages :pages :as page} {all-pages :all-pages}]
+  (remove-this-page (map (partial get all-pages) pages) page))
 
 (defn find-modified [page opts]
   (apply max 0 (concat (map #(page/retrieve-value % :modified opts)

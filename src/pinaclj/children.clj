@@ -36,9 +36,9 @@
 (defn- to-urls [pages]
   (map key pages))
 
-(defn children [page list-node-attrs all-pages]
+(defn children [parent list-node-attrs all-pages]
   (-> all-pages
       (remove-generated)
-      (filter-to-parent-or-category page list-node-attrs)
+      (filter-to-parent-or-category parent list-node-attrs)
       (sort-pages (order-key list-node-attrs) (reverse? list-node-attrs))
       (to-urls)))
