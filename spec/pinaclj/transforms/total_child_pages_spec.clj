@@ -24,7 +24,5 @@
   (it "returns 0 if :pages is not set"
     (should= 0 (calculate-total-child-pages no-child-pages {})))
   (it "returns count if :pages is set"
-    (should= 2 (calculate-total-child-pages two-children {:max-pages "5"})))
-  (it "uses :page-list calculation to compute children"
-    (should= 2 (calculate-total-child-pages author-parent-page {:all-pages author-page-map}))))
+    (should= 2 (calculate-total-child-pages two-children {:max-pages "5"}))))
 

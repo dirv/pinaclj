@@ -2,6 +2,6 @@
   (:require [pinaclj.page :as page]))
 
 (defn calculate-total-child-pages [page opts]
-  (count (:pages (page/retrieve-value page :page-list opts))))
+  (count (:pages page)))
 
 (def transform [:total-child-pages calculate-total-child-pages])
