@@ -1,7 +1,7 @@
 (ns pinaclj.link-transform
   (:require [pinaclj.page :as page]))
 
-(defn relative-url? [url]
+(defn- relative-url? [url]
   (not (re-find #"\/\/" url)))
 
 (defn- up-dir-str [page-depth]
@@ -22,16 +22,23 @@
       (convert-attr :src page-depth)
       (convert-attr :href page-depth)))
 
-(defn- convert-urls [node page-depth]
-  (cond
-    (map? node)
-      (assoc node
-             :attrs (convert-attrs (:attrs node) page-depth)
-             :content (convert-urls (:content node) page-depth))
-    (or (seq? node) (vector? node))
-      (doall (map #(convert-urls % page-depth) node))
-    :else
-      node))
+(defmulti convert-urls (fn [node page-depth] (class node)))
+
+(defmethod convert-urls clojure.lang.PersistentStructMap [node page-depth]
+  (assoc node
+         :attrs (convert-attrs (:attrs node) page-depth)
+         :content (convert-urls (:content node) page-depth)))
+
+(defmethod convert-urls clojure.lang.PersistentArrayMap [node page-depth]
+  (assoc node
+         :attrs (convert-attrs (:attrs node) page-depth)
+         :content (convert-urls (:content node) page-depth)))
+
+(defmethod convert-urls clojure.lang.LazySeq [node page-depth]
+  (map #(convert-urls % page-depth) node))
+
+(defmethod convert-urls :default [node page-depth]
+  node)
 
 (defn- page-depth [page]
   (count (filter #(= \/ %) (page/retrieve-value page :destination {}))))

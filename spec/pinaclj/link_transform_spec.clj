@@ -20,7 +20,7 @@
    :url "another/page/here.html"})
 
 (def hierarchy
-  {:content {:content '({:attrs {:src "deep.png"}})}
+  {:content {:content (lazy-seq '({:attrs {:src "deep.png"}}))}
    :url "one/two/three.html"})
 
 (def external-site
