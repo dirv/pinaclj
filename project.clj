@@ -9,7 +9,8 @@
                  [com.google.jimfs/jimfs "1.0"]
                  [com.taoensso/tower "3.0.2"]
                  [endophile "0.1.2"]
-                 [enlive "1.1.6"]]
+                 [enlive "1.1.6"]
+                 [janiczek/markov "0.3.0"]]
   :eval-in-leiningen true
   :plugins [[speclj "3.3.1"]]
   :test-paths ["spec"]
