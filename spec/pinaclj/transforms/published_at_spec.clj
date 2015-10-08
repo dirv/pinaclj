@@ -7,9 +7,9 @@
   {:published-at (dt/from-str "2015-02-05T10:05:00Z")})
 
 (describe "to-readable-str"
-  (it "converts with default date format"
-    (should= "5 February 2015" (to-readable-str page {})))
+  (it "does not convert with no format"
+    (should= (:published-at page) (to-readable-str page {})))
   (it "converts using specified format"
     (should= "February 2015" (to-readable-str page {:format "MMMM yyyy"})))
   (it "does not convert invalid formats"
-    (should= "5 February 2015" (to-readable-str page {:format "blah"}))))
+    (should= (:published-at page) (to-readable-str page {:format "blah"}))))

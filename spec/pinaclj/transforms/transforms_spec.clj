@@ -5,10 +5,13 @@
             [pinaclj.transforms.summary :as summary]
             [pinaclj.page :as page]))
 
+(def dt
+  (date-time/from-str "2014-10-31T10:05:00Z"))
+
 (def page
   (apply-all
     {:raw-content (apply str (repeat 200 "ab "))
-     :published-at (date-time/from-str "2014-10-31T10:05:00Z")}))
+     :published-at dt}))
 
 (defn- published-at []
   (page/retrieve-value page :published-at {}))
@@ -19,7 +22,7 @@
 (describe "data conversions"
 
   (it "adds published-at to page"
-    (should= "31 October 2014" (published-at)))
+    (should= dt (published-at)))
 
   (it "adds summary"
     (should (> summary/max-summary-length (count (summary))))))
