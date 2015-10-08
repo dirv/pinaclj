@@ -1,9 +1,15 @@
 (ns pinaclj.transforms.page-link
-  (:require [pinaclj.page :as page]))
+  (:require [pinaclj.page :as page]
+            [clojure.string :as s]))
+
+(defn- matches-title [expected actual-kv]
+  (when-let [title (:title (val actual-kv))]
+    (= expected (s/lower-case title))))
 
 (defn- find-page [page {all-pages :all-pages page-key :key}]
-  (let [title (page/retrieve-value page (keyword page-key) {})]
-    (val (first (filter #(= title (:title (val %))) all-pages)))))
+  (when-let [title (page/retrieve-value page (keyword page-key) {})]
+    (if-let [match (first (filter (partial matches-title (s/lower-case title)) all-pages))]
+      (val match))))
 
 (defn- determine-page [page opts]
   (if (contains? opts :key)
