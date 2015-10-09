@@ -1,0 +1,4 @@
+published-at: 2015-08-05T09:44:33.000Z
+title: Mindstorm
+---
+<p>There are many subjects that I wish to write about. Most of these things are trivial in nature and do not deserve ten words let alone one hundred. I am thinking that if each of the subjects is given one word each and I manage to fit, say, twenty of them together in a comma-separated list, then they may collectively highlight the “state of the nation” and thus either confirm or deny that I am going bat-shit crazy.</p><p>Here goes nuthin’.</p><p>Long hair, Google, Abdominal exercises, Handstands, Google Docs, Northampton, National Rail, Jack the Cat, Tofu, Room Service, Legionnaire’s, Moving home, Festival clothing, Clients, South London, East London, Manchester, To-do List, Pinaclj, My Game<br></p>

@@ -1,0 +1,5 @@
+published-at: 2015-09-11T22:19:23.000Z
+tags: 100words100days,chicago,travelling,traveling
+title: The unexpected
+---
+<p>Modern life demands that much of our time is planned meticulously. If we’re ambitious, driven, or simple want to be raise our standards of living, we must be effective managers of time. Being without a plan will help us get nowhere, fast.</p><p>Traveling abroad without a plan, however, is undeniably rewarding.</p><p>When I travel to new cities, I like to give myself a time-boxed period of personal anarchy when there are no rules. I can go anywhere, do anything, meet others, explore. Most of all I like getting to know locals and discovering their favourite places and things to do.</p><p>I’ll be heading to Chicago tomorrow for a month. This is a long time to time-box anarchy, so instead I’ll need to find a balance between work, yoga, writing, coding, and play time.</p><p>I’m arriving on a Saturday evening which is undeniably the best time to discover a city. Let’s hope I make it to the office on Monday morning.<br></p>

@@ -1,0 +1,5 @@
+published-at: 2015-09-22T20:05:58.000Z
+tags: 100words100days
+title: Naming
+---
+<p>It’s inappropriate to call your software MongoDB, because mongo is an offensive term for anyone with a learning disability.</p><p>It’s inappropriate to call your software RssBandit, because arse bandit is an offensive term for gay men.</p><p>It’s inappropriate to call your software JIRA, because IRA is the name of a terrorist organization that murdered over 1,000 people.</p><p>The explanation you might give me for why you named your software the way you did does not excuse you from a poor choice of name. The fact of the matter is that some people will be offended when they see or hear the name of your software product. Not just offended, but hurt. The very name of your product has the capacity to be make people feel bad.</p><p>I support software which makes people feel good, and so I refuse to use any software product with an inappropriate name. I encourage you today to make the same choice I have, rejecting anything that you deem to be offensive.</p>

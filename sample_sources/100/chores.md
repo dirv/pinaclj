@@ -1,0 +1,5 @@
+published-at: 2015-09-24T21:14:14.000Z
+tags: 100words100days
+title: Chores
+---
+<p>I remember when, as a kid, my three elder siblings and I would sometimes ask my father to buy the family a dishwasher. “Why would I buy a dishwasher,” he’d reply, “when I have four right here?”</p><p>I remember when, as a kid, I would yell at my father because he gave me extra chores that my elder sisters didn’t have. “They have real jobs,” he’d reply, although I didn’t get paid for my work.</p><p>I remember when, as a kid, my four younger siblings never had to do any household chores. They never had to wash dishes for the entire family of ten, as I did; they never had to sweep the leaves from around the house in autumn, as I did; they never had to mow the lawn in summer, as I did; they didn’t have to vacuum the stairs, clean the bathroom, wash the windows, as I did. The four younger kids didn’t have any of the work that I did.</p><p>And how did they turn out?</p><p>Just about as good as the rest of us.</p>
