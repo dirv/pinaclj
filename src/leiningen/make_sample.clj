@@ -56,7 +56,7 @@
   (to-words (files/remove-extension (.getFileName path))))
 
 (defn- find-authors []
-  (let [author-dir (nio/get-path fs "team/authors")]
+  (let [author-dir (nio/get-path fs "sample_sources/team/authors")]
     (map convert-author-filename (files/all-in author-dir))))
 
 (def all-tags ["Craftsmanship" "TDD" "C#" "Java" "Clojure" "Waza" "Writing"
@@ -83,10 +83,10 @@
 
 (defn- create-pages []
   (let [authors (find-authors)
-        posts-dir (nio/get-path fs "team/posts")]
+        posts-dir (nio/get-path fs "sample_sources/team/posts")]
     (nio/create-parent-directories posts-dir)
     ;(println (create-page (rand-nth authors)))
-    (doall (map (partial write-page posts-dir) (repeatedly 50 #(create-page (rand-nth authors)))))
+    (doall (map (partial write-page posts-dir) (repeatedly 100 #(create-page (rand-nth authors)))))
     ))
 
 (defn ^{:no-project-needed true}
