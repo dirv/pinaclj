@@ -9,7 +9,7 @@
   {:author "wayne" :destination "child.html" :title "child"})
 
 (defn- build-page-map [pages]
-  (apply merge (map #(hash-map (:destination %) %) pages)))
+  (into {} (map #(vector (:destination %) %) pages)))
 
 (def all-pages
   (build-page-map [author-page page-with-author]))

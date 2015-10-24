@@ -100,7 +100,7 @@
   (def child-as-parent {:parent "child.html" :url "parent.html"})
 
   (defn- opts [ps]
-    {:all-pages (apply merge (map #(hash-map (:url %) %) ps))})
+    {:all-pages (into {} (map #(vector (:url %) %) ps))})
 
   (defn- retrieve-val [page pages]
     (retrieve-value (transforms/apply-all page)

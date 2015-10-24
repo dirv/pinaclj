@@ -11,7 +11,7 @@
   (let [groups (groups-fn page)]
     (if (empty? groups)
       {}
-      (apply assoc {} (mapcat #(list (keyword %) [page]) groups)))))
+      (into {} (map #(vector (keyword %) [page]) groups)))))
 
 (defn- pages-by-group [pages group-fn]
   (apply merge-with concat (map #(group-page % group-fn) pages)))

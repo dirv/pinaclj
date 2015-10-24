@@ -12,7 +12,7 @@
    :pages ["a" "b" "c" "d"]})
 
 (defn- build-page-map [pages]
-  (apply merge (map #(hash-map (:destination %) %) pages)))
+  (into {} (map #(vector (:destination %) %) pages)))
 
 (def page-map
   {:all-pages (build-page-map [a b parent-page])})

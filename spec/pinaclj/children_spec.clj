@@ -34,7 +34,7 @@
 (def reverse-ordered-opts (assoc ordered-opts :reverse "true"))
 
 (defn- build-opts [pages]
-  (apply merge (map #(hash-map (:destination %) %) pages)))
+  (into {} (map #(vector (:destination %) %) pages)))
 
 (describe "children"
   (describe "with no options"

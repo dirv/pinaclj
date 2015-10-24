@@ -52,7 +52,7 @@
                (not-found-pages theme pages))))
 
 (defn- generate-page-map [pages theme]
-  (apply merge (map to-pair pages)))
+  (into {} (map to-pair pages)))
 
 (defn- divide-page [page-map [destination page]]
   (pb/divide page (:template page) page-map))

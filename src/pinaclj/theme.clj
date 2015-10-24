@@ -34,7 +34,7 @@
   (group-by template-or-other (f/all-in root)))
 
 (defn- convert-templates [template-files fs root]
-  (apply merge (map #(to-template fs root %) template-files)))
+  (into {} (map #(to-template fs root %) template-files)))
 
 (defn- convert-intermediate [fs path {:keys [template-files static-files]}]
   {:templates (convert-templates template-files fs path)

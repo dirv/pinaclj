@@ -18,7 +18,7 @@
   (transforms/apply-all {:title "wayne" :destination "wayne" :category "author"}))
 
 (def author-page-map
-  (apply merge (map #(hash-map (:destination %) %) author-pages)))
+  (into {} (map #(vector (:destination %) %) author-pages)))
 
 (describe "calculate-total-child-pages"
   (it "returns 0 if :pages is not set"

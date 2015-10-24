@@ -4,7 +4,7 @@
            [pinaclj.transforms.page-list :refer :all]))
 
 (defn- build-page-map [pages]
-  (apply merge (map #(hash-map (:destination %) %) pages)))
+  (into {} (map #(vector (:destination %) %) pages)))
 
 (def page-map
   [{:published-at 1 :title "c" :destination "url1" :category category/default-category}
