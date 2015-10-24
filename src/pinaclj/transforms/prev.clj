@@ -8,7 +8,7 @@
   (if (contains? page :prev)
     (:prev page)
     (prev-in-list (page/retrieve-value page :pages opts)
-                  (page/retrieve-value page :destination {}))))
+                  (page/retrieve-value page :destination))))
 
 (defn choose-prev [page opts]
   (when-let [prev-url (prev-url page opts)]

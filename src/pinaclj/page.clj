@@ -25,22 +25,25 @@
 (declare retrieve-value)
 
 (defn- retrieve-parent-value [page opts k]
-  (when-let [linked-url (retrieve-value page :parent {})]
+  (when-let [linked-url (retrieve-value page :parent)]
     (when-let [linked-page (get (:all-pages opts) linked-url)]
       (retrieve-value linked-page k (without-page opts linked-url)))))
 
-(defn retrieve-value [page k opts]
-  (cond
-    (contains-in? page [:funcs k])
-    ((get-in page [:funcs k]) page opts)
-    (contains? page k)
-    (get page k)
-    (not= :parent k)
-    (retrieve-parent-value page opts k)))
+(defn retrieve-value
+  ([page k]
+   (retrieve-value page k {}))
+  ([page k opts]
+   (cond
+     (contains-in? page [:funcs k])
+     ((get-in page [:funcs k]) page opts)
+     (contains? page k)
+     (get page k)
+     (not= :parent k)
+     (retrieve-parent-value page opts k))))
 
 (defn print-page [page]
   (print "{")
-  (doall (map #(println % " " (retrieve-value page % {}))
+  (doall (map #(println % " " (retrieve-value page %))
               (keys page)))
   (println "}"))
 
@@ -66,4 +69,4 @@
   (get (:all-pages opts) page-url))
 
 (defn to-page-urls [pages]
-  (map #(retrieve-value % :destination {}) pages))
+  (map #(retrieve-value % :destination) pages))

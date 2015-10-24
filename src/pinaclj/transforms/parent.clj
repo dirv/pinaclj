@@ -3,12 +3,12 @@
 
 (defn- choose-parent [page opts]
   (cond
-    (= "index.html" (page/retrieve-value page :destination {}))
+    (= "index.html" (page/retrieve-value page :destination))
     nil
     (contains? page :parent)
     (:parent page)
     :else
-    (if-let [category (page/retrieve-value page :category {})]
+    (if-let [category (page/retrieve-value page :category)]
       (page/category-url category))))
 
 (def transform [:parent choose-parent])

@@ -59,7 +59,7 @@
         (find-template? theme (str template-path ".html")))))
 
 (defn- category-template? [theme page]
-  (when-let [category (page/retrieve-value page :category {})]
+  (when-let [category (page/retrieve-value page :category)]
     (find-template? theme (str (name category) ".html"))))
 
 (defn determine-template [theme page]

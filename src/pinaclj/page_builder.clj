@@ -36,13 +36,13 @@
   (build-group-pages (group/pages-by-category pages) page/category-url "category"))
 
 (defn- split-page-url [page]
-  (.split (page/retrieve-value page :destination {}) "\\."))
+  (.split (page/retrieve-value page :destination) "\\."))
 
 (defn- build-url-fn [page page-count]
   (let [[start ext] (split-page-url page)]
     (fn [page-num]
       (cond
-        (= page-num 0) (page/retrieve-value page :destination {})
+        (= page-num 0) (page/retrieve-value page :destination)
         (and (> page-num 0) (< page-num page-count))
         (str start "-" (inc page-num) "." ext)))))
 

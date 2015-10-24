@@ -14,6 +14,6 @@
   (comp f/trim-url add-index-page-extension))
 
 (defn add-destination [page opts]
-  (fix-url (page/retrieve-value page :url {})))
+  (fix-url (page/retrieve-value page :url)))
 
 (def transform [:destination add-destination])

@@ -18,7 +18,7 @@
                (template-modified % dest-last-modified)) pages))
 
 (defn- to-pair [page]
-  {(page/retrieve-value page :destination {}) page})
+  {(page/retrieve-value page :destination) page})
 
 (defn- associate-template [theme page]
   (assoc page :template-key (theme/determine-template theme page)))
@@ -28,7 +28,7 @@
                                     (set (map :template-key pages)))))
 
 (defn- not-found-index-page [pages]
-  (if (some #{"index.html"} (map #(page/retrieve-value % :destination {}) pages))
+  (if (some #{"index.html"} (map #(page/retrieve-value % :destination) pages))
     []
     ["index.html"]))
 
@@ -64,7 +64,7 @@
   (filter published? pages))
 
 (defn- render-page [page all-pages]
-  [(page/retrieve-value page :destination {})
+  [(page/retrieve-value page :destination)
    (page/retrieve-value page :templated-content {:template (:template page)
                                                  :all-pages all-pages})])
 
@@ -73,7 +73,7 @@
        (modified-pages (divide-pages page-map) {:all-pages page-map} dest-last-modified)))
 
 (defn- children-without-this-page [page page-map]
-  (remove #(= % (page/retrieve-value page :destination {}))
+  (remove #(= % (page/retrieve-value page :destination))
           (children/children page (:template page) page-map)))
 
 (defn- add-split-pages [theme page-map page]

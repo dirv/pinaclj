@@ -2,10 +2,10 @@
   (:require [pinaclj.page :as page]))
 
 (defn- tag-group-fn [page]
-  (page/retrieve-value page :tags {}))
+  (page/retrieve-value page :tags))
 
 (defn- category-group-fn [page]
-  [(page/retrieve-value page :category {})])
+  [(page/retrieve-value page :category)])
 
 (defn- group-page [page groups-fn]
   (let [groups (groups-fn page)]

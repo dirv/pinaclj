@@ -3,18 +3,18 @@
             [pinaclj.transforms.category :as category]))
 
 (defn- filter-to-category [all-pages category]
-  (filter #(= (keyword category) (page/retrieve-value (val %) :category {})) all-pages))
+  (filter #(= (keyword category) (page/retrieve-value (val %) :category)) all-pages))
 
 (defn- sort-pages [all-pages order-by reverse?]
-  (let [sorted (sort-by #(page/retrieve-value (val %) order-by {}) all-pages)]
+  (let [sorted (sort-by #(page/retrieve-value (val %) order-by) all-pages)]
     (if reverse? (reverse sorted) sorted)))
 
 (defn- matches? [k v page]
-  (= v (page/retrieve-value page k {})))
+  (= v (page/retrieve-value page k)))
 
 (defn- filter-to-parent [pages parent]
-  (let [parent-category (keyword (page/retrieve-value parent :category {}))
-        title (page/retrieve-value parent :title {})]
+  (let [parent-category (keyword (page/retrieve-value parent :category))
+        title (page/retrieve-value parent :title)]
     (if (= category/default-category parent-category)
       pages
       (filter #(matches? parent-category title (val %)) pages))))

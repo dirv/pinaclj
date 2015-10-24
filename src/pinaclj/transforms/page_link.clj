@@ -7,7 +7,7 @@
     (= expected (s/lower-case title))))
 
 (defn- find-page [page {all-pages :all-pages page-key :key}]
-  (when-let [title (page/retrieve-value page (keyword page-key) {})]
+  (when-let [title (page/retrieve-value page (keyword page-key))]
     (if-let [match (first (filter (partial matches-title (s/lower-case title)) all-pages))]
       (val match))))
 
@@ -17,7 +17,7 @@
     page))
 
 (defn- build-page-link [page]
-  {:attrs {:href (page/retrieve-value page :destination {})}
+  {:attrs {:href (page/retrieve-value page :destination)}
    :content (:title page)})
 
 (defn set-page-link [page opts]

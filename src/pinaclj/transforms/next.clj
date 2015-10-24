@@ -8,7 +8,7 @@
   (if (contains? page :next)
     (:next page)
     (next-in-list (page/retrieve-value page :pages opts)
-                  (page/retrieve-value page :destination {}))))
+                  (page/retrieve-value page :destination))))
 
 (defn choose-next [page opts]
   (when-let [next-url (next-url page opts)]

@@ -41,7 +41,7 @@
   node)
 
 (defn- page-depth [page]
-  (count (filter #(= \/ %) (page/retrieve-value page :destination {}))))
+  (count (filter #(= \/ %) (page/retrieve-value page :destination))))
 
 (defn transform [page]
   (let [page-depth (page-depth page)]

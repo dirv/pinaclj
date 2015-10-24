@@ -2,7 +2,7 @@
   (:require [pinaclj.page :as page]))
 
 (defn- page-lineage [page all-pages]
-  (if-let [parent (page/retrieve-value page :parent {})]
+  (if-let [parent (page/retrieve-value page :parent)]
     (conj (page-lineage (get all-pages parent) all-pages) page)
     [page]))
 
@@ -15,7 +15,7 @@
 (defn find-modified [page opts]
   (apply max 0 (concat (map #(page/retrieve-value % :modified opts)
                             (get-pages page opts))
-                       (map #(page/retrieve-value % :src-modified {})
+                       (map #(page/retrieve-value % :src-modified)
                             (page-lineage page (:all-pages opts))))))
 
 (def transform [:modified find-modified])

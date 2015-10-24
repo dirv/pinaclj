@@ -14,10 +14,10 @@
      :published-at dt}))
 
 (defn- published-at []
-  (page/retrieve-value page :published-at {}))
+  (page/retrieve-value page :published-at))
 
 (defn- summary []
-  (page/retrieve-value page :summary {}))
+  (page/retrieve-value page :summary))
 
 (describe "data conversions"
 

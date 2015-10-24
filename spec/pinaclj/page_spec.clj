@@ -39,17 +39,17 @@
 
 (describe "retrieve-value"
   (it "retrieves a value"
-    (should= 123 (retrieve-value simple-page :x {})))
+    (should= 123 (retrieve-value simple-page :x)))
   (it "computes a simple value"
-    (should= 123 (retrieve-value page-with-simple-func :x {})))
+    (should= 123 (retrieve-value page-with-simple-func :x)))
   (it "computes a value based on page content"
-    (should= "test" (retrieve-value page-with-complex-func :y {})))
+    (should= "test" (retrieve-value page-with-complex-func :y)))
   (it "computes an override value"
-    (should= "bar" (retrieve-value page-with-override :x {})))
+    (should= "bar" (retrieve-value page-with-override :x)))
   (it "memoizes"
-    (retrieve-value page-with-differing-func-vals :x {})
+    (retrieve-value page-with-differing-func-vals :x)
     (binding [counter 1]
-      (should= 0 (retrieve-value page-with-differing-func-vals :x {})))))
+      (should= 0 (retrieve-value page-with-differing-func-vals :x)))))
 
 (defn- read-file [fs path]
   (clojure.string/join "\n" (files/read-lines (nio/resolve-path fs path))))

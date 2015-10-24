@@ -5,6 +5,6 @@
   (keyword (:key opts)))
 
 (defn set-href [page opts]
-  {:attrs {:href (page/retrieve-value page (href-container opts) {})}})
+  {:attrs {:href (page/retrieve-value page (href-container opts))}})
 
 (def transform [:href set-href])

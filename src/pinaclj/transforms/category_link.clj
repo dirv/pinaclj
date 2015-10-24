@@ -7,6 +7,6 @@
    :content (name category)})
 
 (defn get-category [page opts]
-  (create-link (page/retrieve-value page :category {})))
+  (create-link (page/retrieve-value page :category)))
 
 (def transform [:category-link get-category])
