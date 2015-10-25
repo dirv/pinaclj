@@ -11,6 +11,7 @@
                  [endophile "0.1.2"]
                  [enlive "1.1.6"]]
   :eval-in-leiningen true
+  :aliases {"test" ["spec"]}
   :plugins [[speclj "3.3.1"]]
   :test-paths ["spec"]
   :profiles {:dev {:dependencies [[speclj "3.3.1"]
