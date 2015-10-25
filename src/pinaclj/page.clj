@@ -41,12 +41,6 @@
      (not= :parent k)
      (retrieve-parent-value page opts k))))
 
-(defn print-page [page]
-  (print "{")
-  (doall (map #(println % " " (retrieve-value page %))
-              (keys page)))
-  (println "}"))
-
 (def non-written-headers #{:read-headers :raw-content :path :funcs :src-root})
 
 (defn- header-keys [page]
