@@ -5,7 +5,7 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/java.classpath "0.2.2"]
                  [org.clojure/tools.namespace "0.2.11"]
-                 [org.clojure/tools.cli "0.3.1"]
+                 [org.clojure/tools.cli "0.3.3"]
                  [com.google.jimfs/jimfs "1.0"]
                  [com.taoensso/tower "3.0.2"]
                  [endophile "0.1.2"]
@@ -15,4 +15,4 @@
   :plugins [[speclj "3.3.1"]]
   :test-paths ["spec"]
   :profiles {:dev {:dependencies [[speclj "3.3.1"]
-                                  [leiningen-core "2.5.1"]]}})
+                                  [leiningen-core "2.5.3"]]}})
