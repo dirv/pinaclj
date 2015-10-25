@@ -52,7 +52,7 @@
            :start start
            :raw-content ""
            :url (url-fn page-num)
-           :pages (take num-children (drop start child-pages))
+           :pages (subvec child-pages start (min (count child-pages) (+ start num-children)))
            :next (url-fn (dec page-num))
            :prev (url-fn (inc page-num))
            :page-sequence-number (inc page-num)
@@ -61,7 +61,7 @@
 (defn divide [page {max-pages :max-pages} all-pages]
   (if (or (nil? max-pages) (empty? (:pages page)))
     [page]
-    (let [child-pages (:pages page)
+    (let [child-pages (vec (:pages page))
           starts (range 0 (count child-pages) max-pages)
           total-pages (count starts)
           url-fn (build-url-fn page total-pages)]

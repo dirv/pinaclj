@@ -6,8 +6,8 @@
   (filter #(= (keyword category) (page/retrieve-value (val %) :category)) all-pages))
 
 (defn- sort-pages [all-pages order-by reverse?]
-  (let [sorted (sort-by #(page/retrieve-value (val %) order-by) all-pages)]
-    (if reverse? (reverse sorted) sorted)))
+  (let [sorted (vec (sort-by #(page/retrieve-value (val %) order-by) all-pages))]
+    (if reverse? (rseq sorted) sorted)))
 
 (defn- matches? [k v page]
   (= v (page/retrieve-value page k)))
