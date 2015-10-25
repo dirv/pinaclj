@@ -18,7 +18,7 @@
          :published-at (dt/now)))
 
 (defn- chronological-sort [pages]
-  (sort-by #(:published-at %) pages))
+  (sort-by :published-at pages))
 
 (defn- build-group-page [[group pages] url-func category]
   (assoc (generate-page (url-func group))
@@ -42,8 +42,8 @@
   (let [[start ext] (split-page-url page)]
     (fn [page-num]
       (cond
-        (= page-num 0) (page/retrieve-value page :destination)
-        (and (> page-num 0) (< page-num page-count))
+        (zero? page-num) (page/retrieve-value page :destination)
+        (and (pos? page-num) (< page-num page-count))
         (str start "-" (inc page-num) "." ext)))))
 
 (defn- duplicate-page [page start num-children child-pages url-fn total-pages]

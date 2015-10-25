@@ -2,7 +2,7 @@
   (:require [pinaclj.page :as page]))
 
 (defn- is-null-or-empty [v]
-  (or (= nil v) (= "" v)))
+  (or (nil? v) (= "" v)))
 
 (defn if-exists [page opts]
   (if (is-null-or-empty (page/retrieve-value page (keyword (:key opts)) opts))

@@ -5,7 +5,7 @@
   (not (re-find #"\/\/" url)))
 
 (defn- up-dir-str [page-depth]
-  (apply str (repeat page-depth "../")))
+  (clojure.string/join (repeat page-depth "../")))
 
 (defn- convert-url [url page-depth]
   (if (relative-url? url)
@@ -14,7 +14,7 @@
 
 (defn- convert-attr [attrs attr page-depth]
   (if-let [url (get attrs attr)]
-    (assoc attrs attr (convert-url (get attrs attr) page-depth))
+    (update-in attrs [attr] convert-url page-depth)
     attrs))
 
 (defn- convert-attrs [attrs page-depth]
@@ -46,5 +46,5 @@
 (defn transform [page]
   (let [page-depth (page-depth page)]
     (if (pos? page-depth)
-      (assoc page :content (convert-urls (:content page) page-depth))
+      (update-in page [:content] convert-urls page-depth)
       page)))

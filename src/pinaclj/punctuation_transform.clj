@@ -28,7 +28,7 @@
     (string? node)
       (first (html/html-snippet (string-fn node)))
     (and (map? node) (not (.contains ignored-tags (:tag node))))
-      (assoc node :content (transform-non-code (:content node) string-fn))
+      (update-in node [:content] transform-non-code string-fn)
     (or (seq? node) (vector? node))
       (map #(transform-non-code % string-fn) node)
     :else

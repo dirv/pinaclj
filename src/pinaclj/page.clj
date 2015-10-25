@@ -18,9 +18,7 @@
   (= page (get (:all-pages opts) "index.html")))
 
 (defn- without-page [opts url]
-  (assoc opts
-         :all-pages
-         (dissoc (:all-pages opts) url)))
+  (update-in opts [:all-pages] dissoc url))
 
 (declare retrieve-value)
 
@@ -52,8 +50,8 @@
                                   (set (:read-headers page)))))
 
 (defn- to-headers [page]
-  (apply str (map #(str (name %) ": " (% page) "\n")
-                  (ordered-header-keys page))))
+  (clojure.string/join (map #(str (name %) ": " (% page) "\n")
+                            (ordered-header-keys page))))
 
 (defn write-page [page fs]
   (files/create (nio/resolve-path fs (:path page))

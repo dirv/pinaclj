@@ -26,7 +26,7 @@
   (map #(create-page src %) (files/all-in src)))
 
 (defn- relative-file-name [src-root src-file]
-  (.toString (nio/relativize src-root src-file)))
+  (str (nio/relativize src-root src-file)))
 
 (defn- write-static-file [src-root dest-root src-file]
   (if (files/duplicate-if-newer src-root dest-root src-file)

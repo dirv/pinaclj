@@ -60,13 +60,13 @@
 (defn- transform-content [node content]
   (if (seq? content)
     ((html/content content) node)
-    ((html/content (.toString content)) node)))
+    ((html/content (str content)) node)))
 
 (defn- build-opts [node all-pages]
   (merge {:all-pages all-pages} (renamed-data-attrs node)))
 
 (defn- specific-attribute? [[k v] {only-key :set}]
-  (or (= nil only-key) (= (keyword only-key) k)))
+  (or (nil? only-key) (= (keyword only-key) k)))
 
 (defn- transform-map [node kv all-pages selector-transforms opts]
   (if (specific-attribute? kv opts)
@@ -104,7 +104,7 @@
                 (page-replace page (build-selector-transforms template all-pages))))
 
 (defn- convert-max-page-str [page]
-  (assoc page :max-pages (Integer/parseInt (:max-pages page))))
+  (update-in page [:max-pages] #(Integer/parseInt %)))
 
 (defn- add-page-list [page]
   (assoc page
@@ -122,4 +122,4 @@
            :template-fn (partial build-page-func page-resource))))
 
 (defn to-str [nodes]
-  (apply str (html/emit* nodes)))
+  (clojure.string/join (html/emit* nodes)))

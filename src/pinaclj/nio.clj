@@ -49,7 +49,7 @@
   (Files/copy path dest (into-array CopyOption [StandardCopyOption/REPLACE_EXISTING])))
 
 (defn file-name [path]
-  (.toString (.getFileName path)))
+  (str (.getFileName path)))
 
 (defn default-file-system []
   (FileSystems/getDefault))

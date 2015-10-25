@@ -22,7 +22,7 @@
   (set (keys (:templates theme))))
 
 (defn- to-template [fs root file-path]
-  {(keyword (.toString (nio/relativize root file-path)))
+  {(keyword (str (nio/relativize root file-path)))
    (load-template fs file-path)})
 
 (defn- template-or-other [file]
@@ -50,8 +50,8 @@
   (some #{(keyword path-str)} (keys templates)))
 
 (defn- relativize-template [page]
-  (subs (.toString (:path page))
-        (count (.toString (or (:src-root page) "")))))
+  (subs (str (:path page))
+        (count (str (or (:src-root page) "")))))
 
 (defn matching-template? [theme page]
   (let [template-path (to-template-path (relativize-template page))]

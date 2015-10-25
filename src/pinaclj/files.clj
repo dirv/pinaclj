@@ -40,7 +40,7 @@
       (subs path-str last-index))))
 
 (defn- not-hidden [files]
-  (filter (complement nio/hidden?) files))
+  (remove nio/hidden? files))
 
 (defn all-in [path]
   (with-open [files (nio/directory-stream path)]

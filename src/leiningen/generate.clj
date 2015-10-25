@@ -9,16 +9,17 @@
   (files/init-default))
 
 (defn- usage [options-summary]
-  (->> [""
-        "pinaclj is a command-line tool for generating a static website from markdown files."
-        ""
-        "Usage: lein run [options]"
-        ""
-        "Options:"
-        "  switch                         default    description"
-        options-summary
-        ""]
-       (string/join \newline)))
+  (string/join
+    \newline 
+    [""
+     "pinaclj is a command-line tool for generating a static website from markdown files."
+     ""
+     "Usage: lein run [options]"
+     ""
+     "Options:"
+     "  switch                         default    description"
+     options-summary
+     ""]))
 
 (def cli-options
   [["-s" "--source SOURCE          " "Source directory.     " :default "pages"]
