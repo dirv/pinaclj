@@ -1,6 +1,6 @@
 (ns pinaclj.transforms.category)
 
-(def default-category 
+(def default-category
   :post)
 
 (defn convert-category [page opts]

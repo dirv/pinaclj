@@ -7,6 +7,3 @@
     0))
 
 (def transform [:src-modified get-last-modified-time])
-
-
-

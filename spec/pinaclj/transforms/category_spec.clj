@@ -7,4 +7,3 @@
 (describe "convert-category"
   (it "creates default category"
     (should= default-category (convert-category [ no-category ] {}))))
-

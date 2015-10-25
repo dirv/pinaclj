@@ -42,4 +42,3 @@
 
   (it "uses parent latest if parent page has been modified"
     (should= 3 (find-modified child-page hierarchy-opts))))
-

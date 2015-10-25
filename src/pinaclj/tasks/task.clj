@@ -9,4 +9,3 @@
 
 (defn error [msg]
   {:type :error :msg msg})
-

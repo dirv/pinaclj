@@ -3,18 +3,18 @@
             [clojure.java.classpath :as cp]
             [pinaclj.page :as page]))
 
-(defn- transform-ns? [ns]
-  (and (.startsWith ns "pinaclj.transforms.")
-       (not (.endsWith ns "-spec"))
-       (not (.endsWith ns ".transforms"))))
+(defn- transform-ns? [this-ns]
+  (and (.startsWith this-ns "pinaclj.transforms.")
+       (not (.endsWith this-ns "-spec"))
+       (not (.endsWith this-ns ".transforms"))))
 
 (defn- get-transforms-on-classpath []
   (filter #(transform-ns? (name (.getName %)))
           (find/find-namespaces (cp/classpath))))
 
-(defn- apply-transform [page ns]
-  (require ns)
-  (if-let [transform (ns-resolve ns 'transform)]
+(defn- apply-transform [page this-ns]
+  (require this-ns)
+  (if-let [transform (ns-resolve this-ns 'transform)]
     (apply page/set-lazy-value page (var-get transform))
     page))
 

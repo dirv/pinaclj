@@ -29,5 +29,3 @@
     (should= 4 (count (:pages (clone-pages some-pages page-map-opts)))))
   (it "restricts to max-pages if set"
     (should= 2 (count (:pages (clone-pages all-pages max-page-opts))))))
-
-

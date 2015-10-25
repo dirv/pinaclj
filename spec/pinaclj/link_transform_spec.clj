@@ -58,4 +58,3 @@
       (unpack-single-node (do-transform external-site))))
   (it "ignores leading slash"
     (should-not= "../test.png" (do-transform leading-slash))))
-

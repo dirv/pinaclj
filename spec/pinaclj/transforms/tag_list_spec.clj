@@ -14,4 +14,3 @@
   (it "returns correct page"
     (should= tag-page-A
       (first (:pages (get-tags page {}))))))
-

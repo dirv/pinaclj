@@ -25,4 +25,3 @@
     (should= 0 (calculate-total-child-pages no-child-pages {})))
   (it "returns count if :pages is set"
     (should= 2 (calculate-total-child-pages two-children {:max-pages "5"}))))
-
