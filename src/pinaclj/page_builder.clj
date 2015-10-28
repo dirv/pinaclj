@@ -46,23 +46,20 @@
         (and (pos? page-num) (< page-num page-count))
         (str start "-" (inc page-num) "." ext)))))
 
-(defn- duplicate-page [page start num-children child-pages url-fn total-pages]
-  (let [page-num (/ start num-children)]
-    (assoc page
-           :start start
-           :raw-content ""
-           :url (url-fn page-num)
-           :pages (subvec child-pages start (min (count child-pages) (+ start num-children)))
-           :next (url-fn (dec page-num))
-           :prev (url-fn (inc page-num))
-           :page-sequence-number (inc page-num)
-           :total-pages total-pages)))
+(defn- duplicate-page [page child-pages page-num url-fn total-pages]
+  (assoc page
+         :raw-content ""
+         :url (url-fn page-num)
+         :pages child-pages
+         :next (url-fn (dec page-num))
+         :prev (url-fn (inc page-num))
+         :page-sequence-number (inc page-num)
+         :total-pages total-pages))
 
 (defn divide [page {max-pages :max-pages} all-pages]
   (if (or (nil? max-pages) (empty? (:pages page)))
     [page]
-    (let [child-pages (vec (:pages page))
-          starts (range 0 (count child-pages) max-pages)
-          total-pages (count starts)
+    (let [partitions (partition-all max-pages (:pages page))
+          total-pages (count partitions)
           url-fn (build-url-fn page total-pages)]
-      (map #(duplicate-page page % max-pages child-pages url-fn total-pages) starts))))
+      (map #(duplicate-page page %1 %2 url-fn total-pages) partitions (range)))))

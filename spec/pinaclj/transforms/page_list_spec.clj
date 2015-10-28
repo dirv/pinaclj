@@ -1,7 +1,7 @@
 (ns pinaclj.transforms.page-list-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.transforms.category :as category]
-           [pinaclj.transforms.page-list :refer :all]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.transforms.category :as category]
+            [pinaclj.transforms.page-list :refer :all]))
 
 (defn- build-page-map [pages]
   (into {} (map #(vector (:destination %) %) pages)))
@@ -23,7 +23,7 @@
 (describe "clone-pages"
   (it "provides all child pages if no :pages set"
     (should== ["url1" "url2" "url3" "url4"] (:pages (clone-pages {} page-map-opts))))
-  (it "uses :pages if :start set"
+  (it "uses :pages if :max-pages set"
     (should== ["url2" "url3"] (:pages (clone-pages some-pages max-page-opts))))
   (it "ignores :pages if :max-pages is not set"
     (should= 4 (count (:pages (clone-pages some-pages page-map-opts)))))

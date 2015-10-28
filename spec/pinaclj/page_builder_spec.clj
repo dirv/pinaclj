@@ -53,8 +53,6 @@
     (should= 3 (count (divide-pages))))
   (it "contains pages in order when dividing pages"
     (should= [[:urlA :urlB] [:urlC :urlD] [:urlE]] (map :pages (divide-pages))))
-  (it "sets start page when dividing"
-    (should= [0 2 4] (map :start (divide-pages))))
   (it "modifies all but first urls"
     (should= ["index.html" "index-2.html" "index-3.html"] (map :url (divide-pages))))
   (it "does not add next link to first page"
