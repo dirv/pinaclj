@@ -4,18 +4,15 @@
             [pinaclj.page-builder :as pb]
             [pinaclj.theme :as theme]))
 
-(defn- published? [page]
-  (some? (:published-at page)))
-
-(defn- modified-since-last-publish? [page opts dest-last-modified]
+(defn- modified-since-last-publish? [[_ page] opts dest-last-modified]
   (> (page/retrieve-value page :modified opts) dest-last-modified))
 
-(defn- template-modified [page dest-last-modified]
+(defn- template-modified [[_ page] dest-last-modified]
   (> (:modified-at (:template page)) dest-last-modified))
 
-(defn- modified-pages [pages opts dest-last-modified]
-  (into {} (filter #(or (modified-since-last-publish? (val %) opts dest-last-modified)
-                        (template-modified (val %) dest-last-modified)) pages)))
+(defn- modified-pages-only [pages dest-last-modified]
+  (into {} (filter #(or (modified-since-last-publish? % {:all-pages pages} dest-last-modified)
+                        (template-modified % dest-last-modified)) pages)))
 
 (defn- to-pair [page]
   {(page/retrieve-value page :destination) page})
@@ -51,37 +48,33 @@
           (map (comp (partial associate-template theme) pb/generate-page)
                (not-found-pages theme pages))))
 
-(defn- generate-page-map [pages theme]
+(defn- generate-page-map [pages]
   (into {} (map to-pair pages)))
 
 (defn- divide-page [page-map [_ page :as kv]]
-  (into page-map
-         (pb/divide kv (:template page))))
+  (into page-map (pb/divide kv (:template page))))
 
 (defn- divide-pages [page-map]
   (reduce divide-page {} page-map))
 
 (defn- published-only [pages]
-  (filter published? pages))
+  (filter :published-at pages))
+
+(defn- update-all [m update-fn & args]
+  (zipmap (keys m) (map #(apply update-fn % args) (vals m))))
 
 (defn- render-page [page all-pages]
   (page/retrieve-value page :templated-content {:template (:template page)
                                                 :all-pages all-pages}))
 
 (defn- render-pages [pages]
-  (reduce #(update %1 %2 render-page pages) pages (keys pages)))
-
-(defn render-all [page-map theme dest-last-modified]
-  (-> page-map
-      (modified-pages {:all-pages page-map} dest-last-modified)
-      (divide-pages)
-      (render-pages)))
+  (update-all pages render-page pages))
 
 (defn- children-without-this-page [page page-map]
   (remove #(= % (page/retrieve-value page :destination))
           (children/children page (:template page) page-map)))
 
-(defn- add-split-pages [theme page-map page]
+(defn- add-split-pages [page theme page-map]
   (if (and (not (contains? page :pages))
            (:requires-split? (:template page)))
     (assoc page :pages (children-without-this-page page page-map))
@@ -91,8 +84,7 @@
   (map #(assoc % :template (get-in theme [:templates (:template-key %)])) pages))
 
 (defn- add-template-properties [page-map theme]
-  (zipmap (keys page-map)
-          (map (partial add-split-pages theme page-map) (vals page-map))))
+  (update-all page-map add-split-pages theme page-map))
 
 (defn build [input-pages theme dest-last-modified]
   (-> input-pages
@@ -100,6 +92,8 @@
       (build-all-pages theme)
       (add-unused-template-files theme)
       (add-template theme)
-      (generate-page-map theme)
+      (generate-page-map)
       (add-template-properties theme)
-      (render-all theme dest-last-modified)))
+      (modified-pages-only dest-last-modified)
+      (divide-pages)
+      (render-pages)))
