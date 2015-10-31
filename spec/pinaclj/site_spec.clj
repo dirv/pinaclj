@@ -36,10 +36,10 @@
   (build pages theme 1))
 
 (defn- files-output [pages]
-  (map first (output-with-theme pages test-theme)))
+  (keys (output-with-theme pages test-theme)))
 
 (defn- in [page-name pages]
-  (second (first (filter #(= page-name (first %)) pages))))
+  (val (first (filter #(= page-name (first %)) pages))))
 
 (describe "new page"
   (def new-page (assoc base-page
@@ -88,9 +88,9 @@
                             :category :a))
 
   (def post-index-page (assoc base-page
-                                       :category nil
-                                       :destination "index.html"
-                                       :title "uncat-index"))
+                              :category nil
+                              :destination "index.html"
+                              :title "uncat-index"))
 
   (def categorized-index-page (assoc base-page
                                      :category "a"
@@ -100,10 +100,8 @@
   (it "creates category pages"
     (should-contain "category/a/index.html" (files-output [category-page])))
 
-  (it "does not include index page in default category list"
-    (should-not-contain "cat-index"
-      (in "category/post/index.html"
-          (output-with-theme [categorized-index-page] test-theme))))
+  (it "does not create default category list"
+    (should-not-contain "category/post/index.html" (files-output [categorized-index-page])))
 
   (it "includes index page if it has a category"
     (should-contain "cat-index"
@@ -123,9 +121,9 @@
     (output-with-theme five-pages theme-with-max-page))
 
   (it "splits index page"
-    (should-contain "index.html" (map first (build-split-index)))
-    (should-contain "index-2.html" (map first (build-split-index)))
-    (should-contain "index-3.html" (map first (build-split-index))))
+    (should-contain "index.html" (keys (build-split-index)))
+    (should-contain "index-2.html" (keys (build-split-index)))
+    (should-contain "index-3.html" (keys (build-split-index))))
 
   (it "outputs ordered pages in split"
     (should= "54" (in "index.html" (build-split-index)))
@@ -138,7 +136,8 @@
 
   (def match-theme
     {:templates {:post.html {:template-fn (fn [pages] (this-page-template pages))}
-                 :index.html {:template-fn (fn [pages] (this-page-template pages))}}})
+                 :index.html {:template-fn (fn [pages] (this-page-template pages))
+                              :modified-at 1}}})
 
   (def index-page
     (assoc base-page

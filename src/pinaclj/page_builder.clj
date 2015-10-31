@@ -47,18 +47,19 @@
         (str start "-" (inc page-num) "." ext)))))
 
 (defn- duplicate-page [page child-pages page-num url-fn total-pages]
-  (assoc page
-         :raw-content ""
-         :url (url-fn page-num)
-         :pages child-pages
-         :next (url-fn (dec page-num))
-         :prev (url-fn (inc page-num))
-         :page-sequence-number (inc page-num)
-         :total-pages total-pages))
+  (let [new-url (url-fn page-num)]
+    [new-url (assoc page
+                    :raw-content ""
+                    :url new-url
+                    :pages child-pages
+                    :next (url-fn (dec page-num))
+                    :prev (url-fn (inc page-num))
+                    :page-sequence-number (inc page-num)
+                    :total-pages total-pages)]))
 
-(defn divide [page {max-pages :max-pages} all-pages]
+(defn divide [[destination page :as kv] {max-pages :max-pages}]
   (if (or (nil? max-pages) (empty? (:pages page)))
-    [page]
+    [kv]
     (let [partitions (partition-all max-pages (:pages page))
           total-pages (count partitions)
           url-fn (build-url-fn page total-pages)]

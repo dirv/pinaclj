@@ -14,8 +14,8 @@
   (> (:modified-at (:template page)) dest-last-modified))
 
 (defn- modified-pages [pages opts dest-last-modified]
-  (filter #(or (modified-since-last-publish? % opts dest-last-modified)
-               (template-modified % dest-last-modified)) pages))
+  (into {} (filter #(or (modified-since-last-publish? (val %) opts dest-last-modified)
+                        (template-modified (val %) dest-last-modified)) pages)))
 
 (defn- to-pair [page]
   {(page/retrieve-value page :destination) page})
@@ -54,23 +54,28 @@
 (defn- generate-page-map [pages theme]
   (into {} (map to-pair pages)))
 
-(defn- divide-page [page-map [destination page]]
-  (pb/divide page (:template page) page-map))
+(defn- divide-page [page-map [_ page :as kv]]
+  (into page-map
+         (pb/divide kv (:template page))))
 
 (defn- divide-pages [page-map]
-  (mapcat #(divide-page page-map %) page-map))
+  (reduce divide-page {} page-map))
 
 (defn- published-only [pages]
   (filter published? pages))
 
 (defn- render-page [page all-pages]
-  [(page/retrieve-value page :destination)
-   (page/retrieve-value page :templated-content {:template (:template page)
-                                                 :all-pages all-pages})])
+  (page/retrieve-value page :templated-content {:template (:template page)
+                                                :all-pages all-pages}))
+
+(defn- render-pages [pages]
+  (reduce #(update %1 %2 render-page pages) pages (keys pages)))
 
 (defn render-all [page-map theme dest-last-modified]
-  (map #(render-page % page-map)
-       (modified-pages (divide-pages page-map) {:all-pages page-map} dest-last-modified)))
+  (-> page-map
+      (divide-pages)
+      (modified-pages {:all-pages page-map} dest-last-modified)
+      (render-pages)))
 
 (defn- children-without-this-page [page page-map]
   (remove #(= % (page/retrieve-value page :destination))
