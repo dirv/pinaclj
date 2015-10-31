@@ -117,6 +117,12 @@
                  :title %
                  :destination %) (range 1 6)))
 
+  (def six-pages
+    (conj five-pages (assoc base-page
+                            :title 6
+                            :destination 6
+                            :modified 3)))
+
   (defn- build-split-index []
     (output-with-theme five-pages theme-with-max-page))
 
@@ -128,7 +134,13 @@
   (it "outputs ordered pages in split"
     (should= "54" (in "index.html" (build-split-index)))
     (should= "32" (in "index-2.html" (build-split-index)))
-    (should= "1" (in "index-3.html" (build-split-index)))))
+    (should= "1" (in "index-3.html" (build-split-index))))
+
+  (it "rewrites all split pages when one page is added"
+    (let [page-urls (keys (build six-pages theme-with-max-page 2))]
+      (should-contain "index.html" page-urls)
+      (should-contain "index-2.html" page-urls)
+      (should-contain "index-3.html" page-urls))))
 
 (describe "source and theme matching"
   (defn- this-page-template [all-pages]

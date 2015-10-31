@@ -73,8 +73,8 @@
 
 (defn render-all [page-map theme dest-last-modified]
   (-> page-map
-      (divide-pages)
       (modified-pages {:all-pages page-map} dest-last-modified)
+      (divide-pages)
       (render-pages)))
 
 (defn- children-without-this-page [page page-map]
