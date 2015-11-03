@@ -75,7 +75,7 @@ Right now you'll need to run from source.
 
  5. Run the following command.
 
-        lein generate -s <posts directory> -d <target directory> -t sample_themes/simple
+        lein generate -s <posts directory> -d <target directory> -t sample_themes/diary
 
  6. Change to the `gen` directory. You'll find the following files:
 
@@ -83,7 +83,7 @@ Right now you'll need to run from source.
         first.html
         category/post/index.html
 
- 7. Explore the content of the files and compare to how it matches up with the theme located in `sample_themes/simple`.
+ 7. Explore the content of the files and compare to how it matches up with the theme located in `sample_themes/diary`.
 
 Your next step, most likely, will be to build your own theme.
 
