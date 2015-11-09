@@ -12,7 +12,7 @@
 (defn- filter-pages [page-set opts]
   (if (already-computed? opts)
     (:pages page-set)
-    (children/children page-set opts (:all-pages opts))))
+    (children/children page-set opts (vals (:all-pages opts)))))
 
 (defn- apply-max-pages [pages opts]
   (if-let [max-pages (max-pages opts)]

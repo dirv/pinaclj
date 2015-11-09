@@ -93,6 +93,7 @@
                               :title "uncat-index"))
 
   (def categorized-index-page (assoc base-page
+                                     :path "/index.md"
                                      :category "a"
                                      :destination "index.html"
                                      :title "cat-index"))
@@ -153,7 +154,7 @@
 
   (def index-page
     (assoc base-page
-           :src-modified 0
+           :src-modified 2
            :title "test-title"
            :path "index.md"
            :destination "index.html"))
@@ -162,8 +163,7 @@
     (should= "test-title" (in "index.html" (output-with-theme [index-page] match-theme)))))
 
 (def updated-template-theme
-  {:templates {:post.html {:template-fn (fn [pages] (title-writing-template pages))
-                           :modified-at 3}}})
+  (assoc-in test-theme [:templates :post.html :modified-at] 3))
 
 (def unmodified-page
   (assoc base-page
@@ -176,7 +176,8 @@
     (should= "old-title" (in "page.html" (output-with-theme [unmodified-page] updated-template-theme)))))
 
 (def file-only-template
-  {:template-fn (fn [pages] (title-writing-template pages))})
+  {:template-fn (fn [pages] (title-writing-template pages))
+   :modified-at 3})
 
 (def file-only-theme
   {:templates {:post.html file-only-template
@@ -190,7 +191,7 @@
    (assoc base-page :destination "standard.html")])
 
 (describe "template"
-  (it "writes ununsed template files"
+  (it "writes unused template files"
     (let [pages (output-with-theme file-only-pages file-only-theme)]
       (should-contain "random.html" (map first pages))))
   (it "does not write used template files"
