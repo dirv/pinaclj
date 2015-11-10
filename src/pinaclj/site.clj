@@ -14,37 +14,24 @@
   (into {} (filter #(or (modified-since-last-publish? % {:all-pages pages} dest-last-modified)
                         (template-modified % dest-last-modified)) pages)))
 
-(defn- to-pair [page]
-  {(page/retrieve-value page :destination) page})
-
 (defn- associate-template [theme page]
-  (assoc page :template-key (theme/determine-template theme page)))
+  (assoc page :template (theme/determine-template theme page)))
 
-(defn- build-pages-with-source [pages theme]
+(defn- build-templated-pages [pages theme]
   (map (partial associate-template theme) pages))
 
-(defn- unused-template-pages [theme pages]
-  (clojure.set/difference (theme/root-pages theme)
-                          (set (map :template-key pages))))
-
-(defn- not-found-index-page [pages]
-  (if (some #{"index.html"} (map #(page/retrieve-value % :destination) pages))
-    []
-    [:index.html]))
-
-(defn- not-found-pages [theme pages]
-  (distinct (concat (unused-template-pages theme pages) (not-found-index-page pages))))
-
-(defn- generate-template-page [template-key]
-  (assoc (pb/generate-page (name template-key))
-         :template-key template-key))
+(defn- unused-templates [theme pages]
+  (clojure.set/difference (set (theme/root-pages theme))
+                          (set (map :template pages))))
 
 (defn- add-unused-template-files [pages theme]
-  (concat pages
-          (map generate-template-page (not-found-pages theme pages))))
+  (let [unused-templates (unused-templates theme pages)
+        unused-template-pages (map #(pb/generate-page (:path %)) unused-templates)]
+    (concat pages
+            (map assoc unused-template-pages (repeat :template) unused-templates))))
 
 (defn- generate-page-map [pages]
-  (into {} (map to-pair pages)))
+  (zipmap (map #(page/retrieve-value % :destination) pages) pages))
 
 (defn- divide-page [page-map [_ page :as kv]]
   (into page-map (pb/divide kv (:template page))))
@@ -81,22 +68,17 @@
   (remove #(and (theme/matching-template? theme %)
                 (nil? (:category %))) pages))
 
-(defn- add-template [pages theme]
-  (map #(assoc % :template (get-in theme [:templates (:template-key %)])) pages))
-
 (defn- add-generated-pages [pages theme]
   (concat pages
-          (add-template (map (partial associate-template theme)
-                             (concat (pb/build-tag-pages pages)
-                                     (pb/build-category-pages (post-pages-only theme pages))))
-                        theme)))
+          (build-templated-pages
+            (concat (pb/build-tag-pages pages)
+                    (pb/build-category-pages (post-pages-only theme pages))) theme)))
 
 (defn build [input-pages theme dest-last-modified]
   (-> input-pages
       (published-only)
-      (build-pages-with-source theme)
+      (build-templated-pages theme)
       (add-unused-template-files theme)
-      (add-template theme)
       (set-all-child-pages)
       (add-generated-pages theme)
       (generate-page-map)

@@ -17,11 +17,13 @@
       (apply str titles))))
 
 (def test-theme
-  {:templates {:post.html {:template-fn (fn [pages] (title-writing-template pages))
-                           :modified-at 0}
-               :index.html {:template-fn (fn [pages] (child-writing-template pages))
+  {:templates {"post.html" {:template-fn (fn [pages] (title-writing-template pages))
                             :modified-at 0
-                            :requires-split? true}}})
+                            :path "post.html"}
+               "index.html" {:template-fn (fn [pages] (child-writing-template pages))
+                             :modified-at 0
+                             :requires-split? true
+                             :path "index.html"}}})
 
 (def base-page
   {:modified 2
@@ -111,7 +113,7 @@
 
 (describe "split page list"
   (def theme-with-max-page
-    (assoc-in test-theme [:templates :index.html :max-pages] 2))
+    (assoc-in test-theme [:templates "index.html" :max-pages] 2))
 
   (def five-pages
     (map #(assoc base-page
@@ -148,9 +150,11 @@
     (fn [page] (:title page)))
 
   (def match-theme
-    {:templates {:post.html {:template-fn (fn [pages] (this-page-template pages))}
-                 :index.html {:template-fn (fn [pages] (this-page-template pages))
-                              :modified-at 1}}})
+    {:templates {"post.html" {:template-fn (fn [pages] (this-page-template pages))
+                              :path "post.html"}
+                 "index.html" {:template-fn (fn [pages] (this-page-template pages))
+                              :modified-at 1
+                               :path "index.html"}}})
 
   (def index-page
     (assoc base-page
@@ -163,7 +167,7 @@
     (should= "test-title" (in "index.html" (output-with-theme [index-page] match-theme)))))
 
 (def updated-template-theme
-  (assoc-in test-theme [:templates :post.html :modified-at] 3))
+  (assoc-in test-theme [:templates "post.html" :modified-at] 3))
 
 (def unmodified-page
   (assoc base-page
@@ -175,15 +179,16 @@
   (it "causes page to be rebuilt even when it hasn't changed"
     (should= "old-title" (in "page.html" (output-with-theme [unmodified-page] updated-template-theme)))))
 
-(def file-only-template
+(defn- file-only-template [path]
   {:template-fn (fn [pages] (title-writing-template pages))
-   :modified-at 3})
+   :modified-at 3
+   :path path})
 
 (def file-only-theme
-  {:templates {:post.html file-only-template
-               :index.html file-only-template
-               :author.html file-only-template
-               :random.html file-only-template}})
+  {:templates {"post.html" (file-only-template "post.html")
+               "index.html" (file-only-template "index.html")
+               "author.html" (file-only-template "author.html")
+               "random.html" (file-only-template "random.html")}})
 
 (def file-only-pages
   [(assoc base-page :category "author" :destination "wayne.html")

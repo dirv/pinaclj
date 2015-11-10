@@ -6,24 +6,21 @@
 
 (def default-category :post)
 
+(def default-category-file-name
+  (str (name default-category) ".html"))
+
 (def template-files #{".html" ".xml"})
 
-(defn- category-template [category]
-  (keyword (str (name category) ".html")))
-
-(defn- load-template [fs page-path]
+(defn- load-template [fs root page-path]
   (assoc (t/build-template (f/read-stream fs page-path))
-         :modified-at (nio/get-last-modified-time page-path)))
+         :modified-at (nio/get-last-modified-time page-path)
+         :path (str (nio/relativize root page-path))))
 
 (defn get-template [theme n]
   (get theme n))
 
 (defn root-pages [theme]
-  (set (keys (:templates theme))))
-
-(defn- to-template [fs root file-path]
-  {(keyword (str (nio/relativize root file-path)))
-   (load-template fs file-path)})
+  (vals (:templates theme)))
 
 (defn- template-or-other [file]
   (if (contains? template-files (f/extension file))
@@ -33,8 +30,11 @@
 (defn- group-files [root]
   (group-by template-or-other (f/all-in root)))
 
+(defn- map-by [f xs]
+  (zipmap (map f xs) xs))
+
 (defn- convert-templates [template-files fs root]
-  (into {} (map #(to-template fs root %) template-files)))
+  (map-by :path (map #(load-template fs root %) template-files)))
 
 (defn- convert-intermediate [fs path {:keys [template-files static-files]}]
   {:templates (convert-templates template-files fs path)
@@ -47,7 +47,7 @@
   (comp f/remove-extension f/trim-url))
 
 (defn- find-template? [{templates :templates} path-str]
-  (some #{(keyword path-str)} (keys templates)))
+  (get templates path-str))
 
 (defn- relativize-template [page]
   (subs (str (:path page))
@@ -62,7 +62,10 @@
   (when-let [category (page/retrieve-value page :category)]
     (find-template? theme (str (name category) ".html"))))
 
+(defn- default-category-template [theme]
+  (find-template? theme default-category-file-name))
+
 (defn determine-template [theme page]
   (or (matching-template? theme page)
       (category-template? theme page)
-      (category-template default-category)))
+      (default-category-template theme)))
