@@ -24,11 +24,10 @@
   (clojure.set/difference (set (theme/root-pages theme))
                           (set (map :template pages))))
 
-(defn- add-unused-template-files [pages theme]
+(defn- build-unused-template-files [pages theme]
   (let [unused-templates (unused-templates theme pages)
         unused-template-pages (map #(pb/generate-page (:path %)) unused-templates)]
-    (concat pages
-            (map assoc unused-template-pages (repeat :template) unused-templates))))
+    (map assoc unused-template-pages (repeat :template) unused-templates)))
 
 (defn- generate-page-map [pages]
   (zipmap (map #(page/retrieve-value % :destination) pages) pages))
@@ -68,19 +67,22 @@
   (remove #(and (theme/matching-template? theme %)
                 (nil? (:category %))) pages))
 
-(defn- add-generated-pages [pages theme]
-  (concat pages
-          (build-templated-pages
-            (concat (pb/build-tag-pages pages)
-                    (pb/build-category-pages (post-pages-only theme pages))) theme)))
+(defn- concat-pages [pages theme & fs]
+  (apply concat pages (map #(% pages theme) fs)))
+
+(defn- build-tag-pages [pages theme]
+  (build-templated-pages (pb/build-tag-pages pages) theme))
+
+(defn- build-category-pages [pages theme]
+  (build-templated-pages (pb/build-category-pages (post-pages-only theme pages)) theme))
 
 (defn build [input-pages theme dest-last-modified]
   (-> input-pages
       (published-only)
       (build-templated-pages theme)
-      (add-unused-template-files theme)
+      (concat-pages theme build-unused-template-files)
       (set-all-child-pages)
-      (add-generated-pages theme)
+      (concat-pages theme build-tag-pages build-category-pages)
       (generate-page-map)
       (modified-pages-only dest-last-modified)
       (divide-pages)
