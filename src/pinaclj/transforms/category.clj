@@ -4,8 +4,7 @@
   :post)
 
 (defn convert-category [page opts]
-  (if-let [category (:category page)]
-    (keyword category)
-    default-category))
+  (-> (get page :category default-category)
+      keyword))
 
 (def transform [:category convert-category])
