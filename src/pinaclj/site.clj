@@ -14,42 +14,23 @@
   (into {} (filter #(or (modified-since-last-publish? % {:all-pages pages} dest-last-modified)
                         (template-modified % dest-last-modified)) pages)))
 
-(defn- to-pair [page]
-  {(page/retrieve-value page :destination) page})
-
 (defn- associate-template [theme page]
-  (assoc page :template-key (theme/determine-template theme page)))
+  (assoc page :template (theme/determine-template theme page)))
 
-(defn- unused-template-pages [theme pages]
-  (map name (clojure.set/difference (theme/root-pages theme)
-                                    (set (map :template-key pages)))))
+(defn- build-templated-pages [pages theme]
+  (map (partial associate-template theme) pages))
 
-(defn- not-found-index-page [pages]
-  (if (some #{"index.html"} (map #(page/retrieve-value % :destination) pages))
-    []
-    ["index.html"]))
+(defn- unused-templates [theme pages]
+  (clojure.set/difference (set (theme/root-pages theme))
+                          (set (map :template pages))))
 
-(defn- not-found-pages [theme pages]
-  (concat (unused-template-pages theme pages)
-          (not-found-index-page pages)))
-
-(defn- post-pages-only [theme pages]
-  (remove #(and (theme/matching-template? theme %)
-                (nil? (:category %))) pages))
-
-(defn- build-all-pages [pages theme]
-  (map (partial associate-template theme)
-       (concat pages
-               (pb/build-tag-pages pages)
-               (pb/build-category-pages (post-pages-only theme pages)))))
-
-(defn- add-unused-template-files [pages theme]
-  (concat pages
-          (map (comp (partial associate-template theme) pb/generate-page)
-               (not-found-pages theme pages))))
+(defn- build-unused-template-files [pages theme]
+  (let [unused-templates (unused-templates theme pages)
+        unused-template-pages (map #(pb/generate-page (:path %)) unused-templates)]
+    (map assoc unused-template-pages (repeat :template) unused-templates)))
 
 (defn- generate-page-map [pages]
-  (into {} (map to-pair pages)))
+  (zipmap (map #(page/retrieve-value % :destination) pages) pages))
 
 (defn- divide-page [page-map [_ page :as kv]]
   (into page-map (pb/divide kv (:template page))))
@@ -70,30 +51,39 @@
 (defn- render-pages [pages]
   (update-all pages render-page pages))
 
-(defn- children-without-this-page [page page-map]
+(defn- children-without-this-page [page all-pages]
   (remove #(= % (page/retrieve-value page :destination))
-          (children/children page (:template page) page-map)))
+          (children/children page (:template page) all-pages)))
 
-(defn- add-split-pages [page theme page-map]
-  (if (and (not (contains? page :pages))
-           (:requires-split? (:template page)))
-    (assoc page :pages (children-without-this-page page page-map))
+(defn- set-child-pages [page all-pages]
+  (if (:requires-split? (:template page))
+    (assoc page :pages (children-without-this-page page all-pages))
     page))
 
-(defn- add-template [pages theme]
-  (map #(assoc % :template (get-in theme [:templates (:template-key %)])) pages))
+(defn- set-all-child-pages [pages]
+  (map #(set-child-pages % pages) pages))
 
-(defn- add-template-properties [page-map theme]
-  (update-all page-map add-split-pages theme page-map))
+(defn- post-pages-only [theme pages]
+  (remove #(and (theme/matching-template? theme %)
+                (nil? (:category %))) pages))
+
+(defn- concat-pages [pages theme & fs]
+  (apply concat pages (map #(% pages theme) fs)))
+
+(defn- build-tag-pages [pages theme]
+  (build-templated-pages (pb/build-tag-pages pages) theme))
+
+(defn- build-category-pages [pages theme]
+  (build-templated-pages (pb/build-category-pages (post-pages-only theme pages)) theme))
 
 (defn build [input-pages theme dest-last-modified]
   (-> input-pages
       (published-only)
-      (build-all-pages theme)
-      (add-unused-template-files theme)
-      (add-template theme)
+      (build-templated-pages theme)
+      (concat-pages theme build-unused-template-files)
+      (set-all-child-pages)
+      (concat-pages theme build-tag-pages build-category-pages)
       (generate-page-map)
-      (add-template-properties theme)
       (modified-pages-only dest-last-modified)
       (divide-pages)
       (render-pages)))
