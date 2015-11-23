@@ -18,13 +18,16 @@
     :content "title: foo\nhello: World\n---\none\ntwo" }
 
    {:path "titleWithColon"
-    :content "title: test: two\n"}
+    :content "title: test: two\n---"}
 
    {:path "titleWithNoValue"
     :content "title:\n"}
 
    {:path "longPage"
     :content (str "---\n" (apply str (repeat 200 "ab ")))}
+
+   {:path "pageWithNoSeparator"
+    :content "title: title\nbody"}
    ])
 
 (defn do-read [fs path-str]
@@ -58,4 +61,11 @@
     (should= "test: two" (:title (do-read @fs "titleWithColon"))))
 
   (it "parses headers with no value"
-    (should-not (:title (do-read @fs "titleWithNoValue")))))
+    (should-not (:title (do-read @fs "titleWithNoValue"))))
+
+  (it "does not set published-at for pages with no separator"
+      (should= nil (:published-at (do-read @fs "pageWithNoSeparator"))))
+
+  (it "returns failure when page has no separator"
+      (should= :invalid-source-file (:result (do-read @fs "pageWithNoSeparator"))))
+)
