@@ -25,11 +25,11 @@
 
 (def separator "---")
 
-(defn- separates-headers? [line]
+(defn- line-is-separator? [line]
   (= line separator))
 
 (defn- split-header-content [all-lines]
-  (let [split (split-with (complement separates-headers?) all-lines)]
+  (let [split (split-with (complement line-is-separator?) all-lines)]
     [(first split) (clojure.string/join "\n" (rest (second split)))]))
 
 (defn- contains-separator? [all-lines]
