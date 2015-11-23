@@ -24,6 +24,13 @@
     (filter-to-category pages category)
     (filter-to-parent pages parent)))
 
+(defn- root-page? [page]
+  (and (contains? page :template)
+       (= (:path (:template page)) (:url page))))
+
+(defn- remove-root-pages [pages]
+  (remove root-page? pages))
+
 (defn- order-key [{order-key :order-by}]
   (if order-key (keyword order-key) :published-at))
 
@@ -35,6 +42,7 @@
 
 (defn children [parent list-node-attrs all-pages]
   (-> all-pages
+      (remove-root-pages)
       (filter-to-parent-or-category parent list-node-attrs)
       (sort-pages (order-key list-node-attrs) (reverse? list-node-attrs))
       (to-urls)))

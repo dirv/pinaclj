@@ -28,6 +28,9 @@
    {:destination "b" :order 1 :category default-category}
    {:destination "c" :order 2 :category default-category}])
 
+(def root-page
+  {:destination "test" :template {:path "test.html"} :url "test.html"})
+
 (def ordered-opts {:order-by "order"})
 (def reverse-ordered-opts (assoc ordered-opts :reverse "true"))
 
@@ -53,4 +56,7 @@
     (it "orders according to :order key"
       (should= ["b" "c" "a"] (children {} ordered-opts ordered-pages)))
     (it "reverses if :reverse is set"
-      (should= ["a" "c" "b"] (children {} reverse-ordered-opts ordered-pages)))))
+      (should= ["a" "c" "b"] (children {} reverse-ordered-opts ordered-pages))))
+  (context "with root page"
+    (it "removes root page"
+      (should= [] (children {} {} [root-page])))))

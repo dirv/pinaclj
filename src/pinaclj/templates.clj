@@ -103,23 +103,27 @@
                 [html/root]
                 (page-replace page (build-selector-transforms template all-pages))))
 
+(defn- if-update [m k f]
+  (if (contains? m k) (update m k f) m))
+
 (defn- convert-max-page-str [page]
-  (update-in page [:max-pages] #(Integer/parseInt %)))
+  (if-update page :max-pages #(Integer/parseInt %)))
 
-(defn- add-page-list [page]
-  (assoc page
-         :requires-split? true
-         :split-list {:max-pages (:max-pages page)
-                      :category (:category page)}))
+(defn- all-page-list-nodes [page]
+  (html/select page [[(html/attr= :data-id "page-list")]]))
 
-(defn build-page-list-opts [page]
-  (when-first [node (html/select page [[(html/attr= :data-id "page-list") (html/attr? :data-max-pages)]])]
-    (convert-max-page-str (add-page-list (renamed-data-attrs node)))))
+(defn- to-page-spec [node]
+  (-> (renamed-data-attrs node)
+      (dissoc :id)
+      (convert-max-page-str)))
+
+(defn build-page-list-specs [page]
+  (map to-page-spec (all-page-list-nodes page)))
 
 (defn build-template [page-stream]
   (let [page-resource (html/html-resource page-stream)]
-    (assoc (build-page-list-opts page-resource)
-           :template-fn (partial build-page-func page-resource))))
+    {:page-list-specs (build-page-list-specs page-resource)
+     :template-fn (partial build-page-func page-resource)}))
 
 (defn to-str [nodes]
   (clojure.string/join (html/emit* nodes)))

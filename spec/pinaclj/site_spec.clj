@@ -22,7 +22,7 @@
                             :path "post.html"}
                "index.html" {:template-fn (fn [pages] (child-writing-template pages))
                              :modified-at 0
-                             :requires-split? true
+                             :page-list-specs [{}]
                              :path "index.html"}}})
 
 (def base-page
@@ -113,7 +113,8 @@
 
 (describe "split page list"
   (def theme-with-max-page
-    (assoc-in test-theme [:templates "index.html" :max-pages] 2))
+    (assoc-in test-theme [:templates "index.html" :page-list-specs]
+             [{:max-pages 2}]))
 
   (def five-pages
     (map #(assoc base-page

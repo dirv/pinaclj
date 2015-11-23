@@ -33,7 +33,8 @@
   (zipmap (map #(page/retrieve-value % :destination) pages) pages))
 
 (defn- divide-page [page-map [_ page :as kv]]
-  (into page-map (pb/divide kv (:template page))))
+  (let [page-list-specs (get-in page [:template :page-list-specs])]
+    (into page-map (pb/divide kv (first page-list-specs)))))
 
 (defn- divide-pages [page-map]
   (reduce divide-page {} page-map))
@@ -51,14 +52,12 @@
 (defn- render-pages [pages]
   (update-all pages render-page pages))
 
-(defn- children-without-this-page [page all-pages]
-  (remove #(= % (page/retrieve-value page :destination))
-          (children/children page (:template page) all-pages)))
-
 (defn- set-child-pages [page all-pages]
-  (if (:requires-split? (:template page))
-    (assoc page :pages (children-without-this-page page all-pages))
-    page))
+  (let [page-list-specs (get-in page [:template :page-list-specs])]
+    (if-not (empty? page-list-specs)
+      (assoc page :pages
+             (children/children page (first page-list-specs) all-pages))
+    page)))
 
 (defn- set-all-child-pages [pages]
   (map #(set-child-pages % pages) pages))

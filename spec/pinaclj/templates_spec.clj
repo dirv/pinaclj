@@ -109,7 +109,7 @@
   (it "deletes nodes"
     (should-not-contain "bye" (do-replace delete-page-template delete-page {}))))
 
-(describe "build-page-list-opts"
+(describe "build-page-specs"
   (def page-list-opts
     "<ol data-id=page-list data-max-pages=3 />")
 
@@ -120,17 +120,17 @@
     "<ol data-id=page-list />
     <ol data-id=page-list data-max-pages=3 />")
 
+  (defn- first-page-list-spec [template]
+    (first (build-page-list-specs (html/html-snippet template))))
+
+  (it "adds an empty hash to page-specs for default page-list"
+    (should= {} (first-page-list-spec page-list-opts-without-max-pages)))
+
   (it "extracts max pages from page list"
-    (should= 3 (:max-pages (build-page-list-opts (html/html-snippet page-list-opts)))))
+    (should= 3 (:max-pages (first-page-list-spec page-list-opts))))
 
-  (it "sets :requires-split?"
-    (should= true (:requires-split? (build-page-list-opts (html/html-snippet page-list-opts)))))
-
-  (it "does not set :requires-split? when :max-pages is not set"
-    (should= nil (:requires-split? (build-page-list-opts (html/html-snippet page-list-opts-without-max-pages)))))
-
-  (it "sets :requires-split? when if at least one list has max-pages sets"
-    (should= true (:requires-split? (build-page-list-opts (html/html-snippet mixed-page-list-opts))))))
+  (it "builds two page-specs for two page-lists"
+    (should= 2 (count (build-page-list-specs (html/html-snippet mixed-page-list-opts))))))
 
 (describe "build-template"
   (def test-split-page
@@ -140,7 +140,7 @@
     (build-template (samples/stream "split_list.html")))
 
   (it "parses max pages"
-    (should= 3 (:max-pages (build-split-list-template))))
+    (should= 3 (:max-pages (first (:page-list-specs (build-split-list-template))))))
   (it "sets template func"
     (let [template-func ((:template-fn (build-split-list-template)) all-referenced-pages)]
       (should-contain "val1" (to-str (template-func test-split-page))))))
