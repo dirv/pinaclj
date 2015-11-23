@@ -23,15 +23,17 @@
            :read-headers (vec (keys headers))
            :raw-content content)))
 
+(def separator "---")
+
 (defn- separates-headers? [line]
-  (= line "---"))
+  (= line separator))
 
 (defn- split-header-content [all-lines]
   (let [split (split-with (complement separates-headers?) all-lines)]
     [(first split) (clojure.string/join "\n" (rest (second split)))]))
 
 (defn- contains-separator? [all-lines]
-  (some #{"---"} all-lines))
+  (some #{separator} all-lines))
 
 (defn read-page [page]
   (let [all-lines (files/read-lines (:path page))]
