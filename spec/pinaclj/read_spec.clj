@@ -68,4 +68,7 @@
 
   (it "returns failure when page has no separator"
       (should= :invalid-source-file (:result (do-read @fs "pageWithNoSeparator"))))
+
+  (it "returns error description when page has no separator"
+      (should= [:no-separator] (:errors (do-read @fs "pageWithNoSeparator"))))
 )

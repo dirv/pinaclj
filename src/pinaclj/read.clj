@@ -40,4 +40,4 @@
     (cond
       (contains-separator? all-lines)
       (merge-page page (split-header-content all-lines))
-      :else {:result :invalid-source-file})))
+      :else {:result :invalid-source-file :errors [:no-separator]})))
