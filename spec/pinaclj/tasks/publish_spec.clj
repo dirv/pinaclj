@@ -20,11 +20,15 @@
   {:path "rewrite.md"
    :content "title: test\npublished-at: 2015-01-01T15:00:00.102Z\n---\ntest2"})
 
+(def no-separator
+  {:path "no-separator.md"
+   :content "title: test\ntest2"})
+
 (defn- publish-one [fs path]
   (last (publish fs [path] test-time)))
 
 (describe "publish"
-  (with fs (create-from [simple-page rewrite page-2]))
+  (with fs (create-from [simple-page rewrite page-2 no-separator]))
 
   (describe "with unpublished page"
     (it "outputs published message"
@@ -67,4 +71,11 @@
     (it "publishes two files"
       (publish @fs ["test.md" "test2.md"] test-time)
       (should-contain "published-at" (read-file @fs "test.md"))
-      (should-contain "published-at" (read-file @fs "test2.md")))))
+      (should-contain "published-at" (read-file @fs "test2.md"))))
+          
+  (describe "with invalid source file"
+    (it "outputs fatal message when separator missing"
+        (let [message (publish-one @fs "no-separator.md")]
+          (should-contain "no header separator of '---'" (:msg message))
+          (should-contain "no-separator.md" (:msg message))
+          (should= :fatal (:type message))))))

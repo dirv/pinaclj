@@ -14,4 +14,5 @@
   (doall (for [message (task/publish fs args dt/now)]
            (case (:type message)
                  :success (main/info (:msg message))
-                 :error (main/warn (:msg message))))))
+                 :error (main/warn (:msg message))
+                 :fatal (main/abort (:msg message))))))
