@@ -9,3 +9,6 @@
 
 (defn error [msg]
   {:type :error :msg msg})
+
+(defn fatal [msg]
+  {:type :fatal :msg msg})
