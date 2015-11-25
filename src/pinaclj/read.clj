@@ -3,6 +3,9 @@
             [pinaclj.nio :as nio]
             [pinaclj.date-time :as date-time]))
 
+(defn- invalid-source-file [error]
+  {:result :invalid-source-file :errors [error]})
+
 (defn- contains-title? [headers]
   (contains? headers :title))
 
@@ -26,7 +29,7 @@
       (assoc (merge page headers)
            :read-headers (vec (keys headers))
            :raw-content content)
-      {:result :invalid-source-file :errors [:no-title]})))
+      (invalid-source-file :no-title))))
 
 (def separator "---")
 
@@ -45,4 +48,4 @@
     (cond
       (contains-separator? all-lines)
       (merge-page page (split-header-content all-lines))
-      :else {:result :invalid-source-file :errors [:no-separator]})))
+      :else (invalid-source-file :no-separator))))
