@@ -3,6 +3,9 @@
             [pinaclj.nio :as nio]
             [pinaclj.date-time :as date-time]))
 
+(defn- contains-title? [headers]
+  (contains? headers :title))
+
 (defn- convert [[k v]]
   (if (= :published-at k)
     [k (date-time/from-str v)]
@@ -19,9 +22,11 @@
 
 (defn- merge-page [page [header content]]
   (let [headers (to-headers header)]
-    (assoc (merge page headers)
+    (if (contains-title? headers)
+      (assoc (merge page headers)
            :read-headers (vec (keys headers))
-           :raw-content content)))
+           :raw-content content)
+      {:result :invalid-source-file :errors [:no-title]})))
 
 (def separator "---")
 
