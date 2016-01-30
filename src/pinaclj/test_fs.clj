@@ -1,7 +1,6 @@
 (ns pinaclj.test-fs
   (:require [pinaclj.files :as files]
-            [pinaclj.nio :as nio]
-            [pinaclj.templates :as templates])
+            [pinaclj.nio :as nio])
   (:import (com.google.common.jimfs Jimfs Configuration)))
 
 (defn test-fs []
