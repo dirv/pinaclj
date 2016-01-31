@@ -68,4 +68,5 @@
   (let [relative-path (nio/relativize src-root src-file)
         new-path (nio/resolve-path dest-root relative-path)]
     (when (< (timestamp new-path) (timestamp src-file))
+      (nio/create-parent-directories new-path)
       (nio/copy-file src-file new-path))))

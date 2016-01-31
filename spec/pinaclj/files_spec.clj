@@ -18,6 +18,10 @@
 (def hidden-file
   [{:path ".hidden"}])
 
+(def duplicate-files
+  [{:path "from/sub/file.txt"}
+   {:path "to/existing.txt"}])
+
 (defn- file-count [fs]
   (count (files/all-in (files/resolve-path fs "/"))))
 
@@ -36,3 +40,14 @@
 
   (it "does not include hidden files"
     (should= 0 (file-count (test-fs/create-from hidden-file)))))
+
+(describe :duplicate-if-newer
+  (with fs (test-fs/create-from duplicate-files))
+
+  (it "creates non-existing directories"
+    (let [src (files/resolve-path @fs "from")
+          dest (files/resolve-path @fs "to")
+          file (files/resolve-path @fs "from/sub/file.txt")]
+      (files/duplicate-if-newer src dest file)
+      (should (files/exists? (files/resolve-path @fs "to/sub/file.txt"))))))
+
