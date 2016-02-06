@@ -16,7 +16,7 @@
 
 (defn- apply-max-pages [pages opts]
   (if-let [max-pages (max-pages opts)]
-    (subvec (vec pages) 0 max-pages)
+    (subvec (vec pages) 0 (min max-pages (count pages)))
     pages))
 
 (defn clone-pages [page-set opts]
