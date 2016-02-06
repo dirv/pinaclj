@@ -20,6 +20,9 @@
 (def max-page-opts
   (assoc page-map-opts :max-pages "2"))
 
+(def high-max-page-opts
+  (assoc page-map-opts :max-pages "6"))
+
 (describe "clone-pages"
   (it "provides all child pages if no :pages set"
     (should== ["url1" "url2" "url3" "url4"] (:pages (clone-pages {} page-map-opts))))
@@ -28,4 +31,6 @@
   (it "ignores :pages if :max-pages is not set"
     (should= 4 (count (:pages (clone-pages some-pages page-map-opts)))))
   (it "restricts to max-pages if set"
-    (should= 2 (count (:pages (clone-pages all-pages max-page-opts))))))
+    (should= 2 (count (:pages (clone-pages all-pages max-page-opts)))))
+  (it "restricts when max-pages is larger than page set"
+    (should= 2 (count (:pages (clone-pages all-pages high-max-page-opts))))))
