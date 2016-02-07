@@ -18,6 +18,7 @@
 
 (def test-theme
   {:templates {"post.html" {:template-fn (fn [pages] (title-writing-template pages))
+                            :data-ids [:a :b :c]
                             :modified-at 0
                             :path "post.html"}
                "index.html" {:template-fn (fn [pages] (child-writing-template pages))
@@ -40,13 +41,19 @@
 (defn- files-output [pages]
   (keys (output-with-theme pages test-theme)))
 
-(defn- in [page-name pages]
+(defn- file [page-name pages]
   (val (first (filter #(= page-name (first %)) pages))))
+
+(defn- in [page-name pages]
+  (:content (file page-name pages)))
 
 (describe "new page"
   (def new-page (assoc base-page
                        :destination "new.html"
-                       :title "new-page"))
+                       :title "new-page"
+                       :a :val
+                       :b :val
+                       :c :val))
 
   (it "writes page"
     (should-contain "new.html" (files-output [new-page]))
@@ -55,7 +62,10 @@
   (it "writes index"
     (should-contain "index.html" (files-output [new-page]))
     (should-contain "new-page" (in "index.html"
-                                   (output-with-theme [new-page] test-theme)))))
+                                   (output-with-theme [new-page] test-theme))))
+
+  (it "has no warning about missing values"
+    (should= [] (:issues (file "new.html" (output-with-theme [new-page] test-theme))))))
 
 (describe "old page"
   (def old-page (assoc base-page
@@ -203,3 +213,14 @@
     (let [pages (output-with-theme file-only-pages file-only-theme)]
       (should-not-contain "post.html" (map first pages))
       (should-not-contain "author.html" (map first pages)))))
+
+(def missing-field-page (assoc base-page
+                               :destination "missing.html"
+                               :title "new-page"
+                               :c :val))
+
+(describe "issues"
+  (with result (file "missing.html" (output-with-theme [missing-field-page] test-theme)))
+
+  (it "produces a warning"
+    (should= 1 (count (:issues @result)))))

@@ -39,6 +39,18 @@
      (not= :parent k)
      (retrieve-parent-value page opts k))))
 
+(declare contains-key?)
+
+(defn- contains-parent-key? [page opts k]
+  (when-let [linked-url (retrieve-value page :parent)]
+    (when-let [linked-page (get (:all-pages opts) linked-url)]
+      (contains-key? linked-page k (without-page opts linked-url)))))
+
+(defn contains-key? [page k opts]
+  (or (contains-in? page [:funcs k])
+      (contains? page k)
+      (and (not= :parent k) (contains-parent-key? page opts k))))
+
 (def non-written-headers #{:read-headers :raw-content :path :funcs :src-root})
 
 (defn- header-keys [page]

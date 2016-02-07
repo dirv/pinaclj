@@ -44,9 +44,15 @@
 (defn- update-all [m update-fn & args]
   (zipmap (keys m) (map #(apply update-fn % args) (vals m))))
 
+(defn- missing-fields-warning [page all-pages]
+  (let [missing-fields (filter #(not (page/contains-key? page % all-pages)) (get-in page [:template :data-ids]))]
+    (when (seq missing-fields)
+      [:warning :missing-fields missing-fields])))
+
 (defn- render-page [page all-pages]
-  (page/retrieve-value page :templated-content {:template (:template page)
-                                                :all-pages all-pages}))
+  {:content (page/retrieve-value page :templated-content {:template (:template page)
+                                                          :all-pages all-pages})
+   :issues (remove nil? [(missing-fields-warning page all-pages)])})
 
 (defn- render-pages [pages]
   (update-all pages render-page pages))
