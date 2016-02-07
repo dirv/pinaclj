@@ -15,7 +15,7 @@
 (defn- dest-last-modified [dest]
   (files/timestamp (nio/resolve-path dest index-page)))
 
-(defn- write-page [dest-root [page-path content]]
+(defn- write-page [dest-root [page-path {content :content}]]
   (files/create (nio/resolve-path dest-root page-path) content)
   (task/success (t :en :published-page page-path)))
 
