@@ -33,4 +33,4 @@
   (it "restricts to max-pages if set"
     (should= 2 (count (:pages (clone-pages all-pages max-page-opts)))))
   (it "restricts when max-pages is larger than page set"
-    (should= 2 (count (:pages (clone-pages all-pages high-max-page-opts))))))
+    (should= 4 (count (:pages (clone-pages all-pages high-max-page-opts))))))

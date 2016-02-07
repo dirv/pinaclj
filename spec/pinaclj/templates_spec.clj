@@ -9,11 +9,11 @@
 (defn- to-snippet [body]
   (html/html-snippet (str "<html><body>" body "</body></html>")))
 
-(defn- template [body all-pages]
-  (build-page-func (to-snippet body) all-pages))
+(defn- template [body]
+  (build-template-from-resource (to-snippet body)))
 
 (defn- do-replace [template-body-str page all-pages]
-  (to-str ((template template-body-str all-pages) page)))
+  (to-str (((:template-fn (template template-body-str)) all-pages) page)))
 
 (def page-template
   "<p data-id=a /><p data-id=b /><p data-id=c />")
@@ -64,7 +64,7 @@
 (def delete-page
   {:if-exists {:delete true}})
 
-(describe "build-page-func"
+(describe "build-template"
   (it "transforms string values"
     (let [result (do-replace page-template string-value-page {})]
       (should-contain "testA" result)
@@ -107,7 +107,10 @@
       (should-contain ":url1:url2" result)))
 
   (it "deletes nodes"
-    (should-not-contain "bye" (do-replace delete-page-template delete-page {}))))
+    (should-not-contain "bye" (do-replace delete-page-template delete-page {})))
+  
+  (it "sets :data-ids appropriately"
+    (should= #{:a :b :c} (:data-ids (template page-template)))))
 
 (describe "build-page-list-opts"
   (def page-list-opts
@@ -150,7 +153,7 @@
 
 (describe "page with multiple occurrences of func"
   (it "lists selector only once"
-    (should= ["func"] (find-all-functions (to-snippet multiple-selector-template)))))
+    (should= ["func"] (find-all-data-ids (to-snippet multiple-selector-template)))))
 
 (def set-only-attr-template
   "<p data-id=a data-set=attrs />")
