@@ -83,12 +83,12 @@
             (transform-content node value))
           node)))))
 
-(defn find-all-functions [template]
+(defn find-all-data-ids [template]
   (distinct (map #(get-in % [:attrs :data-id]) (html/select template [(html/attr? :data-id)]))))
 
-(defn- build-selector-transforms [template all-pages]
+(defn- build-selector-transforms [template all-pages data-ids]
   (map #(vector (build-replacement-selector %)
-                (build-replacement-transform (keyword %) all-pages)) (find-all-functions template)))
+                (build-replacement-transform (keyword %) all-pages)) data-ids))
 
 (defn- fix-page [page selector-transforms [selector transform-fn]]
   [selector (transform-fn page selector-transforms)])
@@ -96,12 +96,12 @@
 (defn- page-replace [page selector-transforms]
   #(html/at* % (map (partial fix-page page selector-transforms) selector-transforms)))
 
-(defn build-page-func [template all-pages]
+(defn build-page-func [template data-ids all-pages]
   (html/snippet template
                 [html/root]
                 [page]
                 [html/root]
-                (page-replace page (build-selector-transforms template all-pages))))
+                (page-replace page (build-selector-transforms template all-pages data-ids))))
 
 (defn- convert-max-page-str [page]
   (update-in page [:max-pages] #(Integer/parseInt %)))
@@ -116,10 +116,15 @@
   (when-first [node (html/select page [[(html/attr= :data-id "page-list") (html/attr? :data-max-pages)]])]
     (convert-max-page-str (add-page-list (renamed-data-attrs node)))))
 
+(defn build-template-from-resource [page-resource]
+  (let [data-ids (find-all-data-ids page-resource)]
+    (assoc (build-page-list-opts page-resource)
+           :data-ids (set (map keyword data-ids))
+           :template-fn (partial build-page-func page-resource data-ids))))
+
 (defn build-template [page-stream]
   (let [page-resource (html/html-resource page-stream)]
-    (assoc (build-page-list-opts page-resource)
-           :template-fn (partial build-page-func page-resource))))
+    (build-template-from-resource page-resource)))
 
 (defn to-str [nodes]
   (clojure.string/join (html/emit* nodes)))
