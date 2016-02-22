@@ -25,10 +25,15 @@
     (task/error (t :en :already-published (:path page)))
     (add-header src-root page time-fn)))
 
+(defn- read-validation [src-root page time-fn src-path]
+  (if (= :invalid-source-file (:result page))
+    (task/fatal (t :en (:errors page) src-path))
+    (publish-if-required src-root page time-fn)))
+
 (defn- publish-path [src-root src-path time-fn]
   (let [path (files/resolve-path src-root src-path)]
     (if (files/exists? path)
-      (publish-if-required src-root (read-page src-root path) time-fn)
+      (read-validation src-root (read-page src-root path) time-fn src-path)
       (task/error (t :en :not-found src-path)))))
 
 (defn publish [src-root src-paths time-fn]
