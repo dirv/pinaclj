@@ -4,7 +4,7 @@
             [pinaclj.date-time :as date-time]))
 
 (defn- invalid-source-file [error]
-  {:result :invalid-source-file :errors [error]})
+  {:issues [[:error error]]})
 
 (defn- contains-title? [headers]
   (contains? headers :title))

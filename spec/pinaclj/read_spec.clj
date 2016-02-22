@@ -69,18 +69,12 @@
   (it "does not set published-at for pages with no separator"
       (should= nil (:published-at (do-read @fs "pageWithNoSeparator"))))
 
-  (it "returns failure when page has no separator"
-      (should= :invalid-source-file (:result (do-read @fs "pageWithNoSeparator"))))
-
   (it "returns error description when page has no separator"
-      (should= [:no-separator] (:errors (do-read @fs "pageWithNoSeparator"))))
+      (should= [[:error :no-separator]] ((:issues (do-read @fs "pageWithNoSeparator")) )))
 
   (it "does not set published-at for pages with no title"
       (should= nil (:published-at (do-read @fs "pageWithNoTitle"))))
 
-  (it "returns failure when page has no title"
-      (should= :invalid-source-file (:result (do-read @fs "pageWithNoTitle"))))
-
   (it "returns error description when page has no title"
-      (should= [:no-title] (:errors (do-read @fs "pageWithNoTitle"))))
+      (should= [[:error :no-title]] (:issues (do-read @fs "pageWithNoTitle"))))
 )
