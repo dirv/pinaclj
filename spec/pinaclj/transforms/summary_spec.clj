@@ -1,7 +1,7 @@
 (ns pinaclj.transforms.summary-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.transforms.summary :refer :all]
-           [pinaclj.templates :as templates]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.transforms.summary :refer :all]
+            [pinaclj.templates :as templates]))
 
 (def short-page
   {:raw-content "One\n\nTwo"})

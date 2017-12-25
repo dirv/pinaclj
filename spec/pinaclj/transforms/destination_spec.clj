@@ -1,6 +1,6 @@
 (ns pinaclj.transforms.destination-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.transforms.destination :refer :all]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.transforms.destination :refer :all]))
 
 (def url-page {:url "/a/blog/page.html" :path "test.md"})
 

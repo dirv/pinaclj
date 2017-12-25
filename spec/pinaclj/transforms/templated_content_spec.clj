@@ -1,8 +1,8 @@
 (ns pinaclj.transforms.templated-content-spec
-  (require [speclj.core :refer :all]
-           [net.cgrand.enlive-html :as html]
-           [pinaclj.transforms.transforms :as transforms]
-           [pinaclj.transforms.templated-content :refer :all]))
+  (:require [speclj.core :refer :all]
+            [net.cgrand.enlive-html :as html]
+            [pinaclj.transforms.transforms :as transforms]
+            [pinaclj.transforms.templated-content :refer :all]))
 
 (def quote-page
   {:content "'"})

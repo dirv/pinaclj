@@ -1,7 +1,7 @@
 (ns pinaclj.link-transform-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.transforms.transforms :as transforms]
-           [pinaclj.link-transform :refer :all]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.transforms.transforms :as transforms]
+            [pinaclj.link-transform :refer :all]))
 
 (def root-page
   {:content {:attrs {:src "index.html"}}

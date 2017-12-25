@@ -1,7 +1,7 @@
 (ns pinaclj.transforms.latest-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.date-time-helpers :as dt]
-           [pinaclj.transforms.latest :refer :all]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.date-time-helpers :as dt]
+            [pinaclj.transforms.latest :refer :all]))
 
 (def earliest
   {:published-at (dt/make 2015 01 01 01 01 01)})

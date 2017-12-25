@@ -1,7 +1,7 @@
 (ns pinaclj.transforms.published-at-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.date-time :as dt]
-           [pinaclj.transforms.published-at :refer :all]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.date-time :as dt]
+            [pinaclj.transforms.published-at :refer :all]))
 
 (def page
   {:published-at (dt/from-str "2015-02-05T10:05:00Z")})

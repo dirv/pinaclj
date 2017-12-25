@@ -1,7 +1,7 @@
 (ns pinaclj.transforms.content-spec
-  (require [speclj.core :refer :all]
-           [pinaclj.templates :as templates]
-           [pinaclj.transforms.content :refer :all]))
+  (:require [speclj.core :refer :all]
+            [pinaclj.templates :as templates]
+            [pinaclj.transforms.content :refer :all]))
 
 (def page
   {:raw-content "###Markdown header"})
