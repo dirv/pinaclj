@@ -1,7 +1,11 @@
 (ns pinaclj.transforms.transforms
   (:require [clojure.tools.namespace.find :as find]
-            [clojure.java.classpath :as cp]
             [pinaclj.page :as page]))
+
+(defn get-classpath []
+  (map #(clojure.java.io/file %)
+       (clojure.string/split (System/getProperty "java.class.path")
+                             (re-pattern java.io.File/pathSeparator))))
 
 (defn- transform-ns? [this-ns]
   (and (.startsWith this-ns "pinaclj.transforms.")
@@ -10,7 +14,7 @@
 
 (defn- get-transforms-on-classpath []
   (filter #(transform-ns? (name (.getName %)))
-          (find/find-namespaces (cp/classpath))))
+          (find/find-namespaces (get-classpath))))
 
 (defn- apply-transform [page this-ns]
   (require this-ns)

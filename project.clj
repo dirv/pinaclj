@@ -3,7 +3,6 @@
   :url "https://github.com/dirv/pinaclj"
   :min-lein-version "2.5.1"
   :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/java.classpath "0.2.3"]
                  [org.clojure/tools.namespace "0.2.11"]
                  [org.clojure/tools.cli "0.3.5"]
                  [com.google.jimfs/jimfs "1.1"]
