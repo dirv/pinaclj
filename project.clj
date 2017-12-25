@@ -11,8 +11,10 @@
                  [endophile "0.2.1"]
                  [enlive "1.1.6"]]
   :eval-in-leiningen true
-  :aliases {"test" ["spec"]}
-  :plugins [[speclj "3.3.1"] [lein-deps-tree "0.1.2"]]
+  :aliases {"test" ["spec"]
+            "generate" ["run" "-m" "pinaclj.cli/run" "generate"]
+            "publish" ["run" "-m" "pinaclj.cli/run" "publish"]}
+  :plugins [[speclj "3.3.2"] [lein-deps-tree "0.1.2"]]
   :test-paths ["spec"]
-  :profiles {:dev {:dependencies [[speclj "3.3.1"]
-                                  [leiningen-core "2.5.3"]]}})
+  :profiles {:dev {:dependencies [[speclj "3.3.2"]
+                                  [leiningen-core "2.8.1"]]}})
