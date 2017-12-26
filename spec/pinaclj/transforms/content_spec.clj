@@ -4,7 +4,7 @@
             [pinaclj.transforms.content :refer :all]))
 
 (def page
-  {:raw-content "###Markdown header"})
+  {:raw-content "### Markdown header"})
 
 (describe "add-content"
   (it "renders markdown"

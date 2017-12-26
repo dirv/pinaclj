@@ -1,9 +1,6 @@
 (ns pinaclj.transforms.summary
-  (:require [endophile.core :as md]
+  (:require [pinaclj.markdown :as markdown]
             [clojure.string :as string]))
-
-(def render-markdown
-  (comp md/to-clj md/mp))
 
 (def max-summary-length 200)
 
@@ -25,6 +22,6 @@
       :raw-content
       trim-to-first-para
       trim-to-max-length
-      render-markdown))
+      markdown/render-markdown))
 
 (def transform [:summary to-summary])

@@ -7,7 +7,7 @@
                  [org.clojure/tools.cli "0.3.5"]
                  [com.google.jimfs/jimfs "1.1"]
                  [com.taoensso/tower "3.0.2"]
-                 [endophile "0.2.1"]
+                 [com.vladsch.flexmark/flexmark-all "0.28.24"]
                  [enlive "1.1.6"]]
   :eval-in-leiningen true
   :aliases {"test" ["spec"]
